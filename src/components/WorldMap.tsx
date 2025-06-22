@@ -48,21 +48,23 @@ const CountryMarker = ({
   onClick: () => void;
 }) => {
   const [hovered, setHovered] = useState(false);
+  const meshRef = useRef<THREE.Mesh>(null);
 
   return (
     <group position={position}>
-      <Sphere
-        args={[0.03, 16, 16]}
+      <mesh
+        ref={meshRef}
         onClick={onClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
+        <sphereGeometry args={[0.03, 16, 16]} />
         <meshStandardMaterial 
           color={hovered ? "#f59e0b" : "#ef4444"} 
           emissive={hovered ? "#f59e0b" : "#ef4444"}
           emissiveIntensity={0.3}
         />
-      </Sphere>
+      </mesh>
       {hovered && (
         <Text
           position={[0, 0.1, 0]}
@@ -108,14 +110,15 @@ const Globe = ({
   return (
     <>
       {/* Globo principale */}
-      <Sphere ref={globeRef} args={[1, 64, 64]}>
+      <mesh ref={globeRef}>
+        <sphereGeometry args={[1, 64, 64]} />
         <meshStandardMaterial 
           color="#1e40af" 
           transparent 
           opacity={0.8}
           wireframe={false}
         />
-      </Sphere>
+      </mesh>
 
       {/* Markers dei paesi per ogni continente */}
       {Object.entries(continents).map(([key, continent]) => 
