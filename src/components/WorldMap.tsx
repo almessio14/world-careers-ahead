@@ -40,39 +40,195 @@ const continents = [
   }
 ];
 
-const CountryMarker = ({ 
+// Forme geometriche dei continenti
+const EuropeShape = ({ position, isHighlighted }: { position: [number, number, number], isHighlighted: boolean }) => {
+  const europePoints = [
+    new THREE.Vector2(-0.1, 0.15),
+    new THREE.Vector2(-0.08, 0.2),
+    new THREE.Vector2(-0.05, 0.18),
+    new THREE.Vector2(0, 0.22),
+    new THREE.Vector2(0.05, 0.2),
+    new THREE.Vector2(0.08, 0.15),
+    new THREE.Vector2(0.06, 0.1),
+    new THREE.Vector2(0.02, 0.05),
+    new THREE.Vector2(-0.02, 0.08),
+    new THREE.Vector2(-0.06, 0.12),
+    new THREE.Vector2(-0.1, 0.15)
+  ];
+  
+  const shape = new THREE.Shape(europePoints);
+  
+  return (
+    <mesh position={position} rotation={[0, 0, 0]}>
+      <extrudeGeometry args={[shape, { depth: 0.01, bevelEnabled: false }]} />
+      <meshPhongMaterial 
+        color={isHighlighted ? "#34d399" : "#22c55e"} 
+        transparent 
+        opacity={0.8}
+      />
+    </mesh>
+  );
+};
+
+const NorthAmericaShape = ({ position, isHighlighted }: { position: [number, number, number], isHighlighted: boolean }) => {
+  const naPoints = [
+    new THREE.Vector2(-0.15, 0.1),
+    new THREE.Vector2(-0.1, 0.25),
+    new THREE.Vector2(-0.05, 0.28),
+    new THREE.Vector2(0, 0.25),
+    new THREE.Vector2(0.05, 0.2),
+    new THREE.Vector2(0.08, 0.15),
+    new THREE.Vector2(0.06, 0.05),
+    new THREE.Vector2(0, 0),
+    new THREE.Vector2(-0.05, -0.05),
+    new THREE.Vector2(-0.1, 0),
+    new THREE.Vector2(-0.15, 0.1)
+  ];
+  
+  const shape = new THREE.Shape(naPoints);
+  
+  return (
+    <mesh position={position} rotation={[0, 0, 0]}>
+      <extrudeGeometry args={[shape, { depth: 0.01, bevelEnabled: false }]} />
+      <meshPhongMaterial 
+        color={isHighlighted ? "#34d399" : "#22c55e"} 
+        transparent 
+        opacity={0.8}
+      />
+    </mesh>
+  );
+};
+
+const AsiaShape = ({ position, isHighlighted }: { position: [number, number, number], isHighlighted: boolean }) => {
+  const asiaPoints = [
+    new THREE.Vector2(-0.2, 0.1),
+    new THREE.Vector2(-0.15, 0.25),
+    new THREE.Vector2(-0.05, 0.3),
+    new THREE.Vector2(0.1, 0.28),
+    new THREE.Vector2(0.2, 0.2),
+    new THREE.Vector2(0.25, 0.1),
+    new THREE.Vector2(0.2, 0),
+    new THREE.Vector2(0.1, -0.1),
+    new THREE.Vector2(0, -0.15),
+    new THREE.Vector2(-0.1, -0.1),
+    new THREE.Vector2(-0.2, 0.1)
+  ];
+  
+  const shape = new THREE.Shape(asiaPoints);
+  
+  return (
+    <mesh position={position} rotation={[0, 0, 0]}>
+      <extrudeGeometry args={[shape, { depth: 0.01, bevelEnabled: false }]} />
+      <meshPhongMaterial 
+        color={isHighlighted ? "#34d399" : "#22c55e"} 
+        transparent 
+        opacity={0.8}
+      />
+    </mesh>
+  );
+};
+
+// Forme dei singoli paesi
+const CountryShape = ({ 
   position, 
   name, 
   code, 
-  onClick 
+  onClick,
+  countryType 
 }: { 
   position: [number, number, number]; 
   name: string; 
   code: string; 
   onClick: () => void;
+  countryType: string;
 }) => {
   const [hovered, setHovered] = useState(false);
-  const meshRef = useRef<THREE.Mesh>(null);
-
+  
+  // Definisci forme diverse per ogni paese
+  const getCountryShape = (countryCode: string) => {
+    switch(countryCode) {
+      case 'UK':
+        return [
+          new THREE.Vector2(-0.02, 0.04),
+          new THREE.Vector2(-0.01, 0.06),
+          new THREE.Vector2(0.01, 0.05),
+          new THREE.Vector2(0.02, 0.03),
+          new THREE.Vector2(0.015, 0.01),
+          new THREE.Vector2(-0.005, 0.005),
+          new THREE.Vector2(-0.02, 0.04)
+        ];
+      case 'France':
+        return [
+          new THREE.Vector2(-0.025, 0.02),
+          new THREE.Vector2(-0.015, 0.05),
+          new THREE.Vector2(0.015, 0.045),
+          new THREE.Vector2(0.025, 0.02),
+          new THREE.Vector2(0.02, -0.01),
+          new THREE.Vector2(-0.01, -0.015),
+          new THREE.Vector2(-0.025, 0.02)
+        ];
+      case 'Germany':
+        return [
+          new THREE.Vector2(-0.02, 0.04),
+          new THREE.Vector2(-0.01, 0.055),
+          new THREE.Vector2(0.015, 0.05),
+          new THREE.Vector2(0.025, 0.025),
+          new THREE.Vector2(0.02, 0),
+          new THREE.Vector2(-0.005, -0.01),
+          new THREE.Vector2(-0.02, 0.04)
+        ];
+      case 'Italy':
+        return [
+          new THREE.Vector2(-0.008, 0.04),
+          new THREE.Vector2(-0.005, 0.045),
+          new THREE.Vector2(0.005, 0.043),
+          new THREE.Vector2(0.008, 0.02),
+          new THREE.Vector2(0.006, -0.02),
+          new THREE.Vector2(0.003, -0.04),
+          new THREE.Vector2(-0.003, -0.035),
+          new THREE.Vector2(-0.008, 0.04)
+        ];
+      case 'USA':
+        return [
+          new THREE.Vector2(-0.06, 0.03),
+          new THREE.Vector2(-0.03, 0.05),
+          new THREE.Vector2(0.03, 0.045),
+          new THREE.Vector2(0.06, 0.025),
+          new THREE.Vector2(0.05, -0.02),
+          new THREE.Vector2(-0.02, -0.025),
+          new THREE.Vector2(-0.06, 0.03)
+        ];
+      default:
+        return [
+          new THREE.Vector2(-0.015, 0.015),
+          new THREE.Vector2(0.015, 0.015),
+          new THREE.Vector2(0.015, -0.015),
+          new THREE.Vector2(-0.015, -0.015),
+          new THREE.Vector2(-0.015, 0.015)
+        ];
+    }
+  };
+  
+  const shape = new THREE.Shape(getCountryShape(code));
+  
   return (
     <group position={position}>
       <mesh
-        ref={meshRef}
         onClick={onClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        <sphereGeometry args={[0.02, 12, 12]} />
-        <meshStandardMaterial 
+        <extrudeGeometry args={[shape, { depth: 0.005, bevelEnabled: false }]} />
+        <meshPhongMaterial 
           color={hovered ? "#fbbf24" : "#dc2626"} 
-          emissive={hovered ? "#f59e0b" : "#dc2626"}
-          emissiveIntensity={0.4}
+          transparent 
+          opacity={0.9}
         />
       </mesh>
       {hovered && (
         <Text
-          position={[0, 0.08, 0]}
-          fontSize={0.06}
+          position={[0, 0.05, 0.01]}
+          fontSize={0.02}
           color="#ffffff"
           anchorX="center"
           anchorY="middle"
@@ -98,7 +254,7 @@ const Globe = ({
     
     const animate = () => {
       if (globeRef.current) {
-        globeRef.current.rotation.y += 0.003;
+        globeRef.current.rotation.y += 0.001;
       }
       animationId = requestAnimationFrame(animate);
     };
@@ -114,44 +270,57 @@ const Globe = ({
 
   return (
     <>
-      {/* Globo principale con texture più realistica */}
+      {/* Oceani - Base blu del globo */}
       <mesh ref={globeRef}>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhongMaterial 
-          color="#1e3a8a" 
+          color="#1e40af" 
           transparent 
-          opacity={0.9}
+          opacity={0.95}
           shininess={100}
-          specular="#60a5fa"
+          specular="#3b82f6"
         />
       </mesh>
 
-      {/* Continenti visibili con un colore diverso */}
-      <mesh ref={globeRef}>
-        <sphereGeometry args={[1.005, 32, 32]} />
-        <meshBasicMaterial 
-          color="#22c55e" 
-          transparent 
-          opacity={0.3}
-          wireframe
+      {/* Continenti con forme realistiche */}
+      <group ref={globeRef}>
+        {/* Europa */}
+        <EuropeShape 
+          position={[0.05, 0.35, 0.9]} 
+          isHighlighted={currentContinentIndex === 0}
         />
-      </mesh>
-
-      {/* Mostra solo i paesi del continente corrente */}
-      {continents[currentContinentIndex]?.countries.map((country) => (
-        <CountryMarker
-          key={country.code}
-          position={country.position}
-          name={country.name}
-          code={country.code}
-          onClick={() => onCountryClick(country.code)}
+        
+        {/* Nord America */}
+        <NorthAmericaShape 
+          position={[-0.6, 0.2, 0.7]} 
+          isHighlighted={currentContinentIndex === 1}
         />
-      ))}
+        
+        {/* Asia */}
+        <AsiaShape 
+          position={[0.7, 0.1, 0.6]} 
+          isHighlighted={currentContinentIndex === 2}
+        />
+      </group>
 
-      {/* Luci per il globo */}
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 5, 5]} intensity={1} />
-      <pointLight position={[-5, -5, -5]} intensity={0.5} color="#60a5fa" />
+      {/* Paesi del continente corrente */}
+      <group ref={globeRef}>
+        {continents[currentContinentIndex]?.countries.map((country) => (
+          <CountryShape
+            key={country.code}
+            position={country.position}
+            name={country.name}
+            code={country.code}
+            countryType={country.code}
+            onClick={() => onCountryClick(country.code)}
+          />
+        ))}
+      </group>
+
+      {/* Illuminazione */}
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[5, 5, 5]} intensity={0.8} />
+      <pointLight position={[-5, -5, -5]} intensity={0.3} color="#60a5fa" />
     </>
   );
 };
@@ -189,7 +358,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
       {/* Indicatore continente corrente */}
       <div className="text-center mb-4">
         <h3 className="text-xl font-semibold text-white">
-          {currentContinent.name}
+          {continents[currentContinentIndex].name}
         </h3>
         <div className="flex justify-center space-x-2 mt-2">
           {continents.map((_, index) => (
@@ -203,12 +372,12 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       </div>
 
-      {/* Canvas 3D con controlli fissi */}
+      {/* Canvas 3D fisso */}
       <div className="h-96 w-full relative">
         <Canvas 
           camera={{ 
-            position: [0, 0, 2.5], 
-            fov: 45,
+            position: [0, 0, 2], 
+            fov: 50,
             near: 0.1,
             far: 1000
           }}
@@ -218,33 +387,39 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             enablePan={false}
             enableRotate={true}
             autoRotate={false}
-            rotateSpeed={0.5}
-            minPolarAngle={Math.PI / 3}
-            maxPolarAngle={2 * Math.PI / 3}
+            rotateSpeed={0.3}
+            minPolarAngle={Math.PI / 4}
+            maxPolarAngle={3 * Math.PI / 4}
           />
           <Globe 
             currentContinentIndex={currentContinentIndex}
-            onCountryClick={handleCountryClick}
+            onCountryClick={setSelectedCountry}
           />
         </Canvas>
 
         {/* Frecce di navigazione */}
         <button
-          onClick={handlePrevContinent}
+          onClick={() => {
+            setCurrentContinentIndex(prev => prev === 0 ? continents.length - 1 : prev - 1);
+            setSelectedCountry(null);
+          }}
           className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110"
         >
           <ChevronLeft size={24} />
         </button>
 
         <button
-          onClick={handleNextContinent}
+          onClick={() => {
+            setCurrentContinentIndex(prev => prev === continents.length - 1 ? 0 : prev + 1);
+            setSelectedCountry(null);
+          }}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110"
         >
           <ChevronRight size={24} />
         </button>
       </div>
 
-      {/* Pannello laterale trasparente per le università */}
+      {/* Pannello laterale per le università */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
         <div className="absolute top-0 right-0 h-full w-80 bg-black/60 backdrop-blur-lg text-white p-6 transform transition-transform duration-300 ease-in-out">
           <div className="flex justify-between items-center mb-6">
@@ -287,7 +462,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
       {/* Istruzioni */}
       <div className="text-center text-white/80 mt-6">
         <p className="text-lg mb-2">Usa le frecce per esplorare i continenti 🎯</p>
-        <p className="text-sm">Clicca sui punti rossi per scoprire le università!</p>
+        <p className="text-sm">Clicca sui paesi rossi per scoprire le università!</p>
       </div>
     </div>
   );
