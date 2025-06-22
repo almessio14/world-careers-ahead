@@ -88,10 +88,22 @@ const Globe = ({
   const globeRef = useRef<THREE.Mesh>(null);
   
   useEffect(() => {
-    if (globeRef.current) {
-      globeRef.current.rotation.y += 0.005;
-    }
-  });
+    const globe = globeRef.current;
+    if (!globe) return;
+
+    const animate = () => {
+      if (globe) {
+        globe.rotation.y += 0.005;
+      }
+      requestAnimationFrame(animate);
+    };
+    
+    const animationId = requestAnimationFrame(animate);
+    
+    return () => {
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
 
   return (
     <>
@@ -130,7 +142,6 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
   const [selectedContinent, setSelectedContinent] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 0, 3]);
-  const controlsRef = useRef<any>(null);
 
   const handleContinentSelect = (continentKey: string) => {
     setSelectedContinent(continentKey);
@@ -185,9 +196,11 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
 
       {/* Canvas 3D */}
       <div className="h-96 w-full relative">
-        <Canvas camera={{ position: cameraPosition, fov: 50 }}>
+        <Canvas 
+          camera={{ position: cameraPosition, fov: 50 }}
+          key={`${cameraPosition[0]}-${cameraPosition[1]}-${cameraPosition[2]}`}
+        >
           <OrbitControls
-            ref={controlsRef}
             enableZoom={true}
             enablePan={true}
             enableRotate={true}
