@@ -247,7 +247,7 @@ const Globe = ({
   currentContinentIndex: number;
   onCountryClick: (countryCode: string) => void;
 }) => {
-  const globeRef = useRef<THREE.Mesh>(null);
+  const globeRef = useRef<THREE.Group>(null);
   
   useEffect(() => {
     let animationId: number;
@@ -271,7 +271,7 @@ const Globe = ({
   return (
     <>
       {/* Oceani - Base blu del globo */}
-      <mesh ref={globeRef}>
+      <mesh>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhongMaterial 
           color="#1e40af" 
