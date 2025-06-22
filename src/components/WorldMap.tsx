@@ -1,7 +1,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, Text } from '@react-three/drei';
+import { OrbitControls, Text } from '@react-three/drei';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { universitiesByCountry } from '../data/universities';
 import { University } from '../types';
 import * as THREE from 'three';
@@ -10,31 +11,34 @@ interface WorldMapProps {
   onUniversitySelect: (university: University) => void;
 }
 
-const continents = {
-  europa: {
+const continents = [
+  {
+    key: 'europa',
     name: 'Europa',
-    position: [0, 0.7, 0] as [number, number, number],
+    position: [0, 0.2, 0.8] as [number, number, number],
     countries: [
-      { name: 'UK', code: 'UK', position: [-0.1, 0.8, 0.4] as [number, number, number] },
-      { name: 'France', code: 'France', position: [0.1, 0.7, 0.5] as [number, number, number] },
-      { name: 'Germany', code: 'Germany', position: [0.2, 0.75, 0.45] as [number, number, number] },
-      { name: 'Switzerland', code: 'Switzerland', position: [0.15, 0.65, 0.48] as [number, number, number] },
-      { name: 'Italy', code: 'Italy', position: [0.2, 0.5, 0.5] as [number, number, number] }
+      { name: 'UK', code: 'UK', position: [-0.15, 0.45, 0.85] as [number, number, number] },
+      { name: 'France', code: 'France', position: [0.05, 0.35, 0.9] as [number, number, number] },
+      { name: 'Germany', code: 'Germany', position: [0.1, 0.4, 0.85] as [number, number, number] },
+      { name: 'Switzerland', code: 'Switzerland', position: [0.08, 0.32, 0.88] as [number, number, number] },
+      { name: 'Italy', code: 'Italy', position: [0.1, 0.2, 0.9] as [number, number, number] }
     ]
   },
-  nordamerica: {
+  {
+    key: 'nordamerica',
     name: 'Nord America',
-    position: [-1.2, 0.5, 0] as [number, number, number],
+    position: [-0.8, 0.3, 0.5] as [number, number, number],
     countries: [
-      { name: 'USA', code: 'USA', position: [-1.0, 0.3, 0.3] as [number, number, number] }
+      { name: 'USA', code: 'USA', position: [-0.6, 0.2, 0.7] as [number, number, number] }
     ]
   },
-  asia: {
+  {
+    key: 'asia',
     name: 'Asia',
-    position: [1.5, 0.3, 0] as [number, number, number],
+    position: [0.7, 0.1, 0.6] as [number, number, number],
     countries: []
   }
-};
+];
 
 const CountryMarker = ({ 
   position, 
@@ -58,17 +62,17 @@ const CountryMarker = ({
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        <sphereGeometry args={[0.03, 16, 16]} />
+        <sphereGeometry args={[0.02, 12, 12]} />
         <meshStandardMaterial 
-          color={hovered ? "#f59e0b" : "#ef4444"} 
-          emissive={hovered ? "#f59e0b" : "#ef4444"}
-          emissiveIntensity={0.3}
+          color={hovered ? "#fbbf24" : "#dc2626"} 
+          emissive={hovered ? "#f59e0b" : "#dc2626"}
+          emissiveIntensity={0.4}
         />
       </mesh>
       {hovered && (
         <Text
-          position={[0, 0.1, 0]}
-          fontSize={0.08}
+          position={[0, 0.08, 0]}
+          fontSize={0.06}
           color="#ffffff"
           anchorX="center"
           anchorY="middle"
@@ -81,172 +85,195 @@ const CountryMarker = ({
 };
 
 const Globe = ({ 
-  selectedContinent, 
+  currentContinentIndex,
   onCountryClick 
 }: { 
-  selectedContinent: string | null;
+  currentContinentIndex: number;
   onCountryClick: (countryCode: string) => void;
 }) => {
   const globeRef = useRef<THREE.Mesh>(null);
   
   useEffect(() => {
-    const globe = globeRef.current;
-    if (!globe) return;
-
+    let animationId: number;
+    
     const animate = () => {
-      if (globe) {
-        globe.rotation.y += 0.005;
+      if (globeRef.current) {
+        globeRef.current.rotation.y += 0.003;
       }
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
     
-    const animationId = requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
     
     return () => {
-      cancelAnimationFrame(animationId);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
     };
   }, []);
 
   return (
     <>
-      {/* Globo principale */}
+      {/* Globo principale con texture più realistica */}
       <mesh ref={globeRef}>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial 
-          color="#1e40af" 
+        <meshPhongMaterial 
+          color="#1e3a8a" 
           transparent 
-          opacity={0.8}
-          wireframe={false}
+          opacity={0.9}
+          shininess={100}
+          specular="#60a5fa"
         />
       </mesh>
 
-      {/* Markers dei paesi per ogni continente */}
-      {Object.entries(continents).map(([key, continent]) => 
-        continent.countries.map((country) => (
-          <CountryMarker
-            key={country.code}
-            position={country.position}
-            name={country.name}
-            code={country.code}
-            onClick={() => onCountryClick(country.code)}
-          />
-        ))
-      )}
+      {/* Continenti visibili con un colore diverso */}
+      <mesh ref={globeRef}>
+        <sphereGeometry args={[1.005, 32, 32]} />
+        <meshBasicMaterial 
+          color="#22c55e" 
+          transparent 
+          opacity={0.3}
+          wireframe
+        />
+      </mesh>
 
-      {/* Luci */}
-      <ambientLight intensity={0.6} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} />
+      {/* Mostra solo i paesi del continente corrente */}
+      {continents[currentContinentIndex]?.countries.map((country) => (
+        <CountryMarker
+          key={country.code}
+          position={country.position}
+          name={country.name}
+          code={country.code}
+          onClick={() => onCountryClick(country.code)}
+        />
+      ))}
+
+      {/* Luci per il globo */}
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[5, 5, 5]} intensity={1} />
+      <pointLight position={[-5, -5, -5]} intensity={0.5} color="#60a5fa" />
     </>
   );
 };
 
 const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
-  const [selectedContinent, setSelectedContinent] = useState<string | null>(null);
+  const [currentContinentIndex, setCurrentContinentIndex] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 0, 3]);
 
-  const handleContinentSelect = (continentKey: string) => {
-    setSelectedContinent(continentKey);
-    const continent = continents[continentKey as keyof typeof continents];
-    if (continent) {
-      setCameraPosition([
-        continent.position[0] + 1,
-        continent.position[1] + 0.5,
-        continent.position[2] + 2
-      ]);
-    }
+  const handlePrevContinent = () => {
+    setCurrentContinentIndex((prev) => 
+      prev === 0 ? continents.length - 1 : prev - 1
+    );
+    setSelectedCountry(null);
+  };
+
+  const handleNextContinent = () => {
+    setCurrentContinentIndex((prev) => 
+      prev === continents.length - 1 ? 0 : prev + 1
+    );
+    setSelectedCountry(null);
   };
 
   const handleCountryClick = (countryCode: string) => {
     setSelectedCountry(countryCode);
   };
 
-  const resetView = () => {
-    setSelectedContinent(null);
-    setSelectedCountry(null);
-    setCameraPosition([0, 0, 3]);
-  };
+  const currentContinent = continents[currentContinentIndex];
 
   return (
-    <div className="bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-900 rounded-xl p-6 min-h-[700px] relative">
+    <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[700px] relative overflow-hidden">
       <h2 className="text-3xl font-bold text-white mb-6 text-center">
         🌍 Esplora le Università nel Mondo
       </h2>
       
-      {/* Controlli dei continenti */}
-      <div className="flex flex-wrap justify-center gap-3 mb-6">
-        <button
-          onClick={resetView}
-          className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm"
-        >
-          🌍 Vista Globale
-        </button>
-        {Object.entries(continents).map(([key, continent]) => (
-          <button
-            key={key}
-            onClick={() => handleContinentSelect(key)}
-            className={`px-4 py-2 rounded-lg transition-colors backdrop-blur-sm ${
-              selectedContinent === key
-                ? 'bg-yellow-500 text-black font-semibold'
-                : 'bg-white/20 text-white hover:bg-white/30'
-            }`}
-          >
-            {continent.name}
-          </button>
-        ))}
+      {/* Indicatore continente corrente */}
+      <div className="text-center mb-4">
+        <h3 className="text-xl font-semibold text-white">
+          {currentContinent.name}
+        </h3>
+        <div className="flex justify-center space-x-2 mt-2">
+          {continents.map((_, index) => (
+            <div
+              key={index}
+              className={`w-2 h-2 rounded-full ${
+                index === currentContinentIndex ? 'bg-yellow-400' : 'bg-white/30'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Canvas 3D */}
+      {/* Canvas 3D con controlli fissi */}
       <div className="h-96 w-full relative">
         <Canvas 
-          camera={{ position: cameraPosition, fov: 50 }}
-          key={`${cameraPosition[0]}-${cameraPosition[1]}-${cameraPosition[2]}`}
+          camera={{ 
+            position: [0, 0, 2.5], 
+            fov: 45,
+            near: 0.1,
+            far: 1000
+          }}
         >
           <OrbitControls
-            enableZoom={true}
-            enablePan={true}
+            enableZoom={false}
+            enablePan={false}
             enableRotate={true}
-            minDistance={1.5}
-            maxDistance={10}
+            autoRotate={false}
+            rotateSpeed={0.5}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={2 * Math.PI / 3}
           />
           <Globe 
-            selectedContinent={selectedContinent}
+            currentContinentIndex={currentContinentIndex}
             onCountryClick={handleCountryClick}
           />
         </Canvas>
+
+        {/* Frecce di navigazione */}
+        <button
+          onClick={handlePrevContinent}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110"
+        >
+          <ChevronLeft size={24} />
+        </button>
+
+        <button
+          onClick={handleNextContinent}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-200 hover:scale-110"
+        >
+          <ChevronRight size={24} />
+        </button>
       </div>
 
-      {/* Pannello informazioni paese */}
+      {/* Pannello laterale trasparente per le università */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
-        <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md rounded-xl p-6 shadow-2xl animate-fadeIn">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-xl font-bold text-gray-900">
-              🎓 Università in {selectedCountry}
+        <div className="absolute top-0 right-0 h-full w-80 bg-black/60 backdrop-blur-lg text-white p-6 transform transition-transform duration-300 ease-in-out">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold">
+              🎓 {selectedCountry}
             </h3>
             <button
               onClick={() => setSelectedCountry(null)}
-              className="text-gray-500 hover:text-gray-700 text-xl"
+              className="text-white/70 hover:text-white p-1"
             >
-              ×
+              <X size={20} />
             </button>
           </div>
           
-          <div className="grid gap-4 max-h-60 overflow-y-auto">
+          <div className="space-y-4 max-h-[calc(100%-100px)] overflow-y-auto">
             {universitiesByCountry[selectedCountry].map((university) => (
               <div
                 key={university.id}
                 onClick={() => onUniversitySelect(university)}
-                className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg hover:shadow-md transition-shadow cursor-pointer border border-blue-100"
+                className="bg-white/10 hover:bg-white/20 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 border border-white/20"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-semibold text-gray-900 text-sm">{university.name}</h4>
-                  <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
+                  <h4 className="font-semibold text-sm leading-tight">{university.name}</h4>
+                  <span className="text-xs bg-blue-500/80 text-white px-2 py-1 rounded-full ml-2 flex-shrink-0">
                     #{university.ranking}
                   </span>
                 </div>
                 
-                <div className="text-xs text-gray-600 space-y-1">
+                <div className="text-xs text-white/80 space-y-1">
                   <div>📍 {university.city}</div>
                   <div>🗣️ {university.language}</div>
                   <div>💰 {university.tuitionFee}</div>
@@ -258,12 +285,10 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
       )}
 
       {/* Istruzioni */}
-      {!selectedCountry && (
-        <div className="text-center text-white/80 mt-6">
-          <p className="text-lg mb-2">Usa i pulsanti per esplorare i continenti 🎯</p>
-          <p className="text-sm">Clicca sui punti rossi per scoprire le università!</p>
-        </div>
-      )}
+      <div className="text-center text-white/80 mt-6">
+        <p className="text-lg mb-2">Usa le frecce per esplorare i continenti 🎯</p>
+        <p className="text-sm">Clicca sui punti rossi per scoprire le università!</p>
+      </div>
     </div>
   );
 };
