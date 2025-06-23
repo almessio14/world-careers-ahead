@@ -11,56 +11,72 @@ interface WorldMapProps {
   onUniversitySelect: (university: University) => void;
 }
 
+// Funzione per convertire lat/lon in coordinate xyz sulla sfera
+const latLonToVector3 = (lat: number, lon: number, radius = 1) => {
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+
+  return new THREE.Vector3(
+    -radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.sin(theta)
+  );
+};
+
 const continents = [
   {
     key: 'europa',
     name: 'Europa',
-    position: [0.5, 0.2, 0.8] as [number, number, number],
-    rotation: [0, -0.3, 0] as [number, number, number],
-    cameraPosition: [1.2, 0.5, 2] as [number, number, number],
+    lat: 54.5260,
+    lon: 15.2551,
+    cameraDistance: 2.5,
     countries: [
-      { name: 'UK', code: 'UK', position: [0.15, 0.55, 0.8] as [number, number, number] },
-      { name: 'France', code: 'France', position: [0.1, 0.45, 0.85] as [number, number, number] },
-      { name: 'Germany', code: 'Germany', position: [0.2, 0.5, 0.82] as [number, number, number] },
-      { name: 'Switzerland', code: 'Switzerland', position: [0.15, 0.42, 0.84] as [number, number, number] },
-      { name: 'Italy', code: 'Italy', position: [0.18, 0.35, 0.87] as [number, number, number] }
+      { name: 'UK', code: 'UK', lat: 55.3781, lon: -3.4360 },
+      { name: 'France', code: 'France', lat: 46.6034, lon: 1.8883 },
+      { name: 'Germany', code: 'Germany', lat: 51.1657, lon: 10.4515 },
+      { name: 'Switzerland', code: 'Switzerland', lat: 46.8182, lon: 8.2275 },
+      { name: 'Italy', code: 'Italy', lat: 41.8719, lon: 12.5674 }
     ]
   },
   {
     key: 'nordamerica',
     name: 'Nord America',
-    position: [-0.8, 0.3, 0.5] as [number, number, number],
-    rotation: [0, 1.2, 0] as [number, number, number],
-    cameraPosition: [-2, 0.3, 1.5] as [number, number, number],
+    lat: 45.0000,
+    lon: -100.0000,
+    cameraDistance: 2.5,
     countries: [
-      { name: 'USA', code: 'USA', position: [-0.6, 0.2, 0.7] as [number, number, number] }
+      { name: 'USA', code: 'USA', lat: 37.0902, lon: -95.7129 }
     ]
   },
   {
     key: 'asia',
     name: 'Asia',
-    position: [0.7, 0.1, 0.6] as [number, number, number],
-    rotation: [0, -1.5, 0] as [number, number, number],
-    cameraPosition: [2, 0.1, 1.5] as [number, number, number],
+    lat: 29.8406,
+    lon: 89.2969,
+    cameraDistance: 2.8,
     countries: []
   }
 ];
 
 // Componente per i marker dei paesi
 const CountryMarker = ({ 
-  position, 
+  lat, 
+  lon, 
   name, 
   code, 
   onClick 
 }: { 
-  position: [number, number, number]; 
+  lat: number;
+  lon: number;
   name: string; 
   code: string; 
   onClick: () => void;
 }) => {
   const [hovered, setHovered] = useState(false);
-  const markerRef = useRef<THREE.Mesh>(null);
+  const markerRef = useRef<THREE.Group>(null);
   
+  const position = latLonToVector3(lat, lon, 1.02);
+
   useFrame(() => {
     if (markerRef.current && hovered) {
       markerRef.current.scale.setScalar(Math.sin(Date.now() * 0.01) * 0.1 + 1.1);
@@ -70,9 +86,8 @@ const CountryMarker = ({
   });
 
   return (
-    <group position={position}>
+    <group ref={markerRef} position={[position.x, position.y, position.z]}>
       <mesh
-        ref={markerRef}
         onClick={onClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
@@ -107,107 +122,97 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo con texture reale
+// Componente principale del globo
 const RealisticGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
-  targetRotation,
-  targetCameraPosition 
+  targetContinent
 }: { 
   currentContinentIndex: number;
   onCountryClick: (countryCode: string) => void;
-  targetRotation: [number, number, number];
-  targetCameraPosition: [number, number, number];
+  targetContinent: typeof continents[0];
 }) => {
   const globeRef = useRef<THREE.Group>(null);
-  const earthRef = useRef<THREE.Mesh>(null);
+  const cameraRef = useRef<THREE.Camera>();
   
-  // Carica la texture reale della Terra
-  const earthTexture = useLoader(
-    THREE.TextureLoader, 
-    'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthmap1k.jpg'
-  );
-
-  // Carica texture delle nuvole per effetto atmosferico
-  const cloudsTexture = useLoader(
-    THREE.TextureLoader,
-    'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthcloudmap.jpg'
-  );
-
   useFrame((state, delta) => {
+    cameraRef.current = state.camera;
+    
     // Rotazione automatica lenta del globo
     if (globeRef.current) {
-      globeRef.current.rotation.y += delta * 0.05;
+      globeRef.current.rotation.y += delta * 0.02;
     }
     
-    // Animazione smooth verso il continente target
-    if (earthRef.current && targetRotation) {
-      earthRef.current.rotation.x = THREE.MathUtils.lerp(
-        earthRef.current.rotation.x, 
-        targetRotation[0], 
-        delta * 1.5
-      );
-      earthRef.current.rotation.y = THREE.MathUtils.lerp(
-        earthRef.current.rotation.y, 
-        targetRotation[1], 
-        delta * 1.5
-      );
-      earthRef.current.rotation.z = THREE.MathUtils.lerp(
-        earthRef.current.rotation.z, 
-        targetRotation[2], 
-        delta * 1.5
-      );
-    }
-
-    // Animazione della camera verso la posizione target
-    if (targetCameraPosition) {
+    // Calcola la posizione target della camera basata sul continente
+    if (targetContinent) {
+      const targetPosition = latLonToVector3(targetContinent.lat, targetContinent.lon, targetContinent.cameraDistance);
+      
+      // Animazione smooth della camera
       state.camera.position.x = THREE.MathUtils.lerp(
         state.camera.position.x,
-        targetCameraPosition[0],
-        delta * 1.2
+        targetPosition.x,
+        delta * 1.5
       );
       state.camera.position.y = THREE.MathUtils.lerp(
         state.camera.position.y,
-        targetCameraPosition[1],
-        delta * 1.2
+        targetPosition.y,
+        delta * 1.5
       );
       state.camera.position.z = THREE.MathUtils.lerp(
         state.camera.position.z,
-        targetCameraPosition[2],
-        delta * 1.2
+        targetPosition.z,
+        delta * 1.5
       );
+      
+      // Guarda sempre il centro del globo
+      state.camera.lookAt(0, 0, 0);
     }
   });
 
   return (
     <group ref={globeRef}>
-      {/* Globo principale con texture reale della Terra */}
-      <mesh ref={earthRef}>
+      {/* Globo principale con texture azzurra */}
+      <mesh>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshPhongMaterial 
-          map={earthTexture}
-          shininess={5}
-          transparent
-          opacity={1}
-        />
+        <meshBasicMaterial color={0x3399ff} opacity={0.7} transparent />
       </mesh>
-      
-      {/* Layer delle nuvole con rotazione leggermente diversa */}
-      <mesh scale={[1.003, 1.003, 1.003]} rotation={[0, Math.PI * 0.1, 0]}>
-        <sphereGeometry args={[1, 64, 64]} />
-        <meshPhongMaterial 
-          map={cloudsTexture}
-          transparent 
-          opacity={0.3}
-          depthWrite={false}
-        />
-      </mesh>
+
+      {/* Linee dei continenti simulate (semplici per ora) */}
+      <group>
+        {/* Europa */}
+        <mesh>
+          <torusGeometry args={[0.3, 0.01, 8, 100]} />
+          <meshBasicMaterial color={0xffffff} />
+          <primitive object={new THREE.Object3D()} 
+            position={latLonToVector3(54.5260, 15.2551, 1.01)} 
+          />
+        </mesh>
+        
+        {/* Nord America */}
+        <mesh>
+          <torusGeometry args={[0.4, 0.01, 8, 100]} />
+          <meshBasicMaterial color={0xffffff} />
+          <primitive object={new THREE.Object3D()} 
+            position={latLonToVector3(45.0000, -100.0000, 1.01)} 
+          />
+        </mesh>
+        
+        {/* Asia */}
+        <mesh>
+          <torusGeometry args={[0.5, 0.01, 8, 100]} />
+          <meshBasicMaterial color={0xffffff} />
+          <primitive object={new THREE.Object3D()} 
+            position={latLonToVector3(29.8406, 89.2969, 1.01)} 
+          />
+        </mesh>
+      </group>
 
       {/* Marker dei paesi per il continente corrente */}
       {continents[currentContinentIndex]?.countries.map((country) => (
         <CountryMarker
           key={country.code}
-          position={country.position}
+          lat={country.lat}
+          lon={country.lon}
           name={country.name}
           code={country.code}
           onClick={() => onCountryClick(country.code)}
@@ -217,7 +222,7 @@ const RealisticGlobe = ({
       {/* Atmosfera con effetto glow */}
       <mesh scale={[1.02, 1.02, 1.02]}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshPhongMaterial 
+        <meshBasicMaterial 
           color="#87ceeb" 
           transparent 
           opacity={0.15}
@@ -232,7 +237,6 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
   const [currentContinentIndex, setCurrentContinentIndex] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const controlsRef = useRef<any>(null);
 
   const handleContinentChange = (direction: 'prev' | 'next') => {
     setIsTransitioning(true);
@@ -257,8 +261,6 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
   };
 
   const currentContinent = continents[currentContinentIndex];
-  const targetRotation = currentContinent.rotation;
-  const targetCameraPosition = currentContinent.cameraPosition;
 
   return (
     <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[700px] relative overflow-hidden">
@@ -289,14 +291,13 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
       <div className="h-96 w-full relative">
         <Canvas 
           camera={{ 
-            position: [0, 0, 2.5], 
+            position: [0, 0, 3], 
             fov: 45,
             near: 0.1,
             far: 1000
           }}
         >
           <OrbitControls
-            ref={controlsRef}
             enableZoom={true}
             enablePan={false}
             enableRotate={true}
@@ -311,21 +312,12 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
           <RealisticGlobe 
             currentContinentIndex={currentContinentIndex}
             onCountryClick={handleCountryClick}
-            targetRotation={targetRotation}
-            targetCameraPosition={targetCameraPosition}
+            targetContinent={currentContinent}
           />
           
-          {/* Illuminazione migliorata per un effetto realistico */}
-          <ambientLight intensity={0.4} />
-          <directionalLight position={[5, 3, 5]} intensity={1.2} castShadow />
-          <pointLight position={[-5, -3, -5]} intensity={0.6} color="#60a5fa" />
-          <spotLight 
-            position={[0, 5, 0]} 
-            intensity={0.8} 
-            angle={Math.PI / 4}
-            penumbra={0.1}
-            castShadow
-          />
+          {/* Illuminazione */}
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[5, 3, 5]} intensity={0.8} />
         </Canvas>
 
         {/* Frecce di navigazione */}
