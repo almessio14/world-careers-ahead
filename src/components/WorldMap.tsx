@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
@@ -6,6 +5,7 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { universitiesByCountry } from '../data/universities';
 import { University } from '../types';
 import * as THREE from 'three';
+import { TextureLoader } from 'three';
 
 interface WorldMapProps {
   onUniversitySelect: (university: University) => void;
@@ -23,13 +23,14 @@ const latLonToVector3 = (lat: number, lon: number, radius = 1) => {
   );
 };
 
+// Coordinate geografiche precise dei continenti
 const continents = [
   {
     key: 'europa',
     name: 'Europa',
     lat: 54.5260,
     lon: 15.2551,
-    cameraDistance: 2.5,
+    cameraDistance: 2.2,
     countries: [
       { name: 'UK', code: 'UK', lat: 55.3781, lon: -3.4360 },
       { name: 'France', code: 'France', lat: 46.6034, lon: 1.8883 },
@@ -41,9 +42,9 @@ const continents = [
   {
     key: 'nordamerica',
     name: 'Nord America',
-    lat: 45.0000,
-    lon: -100.0000,
-    cameraDistance: 2.5,
+    lat: 39.8283,
+    lon: -98.5795,
+    cameraDistance: 2.2,
     countries: [
       { name: 'USA', code: 'USA', lat: 37.0902, lon: -95.7129 }
     ]
@@ -51,9 +52,9 @@ const continents = [
   {
     key: 'asia',
     name: 'Asia',
-    lat: 29.8406,
-    lon: 89.2969,
-    cameraDistance: 2.8,
+    lat: 34.0479,
+    lon: 100.6197,
+    cameraDistance: 2.5,
     countries: []
   }
 ];
@@ -122,7 +123,7 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo
+// Componente principale del globo con texture Terra
 const RealisticGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
@@ -134,6 +135,9 @@ const RealisticGlobe = ({
 }) => {
   const globeRef = useRef<THREE.Group>(null);
   const cameraRef = useRef<THREE.Camera>();
+  
+  // Carica la texture della Terra
+  const earthTexture = useLoader(TextureLoader, 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthmap1k.jpg');
   
   useFrame((state, delta) => {
     cameraRef.current = state.camera;
@@ -147,21 +151,21 @@ const RealisticGlobe = ({
     if (targetContinent) {
       const targetPosition = latLonToVector3(targetContinent.lat, targetContinent.lon, targetContinent.cameraDistance);
       
-      // Animazione smooth della camera
+      // Animazione smooth della camera verso il continente
       state.camera.position.x = THREE.MathUtils.lerp(
         state.camera.position.x,
         targetPosition.x,
-        delta * 1.5
+        delta * 1.2
       );
       state.camera.position.y = THREE.MathUtils.lerp(
         state.camera.position.y,
         targetPosition.y,
-        delta * 1.5
+        delta * 1.2
       );
       state.camera.position.z = THREE.MathUtils.lerp(
         state.camera.position.z,
         targetPosition.z,
-        delta * 1.5
+        delta * 1.2
       );
       
       // Guarda sempre il centro del globo
@@ -171,41 +175,11 @@ const RealisticGlobe = ({
 
   return (
     <group ref={globeRef}>
-      {/* Globo principale con texture azzurra */}
+      {/* Globo principale con texture della Terra */}
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshBasicMaterial color={0x3399ff} opacity={0.7} transparent />
+        <meshPhongMaterial map={earthTexture} />
       </mesh>
-
-      {/* Linee dei continenti simulate (semplici per ora) */}
-      <group>
-        {/* Europa */}
-        <mesh>
-          <torusGeometry args={[0.3, 0.01, 8, 100]} />
-          <meshBasicMaterial color={0xffffff} />
-          <primitive object={new THREE.Object3D()} 
-            position={latLonToVector3(54.5260, 15.2551, 1.01)} 
-          />
-        </mesh>
-        
-        {/* Nord America */}
-        <mesh>
-          <torusGeometry args={[0.4, 0.01, 8, 100]} />
-          <meshBasicMaterial color={0xffffff} />
-          <primitive object={new THREE.Object3D()} 
-            position={latLonToVector3(45.0000, -100.0000, 1.01)} 
-          />
-        </mesh>
-        
-        {/* Asia */}
-        <mesh>
-          <torusGeometry args={[0.5, 0.01, 8, 100]} />
-          <meshBasicMaterial color={0xffffff} />
-          <primitive object={new THREE.Object3D()} 
-            position={latLonToVector3(29.8406, 89.2969, 1.01)} 
-          />
-        </mesh>
-      </group>
 
       {/* Marker dei paesi per il continente corrente */}
       {continents[currentContinentIndex]?.countries.map((country) => (
@@ -315,9 +289,10 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             targetContinent={currentContinent}
           />
           
-          {/* Illuminazione */}
-          <ambientLight intensity={0.6} />
+          {/* Illuminazione migliorata */}
+          <ambientLight intensity={0.4} />
           <directionalLight position={[5, 3, 5]} intensity={0.8} />
+          <pointLight position={[-5, -3, -5]} intensity={0.3} />
         </Canvas>
 
         {/* Frecce di navigazione */}
