@@ -23,13 +23,12 @@ const latLonToVector3 = (lat: number, lon: number, radius = 1) => {
   );
 };
 
-// Coordinate geografiche precise dei continenti
+// Coordinate geografiche precise dei continenti con angoli di rotazione orizzontale
 const continents = [
   {
     key: 'europa',
     name: 'Europa',
-    lat: 54.5260,
-    lon: 15.2551,
+    rotationY: 0, // Posizione frontale
     cameraDistance: 2.2,
     countries: [
       { name: 'UK', code: 'UK', lat: 55.3781, lon: -3.4360 },
@@ -42,8 +41,7 @@ const continents = [
   {
     key: 'nordamerica',
     name: 'Nord America',
-    lat: 39.8283,
-    lon: -98.5795,
+    rotationY: Math.PI * 0.6, // Ruota per mostrare Nord America
     cameraDistance: 2.2,
     countries: [
       { name: 'USA', code: 'USA', lat: 37.0902, lon: -95.7129 }
@@ -52,8 +50,7 @@ const continents = [
   {
     key: 'asia',
     name: 'Asia',
-    lat: 34.0479,
-    lon: 100.6197,
+    rotationY: -Math.PI * 0.7, // Ruota per mostrare Asia
     cameraDistance: 2.5,
     countries: []
   }
@@ -123,7 +120,7 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo con texture Terra
+// Componente principale del globo con rotazione orizzontale
 const RealisticGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
@@ -134,42 +131,24 @@ const RealisticGlobe = ({
   targetContinent: typeof continents[0];
 }) => {
   const globeRef = useRef<THREE.Group>(null);
-  const cameraRef = useRef<THREE.Camera>();
+  const targetRotationY = useRef(0);
   
   // Carica la texture della Terra
   const earthTexture = useLoader(TextureLoader, 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthmap1k.jpg');
   
   useFrame((state, delta) => {
-    cameraRef.current = state.camera;
-    
-    // Rotazione automatica lenta del globo
-    if (globeRef.current) {
-      globeRef.current.rotation.y += delta * 0.02;
+    // Imposta la rotazione target basata sul continente selezionato
+    if (targetContinent) {
+      targetRotationY.current = targetContinent.rotationY;
     }
     
-    // Calcola la posizione target della camera basata sul continente
-    if (targetContinent) {
-      const targetPosition = latLonToVector3(targetContinent.lat, targetContinent.lon, targetContinent.cameraDistance);
-      
-      // Animazione smooth della camera verso il continente
-      state.camera.position.x = THREE.MathUtils.lerp(
-        state.camera.position.x,
-        targetPosition.x,
-        delta * 1.2
+    // Animazione smooth solo sull'asse Y (rotazione orizzontale)
+    if (globeRef.current) {
+      globeRef.current.rotation.y = THREE.MathUtils.lerp(
+        globeRef.current.rotation.y,
+        targetRotationY.current,
+        delta * 2 // Velocità di rotazione
       );
-      state.camera.position.y = THREE.MathUtils.lerp(
-        state.camera.position.y,
-        targetPosition.y,
-        delta * 1.2
-      );
-      state.camera.position.z = THREE.MathUtils.lerp(
-        state.camera.position.z,
-        targetPosition.z,
-        delta * 1.2
-      );
-      
-      // Guarda sempre il centro del globo
-      state.camera.lookAt(0, 0, 0);
     }
   });
 
@@ -261,7 +240,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       </div>
 
-      {/* Canvas 3D con globo realistico */}
+      {/* Canvas 3D con globo fisso */}
       <div className="h-96 w-full relative">
         <Canvas 
           camera={{ 
@@ -274,14 +253,11 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
           <OrbitControls
             enableZoom={true}
             enablePan={false}
-            enableRotate={true}
+            enableRotate={false} // Disabilita rotazione manuale
             autoRotate={false}
-            rotateSpeed={0.5}
             zoomSpeed={0.5}
             minDistance={1.8}
             maxDistance={4}
-            minPolarAngle={Math.PI / 6}
-            maxPolarAngle={5 * Math.PI / 6}
           />
           <RealisticGlobe 
             currentContinentIndex={currentContinentIndex}
@@ -359,7 +335,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
       {/* Istruzioni */}
       <div className="text-center text-white/80 mt-6">
         <p className="text-lg mb-2">🎯 Usa le frecce per esplorare i continenti</p>
-        <p className="text-sm">Clicca sui marker rossi per scoprire le università!</p>
+        <p className="text-sm">Il globo ruota automaticamente! Puoi solo zoommare e cliccare sui marker rossi.</p>
       </div>
 
       {/* Loading overlay */}
