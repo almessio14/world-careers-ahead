@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, useTexture } from '@react-three/drei';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { OrbitControls, Text } from '@react-three/drei';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { universitiesByCountry } from '../data/universities';
 import { University } from '../types';
@@ -17,6 +17,7 @@ const continents = [
     name: 'Europa',
     position: [0.5, 0.2, 0.8] as [number, number, number],
     rotation: [0, -0.3, 0] as [number, number, number],
+    cameraPosition: [1.2, 0.5, 2] as [number, number, number],
     countries: [
       { name: 'UK', code: 'UK', position: [0.15, 0.55, 0.8] as [number, number, number] },
       { name: 'France', code: 'France', position: [0.1, 0.45, 0.85] as [number, number, number] },
@@ -30,6 +31,7 @@ const continents = [
     name: 'Nord America',
     position: [-0.8, 0.3, 0.5] as [number, number, number],
     rotation: [0, 1.2, 0] as [number, number, number],
+    cameraPosition: [-2, 0.3, 1.5] as [number, number, number],
     countries: [
       { name: 'USA', code: 'USA', position: [-0.6, 0.2, 0.7] as [number, number, number] }
     ]
@@ -39,6 +41,7 @@ const continents = [
     name: 'Asia',
     position: [0.7, 0.1, 0.6] as [number, number, number],
     rotation: [0, -1.5, 0] as [number, number, number],
+    cameraPosition: [2, 0.1, 1.5] as [number, number, number],
     countries: []
   }
 ];
@@ -96,7 +99,6 @@ const CountryMarker = ({
           {name}
         </Text>
       )}
-      {/* Pin effetto */}
       <mesh position={[0, -0.01, 0]}>
         <coneGeometry args={[0.01, 0.04, 8]} />
         <meshPhongMaterial color={hovered ? "#fbbf24" : "#dc2626"} />
@@ -105,102 +107,101 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo
+// Componente principale del globo con texture reale
 const RealisticGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
-  targetRotation 
+  targetRotation,
+  targetCameraPosition 
 }: { 
   currentContinentIndex: number;
   onCountryClick: (countryCode: string) => void;
   targetRotation: [number, number, number];
+  targetCameraPosition: [number, number, number];
 }) => {
   const globeRef = useRef<THREE.Group>(null);
   const earthRef = useRef<THREE.Mesh>(null);
   
-  // Carica texture della Terra (useremo colori per ora, ma potresti aggiungere una vera texture)
+  // Carica la texture reale della Terra
+  const earthTexture = useLoader(
+    THREE.TextureLoader, 
+    'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthmap1k.jpg'
+  );
+
+  // Carica texture delle nuvole per effetto atmosferico
+  const cloudsTexture = useLoader(
+    THREE.TextureLoader,
+    'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthcloudmap.jpg'
+  );
+
   useFrame((state, delta) => {
-    // Rotazione automatica lenta
+    // Rotazione automatica lenta del globo
     if (globeRef.current) {
-      globeRef.current.rotation.y += delta * 0.1;
+      globeRef.current.rotation.y += delta * 0.05;
     }
     
-    // Animazione verso il continente target
+    // Animazione smooth verso il continente target
     if (earthRef.current && targetRotation) {
       earthRef.current.rotation.x = THREE.MathUtils.lerp(
         earthRef.current.rotation.x, 
         targetRotation[0], 
-        delta * 2
+        delta * 1.5
       );
       earthRef.current.rotation.y = THREE.MathUtils.lerp(
         earthRef.current.rotation.y, 
         targetRotation[1], 
-        delta * 2
+        delta * 1.5
       );
       earthRef.current.rotation.z = THREE.MathUtils.lerp(
         earthRef.current.rotation.z, 
         targetRotation[2], 
-        delta * 2
+        delta * 1.5
+      );
+    }
+
+    // Animazione della camera verso la posizione target
+    if (targetCameraPosition) {
+      state.camera.position.x = THREE.MathUtils.lerp(
+        state.camera.position.x,
+        targetCameraPosition[0],
+        delta * 1.2
+      );
+      state.camera.position.y = THREE.MathUtils.lerp(
+        state.camera.position.y,
+        targetCameraPosition[1],
+        delta * 1.2
+      );
+      state.camera.position.z = THREE.MathUtils.lerp(
+        state.camera.position.z,
+        targetCameraPosition[2],
+        delta * 1.2
       );
     }
   });
 
   return (
     <group ref={globeRef}>
-      {/* Globo principale con texture realistica */}
+      {/* Globo principale con texture reale della Terra */}
       <mesh ref={earthRef}>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhongMaterial 
-          color="#2d5a3d"
-          shininess={10}
+          map={earthTexture}
+          shininess={5}
           transparent
-          opacity={0.95}
+          opacity={1}
         />
       </mesh>
       
-      {/* Oceani con texture blu */}
-      <mesh scale={[1.001, 1.001, 1.001]}>
+      {/* Layer delle nuvole con rotazione leggermente diversa */}
+      <mesh scale={[1.003, 1.003, 1.003]} rotation={[0, Math.PI * 0.1, 0]}>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhongMaterial 
-          color="#1e40af" 
+          map={cloudsTexture}
           transparent 
-          opacity={0.8}
-          shininess={100}
+          opacity={0.3}
+          depthWrite={false}
         />
       </mesh>
-
-      {/* Continenti con forme più realistiche */}
-      <group>
-        {/* Europa */}
-        <mesh position={[0.1, 0.4, 0.9]} rotation={[0, 0, 0.1]}>
-          <boxGeometry args={[0.25, 0.3, 0.02]} />
-          <meshPhongMaterial 
-            color={currentContinentIndex === 0 ? "#22c55e" : "#16a34a"}
-            transparent 
-            opacity={0.9}
-          />
-        </mesh>
-        
-        {/* Nord America */}
-        <mesh position={[-0.6, 0.3, 0.7]} rotation={[0, 0.3, 0]}>
-          <boxGeometry args={[0.4, 0.5, 0.02]} />
-          <meshPhongMaterial 
-            color={currentContinentIndex === 1 ? "#22c55e" : "#16a34a"}
-            transparent 
-            opacity={0.9}
-          />
-        </mesh>
-        
-        {/* Asia */}
-        <mesh position={[0.7, 0.2, 0.6]} rotation={[0, -0.3, 0]}>
-          <boxGeometry args={[0.6, 0.4, 0.02]} />
-          <meshPhongMaterial 
-            color={currentContinentIndex === 2 ? "#22c55e" : "#16a34a"}
-            transparent 
-            opacity={0.9}
-          />
-        </mesh>
-      </group>
 
       {/* Marker dei paesi per il continente corrente */}
       {continents[currentContinentIndex]?.countries.map((country) => (
@@ -213,13 +214,13 @@ const RealisticGlobe = ({
         />
       ))}
 
-      {/* Atmosfera */}
+      {/* Atmosfera con effetto glow */}
       <mesh scale={[1.02, 1.02, 1.02]}>
         <sphereGeometry args={[1, 32, 32]} />
         <meshPhongMaterial 
           color="#87ceeb" 
           transparent 
-          opacity={0.1}
+          opacity={0.15}
           side={THREE.BackSide}
         />
       </mesh>
@@ -257,6 +258,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
 
   const currentContinent = continents[currentContinentIndex];
   const targetRotation = currentContinent.rotation;
+  const targetCameraPosition = currentContinent.cameraPosition;
 
   return (
     <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[700px] relative overflow-hidden">
@@ -283,7 +285,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       </div>
 
-      {/* Canvas 3D con controlli migliorati */}
+      {/* Canvas 3D con globo realistico */}
       <div className="h-96 w-full relative">
         <Canvas 
           camera={{ 
@@ -310,22 +312,23 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             currentContinentIndex={currentContinentIndex}
             onCountryClick={handleCountryClick}
             targetRotation={targetRotation}
+            targetCameraPosition={targetCameraPosition}
           />
           
-          {/* Illuminazione migliorata */}
-          <ambientLight intensity={0.6} />
-          <directionalLight position={[5, 3, 5]} intensity={1} castShadow />
-          <pointLight position={[-5, -3, -5]} intensity={0.4} color="#60a5fa" />
+          {/* Illuminazione migliorata per un effetto realistico */}
+          <ambientLight intensity={0.4} />
+          <directionalLight position={[5, 3, 5]} intensity={1.2} castShadow />
+          <pointLight position={[-5, -3, -5]} intensity={0.6} color="#60a5fa" />
           <spotLight 
             position={[0, 5, 0]} 
-            intensity={0.5} 
+            intensity={0.8} 
             angle={Math.PI / 4}
             penumbra={0.1}
             castShadow
           />
         </Canvas>
 
-        {/* Frecce di navigazione con effetti migliorati */}
+        {/* Frecce di navigazione */}
         <button
           onClick={() => handleContinentChange('prev')}
           disabled={isTransitioning}
@@ -343,7 +346,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </button>
       </div>
 
-      {/* Pannello laterale per le università con animazione migliorata */}
+      {/* Pannello laterale per le università */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
         <div className="absolute top-0 right-0 h-full w-80 bg-black/70 backdrop-blur-xl text-white p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-white/20">
           <div className="flex justify-between items-center mb-6">
@@ -386,13 +389,13 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       )}
 
-      {/* Istruzioni aggiornate */}
+      {/* Istruzioni */}
       <div className="text-center text-white/80 mt-6">
         <p className="text-lg mb-2">🎯 Usa le frecce per esplorare i continenti</p>
         <p className="text-sm">Clicca sui marker rossi per scoprire le università!</p>
       </div>
 
-      {/* Loading overlay durante le transizioni */}
+      {/* Loading overlay */}
       {isTransitioning && (
         <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
           <div className="text-white text-lg font-semibold animate-pulse">
