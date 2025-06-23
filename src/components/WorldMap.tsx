@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
@@ -23,12 +24,12 @@ const latLonToVector3 = (lat: number, lon: number, radius = 1) => {
   );
 };
 
-// Coordinate geografiche precise dei continenti con angoli di rotazione orizzontale
+// Coordinate geografiche precise dei continenti con rotazioni corrette
 const continents = [
   {
     key: 'europa',
     name: 'Europa',
-    rotationY: 0, // Posizione frontale
+    rotationY: -Math.PI * 0.15, // Europa al centro-sinistra
     cameraDistance: 2.2,
     countries: [
       { name: 'UK', code: 'UK', lat: 55.3781, lon: -3.4360 },
@@ -41,7 +42,7 @@ const continents = [
   {
     key: 'nordamerica',
     name: 'Nord America',
-    rotationY: Math.PI * 0.6, // Ruota per mostrare Nord America
+    rotationY: Math.PI * 0.5, // Nord America al centro
     cameraDistance: 2.2,
     countries: [
       { name: 'USA', code: 'USA', lat: 37.0902, lon: -95.7129 }
@@ -50,7 +51,7 @@ const continents = [
   {
     key: 'asia',
     name: 'Asia',
-    rotationY: -Math.PI * 0.7, // Ruota per mostrare Asia
+    rotationY: -Math.PI * 0.6, // Asia verso est
     cameraDistance: 2.5,
     countries: []
   }
@@ -120,7 +121,7 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo con rotazione orizzontale
+// Componente principale del globo con rotazione orizzontale e inclinazione
 const RealisticGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
@@ -147,8 +148,11 @@ const RealisticGlobe = ({
       globeRef.current.rotation.y = THREE.MathUtils.lerp(
         globeRef.current.rotation.y,
         targetRotationY.current,
-        delta * 2 // Velocità di rotazione
+        delta * 3 // Velocità di rotazione aumentata
       );
+      
+      // Inclina leggermente il globo per mostrare meglio l'emisfero nord
+      globeRef.current.rotation.x = -Math.PI * 0.1; // Inclinazione fissa verso il nord
     }
   });
 
@@ -206,7 +210,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         );
       }
       setIsTransitioning(false);
-    }, 300);
+    }, 200);
   };
 
   const handleCountryClick = (countryCode: string) => {
@@ -240,11 +244,11 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       </div>
 
-      {/* Canvas 3D con globo fisso */}
+      {/* Canvas 3D con globo fisso inclinato per emisfero nord */}
       <div className="h-96 w-full relative">
         <Canvas 
           camera={{ 
-            position: [0, 0, 3], 
+            position: [0, 0.5, 3], // Camera leggermente più alta per vedere meglio il nord
             fov: 45,
             near: 0.1,
             far: 1000
@@ -335,7 +339,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
       {/* Istruzioni */}
       <div className="text-center text-white/80 mt-6">
         <p className="text-lg mb-2">🎯 Usa le frecce per esplorare i continenti</p>
-        <p className="text-sm">Il globo ruota automaticamente! Puoi solo zoommare e cliccare sui marker rossi.</p>
+        <p className="text-sm">Vista emisfero nord! Zoom e clicca sui marker rossi per le università.</p>
       </div>
 
       {/* Loading overlay */}
