@@ -76,9 +76,24 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .onPointClick((point: any) => {
         console.log('Point clicked:', point);
         setSelectedCountry(point.code);
+      })
+      // Configurazione controlli per zoom fisso e movimento solo orizzontale
+      .enablePointerInteraction(true)
+      .onZoom(() => {
+        // Forza il mantenimento della distanza fissa
+        if (worldRef.current) {
+          worldRef.current.pointOfView({ altitude: 1.5 });
+        }
       });
 
     worldRef.current = world;
+
+    // Imposta vista iniziale con zoom fisso
+    world.pointOfView({
+      lat: continents[currentContinentIndex].lat,
+      lng: continents[currentContinentIndex].lng,
+      altitude: 1.5 // Zoom fisso ravvicinato
+    });
 
     // Aggiorna i punti iniziali
     const updatePoints = () => {
@@ -98,9 +113,36 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
     updatePoints();
 
+    // Gestione eventi per limitare il movimento
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault(); // Blocca lo zoom con la rotella
+    };
+
+    const handlePointerMove = () => {
+      // Mantieni sempre l'altitudine fissa durante il movimento
+      if (worldRef.current) {
+        const currentView = worldRef.current.pointOfView();
+        if (currentView.altitude !== 1.5) {
+          worldRef.current.pointOfView({ 
+            lat: currentView.lat,
+            lng: currentView.lng,
+            altitude: 1.5 
+          });
+        }
+      }
+    };
+
+    // Aggiungi event listeners
+    globeRef.current.addEventListener('wheel', handleWheel, { passive: false });
+    globeRef.current.addEventListener('pointermove', handlePointerMove);
+
     // Cleanup
     return () => {
       console.log('Cleaning up Globe');
+      if (globeRef.current) {
+        globeRef.current.removeEventListener('wheel', handleWheel);
+        globeRef.current.removeEventListener('pointermove', handlePointerMove);
+      }
       if (worldRef.current) {
         worldRef.current = null;
       }
@@ -121,11 +163,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       console.log('Continent changed, updating points:', points);
       worldRef.current.pointsData(points);
       
-      // Centra la vista sul continente
+      // Centra la vista sul continente con zoom fisso
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: 2
+        altitude: 1.5 // Mantieni zoom fisso
       }, 1000);
     }
   }, [currentContinentIndex]);
@@ -242,8 +284,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       {/* Istruzioni */}
       <div className="text-center text-white/80 mt-6">
-        <p className="text-lg mb-2">🎯 Ruota il globo e clicca sui punti rossi</p>
-        <p className="text-sm">Usa le frecce per navigare tra i continenti. Zoom con la rotella del mouse.</p>
+        <p className="text-lg mb-2">🎯 Trascina orizzontalmente per esplorare</p>
+        <p className="text-sm">Usa le frecce per cambiare continente. Clicca sui punti rossi per le università.</p>
       </div>
 
       {/* Loading overlay */}
