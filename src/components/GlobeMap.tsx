@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
@@ -67,7 +66,14 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .showAtmosphere(true)
       .atmosphereColor('#3a228a')
       .atmosphereAltitude(0.25)
-      .showGraticules(false)
+      .showGraticules(true)
+      // Configurazione poligoni per i paesi
+      .polygonsData([])
+      .polygonCapColor(() => 'rgba(255, 255, 255, 0.05)')
+      .polygonSideColor(() => 'rgba(255, 255, 255, 0.02)')
+      .polygonStrokeColor(() => '#222')
+      .polygonAltitude(() => 0.003)
+      // Configurazione punti per le università
       .pointsData([])
       .pointAltitude(0.01)
       .pointRadius(0.8)
@@ -95,6 +101,62 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       altitude: 1.5 // Zoom fisso ravvicinato
     });
 
+    // Carica i dati GeoJSON per i poligoni dei paesi
+    const loadCountryPolygons = async () => {
+      try {
+        const response = await fetch('https://unpkg.com/world-atlas/countries-110m.json');
+        const countries = await response.json();
+        
+        // Dinamicamente importa topojson se disponibile
+        if (typeof window !== 'undefined' && (window as any).topojson) {
+          const geojson = (window as any).topojson.feature(countries, countries.objects.countries).features;
+          world.polygonsData(geojson);
+          
+          let previousHover: any = null;
+          
+          // Configurazione hover sui poligoni
+          world.onPolygonHover((hoverD: any) => {
+            // Resetta il precedente
+            if (previousHover && previousHover.__threeObj && previousHover.__threeObj.material) {
+              previousHover.__threeObj.material.color.setStyle('rgba(255,255,255,0.05)');
+            }
+
+            if (hoverD && hoverD.__threeObj && hoverD.__threeObj.material) {
+              hoverD.__threeObj.material.color.setStyle('rgba(0,255,255,0.4)');
+            }
+
+            previousHover = hoverD;
+          });
+        } else {
+          console.warn('topojson library not available, loading via script');
+          // Carica topojson dinamicamente
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/topojson@3';
+          script.onload = () => {
+            const geojson = (window as any).topojson.feature(countries, countries.objects.countries).features;
+            world.polygonsData(geojson);
+            
+            let previousHover: any = null;
+            
+            world.onPolygonHover((hoverD: any) => {
+              if (previousHover && previousHover.__threeObj && previousHover.__threeObj.material) {
+                previousHover.__threeObj.material.color.setStyle('rgba(255,255,255,0.05)');
+              }
+
+              if (hoverD && hoverD.__threeObj && hoverD.__threeObj.material) {
+                hoverD.__threeObj.material.color.setStyle('rgba(0,255,255,0.4)');
+              }
+
+              previousHover = hoverD;
+            });
+          };
+          document.head.appendChild(script);
+        }
+      } catch (error) {
+        console.error('Error loading country data:', error);
+      }
+    };
+
     // Aggiorna i punti iniziali
     const updatePoints = () => {
       if (!worldRef.current) return;
@@ -112,6 +174,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     };
 
     updatePoints();
+    loadCountryPolygons();
 
     // Gestione eventi per limitare il movimento
     const handleWheel = (event: WheelEvent) => {
