@@ -50,10 +50,15 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    if (!globeRef.current) return;
+    if (!globeRef.current) {
+      console.log('Globe ref not ready');
+      return;
+    }
 
-    // Inizializza Globe.gl
-    const world = Globe()
+    console.log('Initializing Globe.gl');
+
+    // Inizializza Globe.gl con new
+    const world = new Globe(globeRef.current)
       .width(globeRef.current.clientWidth)
       .height(400)
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
@@ -69,25 +74,16 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .pointColor(() => '#ff4444')
       .pointLabel((d: any) => d.name)
       .onPointClick((point: any) => {
+        console.log('Point clicked:', point);
         setSelectedCountry(point.code);
       });
 
-    globeRef.current.appendChild(world());
     worldRef.current = world;
 
-    // Carica i confini nazionali
-    fetch('https://unpkg.com/world-atlas/countries-110m.json')
-      .then(res => res.json())
-      .then(countries => {
-        // Nota: topojson non è disponibile, usiamo solo i punti
-        updatePoints();
-      })
-      .catch(() => {
-        // Fallback se non riesce a caricare i confini
-        updatePoints();
-      });
-
+    // Aggiorna i punti iniziali
     const updatePoints = () => {
+      if (!worldRef.current) return;
+      
       const currentContinent = continents[currentContinentIndex];
       const points = currentContinent.countries.map(country => ({
         lat: country.lat,
@@ -95,13 +91,18 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         name: country.name,
         code: country.code
       }));
-      world.pointsData(points);
+      
+      console.log('Updating points:', points);
+      worldRef.current.pointsData(points);
     };
+
+    updatePoints();
 
     // Cleanup
     return () => {
-      if (globeRef.current && world) {
-        globeRef.current.innerHTML = '';
+      console.log('Cleaning up Globe');
+      if (worldRef.current) {
+        worldRef.current = null;
       }
     };
   }, []);
@@ -116,6 +117,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         name: country.name,
         code: country.code
       }));
+      
+      console.log('Continent changed, updating points:', points);
       worldRef.current.pointsData(points);
       
       // Centra la vista sul continente
