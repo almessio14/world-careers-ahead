@@ -47,6 +47,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [currentContinentIndex, setCurrentContinentIndex] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const hoveredPolygonRef = useRef<any>(null);
+  const geojsonDataRef = useRef<any[]>([]);
 
   useEffect(() => {
     if (!globeRef.current) {
@@ -56,8 +58,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
     console.log('Initializing Globe.gl');
 
-    // Inizializza Globe.gl con new
-    const world = new Globe(globeRef.current)
+    // Inizializza Globe.gl
+    const world = Globe(globeRef.current)
       .width(globeRef.current.clientWidth)
       .height(400)
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
@@ -67,9 +69,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .atmosphereColor('#3a228a')
       .atmosphereAltitude(0.25)
       .showGraticules(true)
-      // Configurazione poligoni per i paesi
+      // Configurazione poligoni per i paesi con hover migliorato
       .polygonsData([])
-      .polygonCapColor(() => 'rgba(255, 255, 255, 0.05)')
+      .polygonCapColor((d: any) => d === hoveredPolygonRef.current
+        ? 'rgba(0, 255, 255, 0.5)'  // colore evidenziato
+        : 'rgba(255, 255, 255, 0.05)'  // colore base
+      )
       .polygonSideColor(() => 'rgba(255, 255, 255, 0.02)')
       .polygonStrokeColor(() => '#222')
       .polygonAltitude(() => 0.003)
@@ -110,22 +115,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         // Dinamicamente importa topojson se disponibile
         if (typeof window !== 'undefined' && (window as any).topojson) {
           const geojson = (window as any).topojson.feature(countries, countries.objects.countries).features;
+          geojsonDataRef.current = geojson;
           world.polygonsData(geojson);
           
-          let previousHover: any = null;
-          
-          // Configurazione hover sui poligoni
-          world.onPolygonHover((hoverD: any) => {
-            // Resetta il precedente
-            if (previousHover && previousHover.__threeObj && previousHover.__threeObj.material) {
-              previousHover.__threeObj.material.color.setStyle('rgba(255,255,255,0.05)');
-            }
-
-            if (hoverD && hoverD.__threeObj && hoverD.__threeObj.material) {
-              hoverD.__threeObj.material.color.setStyle('rgba(0,255,255,0.4)');
-            }
-
-            previousHover = hoverD;
+          // Configurazione hover sui poligoni con il nuovo metodo
+          world.onPolygonHover((d: any) => {
+            hoveredPolygonRef.current = d;
+            world.polygonsData([...geojsonDataRef.current]); // forza il refresh dei colori
           });
         } else {
           console.warn('topojson library not available, loading via script');
@@ -134,20 +130,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           script.src = 'https://unpkg.com/topojson@3';
           script.onload = () => {
             const geojson = (window as any).topojson.feature(countries, countries.objects.countries).features;
+            geojsonDataRef.current = geojson;
             world.polygonsData(geojson);
             
-            let previousHover: any = null;
-            
-            world.onPolygonHover((hoverD: any) => {
-              if (previousHover && previousHover.__threeObj && previousHover.__threeObj.material) {
-                previousHover.__threeObj.material.color.setStyle('rgba(255,255,255,0.05)');
-              }
-
-              if (hoverD && hoverD.__threeObj && hoverD.__threeObj.material) {
-                hoverD.__threeObj.material.color.setStyle('rgba(0,255,255,0.4)');
-              }
-
-              previousHover = hoverD;
+            world.onPolygonHover((d: any) => {
+              hoveredPolygonRef.current = d;
+              world.polygonsData([...geojsonDataRef.current]); // forza il refresh dei colori
             });
           };
           document.head.appendChild(script);
@@ -158,7 +146,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     };
 
     // Aggiorna i punti iniziali
-    const updatePoints = () => {
+    function updatePoints() {
       if (!worldRef.current) return;
       
       const currentContinent = continents[currentContinentIndex];
@@ -171,7 +159,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       
       console.log('Updating points:', points);
       worldRef.current.pointsData(points);
-    };
+    }
 
     updatePoints();
     loadCountryPolygons();
@@ -196,8 +184,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     };
 
     // Aggiungi event listeners
-    globeRef.current.addEventListener('wheel', handleWheel, { passive: false });
-    globeRef.current.addEventListener('pointermove', handlePointerMove);
+    if (globeRef.current) {
+      globeRef.current.addEventListener('wheel', handleWheel, { passive: false });
+      globeRef.current.addEventListener('pointermove', handlePointerMove);
+    }
 
     // Cleanup
     return () => {
