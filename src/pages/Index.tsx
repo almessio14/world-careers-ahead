@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Navigation from '../components/Navigation';
 import CareerCard from '../components/CareerCard';
 import Quiz from '../components/Quiz';
-import StarlinkMap from '../components/StarlinkMap';
+import GlobeMap from '../components/GlobeMap';
 import UniversityModal from '../components/UniversityModal';
 import FavoritesModal from '../components/FavoritesModal';
 import { careers } from '../data/careers';
@@ -48,7 +48,7 @@ const Index = () => {
             </div>
           </div>
         ) : (
-          <StarlinkMap onUniversitySelect={setSelectedUniversity} />
+          <GlobeMap onUniversitySelect={setSelectedUniversity} />
         )}
       </main>
 
