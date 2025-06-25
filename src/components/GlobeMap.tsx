@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
@@ -8,8 +9,17 @@ interface GlobeMapProps {
   onUniversitySelect: (university: University) => void;
 }
 
-// Coordinate geografiche dei continenti
+// Coordinate geografiche dei continenti - RIORDINATI: Nord America, Europa, Asia
 const continents = [
+  {
+    key: 'nordamerica',
+    name: 'Nord America',
+    lat: 45.0,
+    lng: -100.0,
+    countries: [
+      { name: 'USA', code: 'USA', lat: 37.0902, lng: -95.7129 }
+    ]
+  },
   {
     key: 'europa',
     name: 'Europa',
@@ -24,15 +34,6 @@ const continents = [
     ]
   },
   {
-    key: 'nordamerica',
-    name: 'Nord America',
-    lat: 45.0,
-    lng: -100.0,
-    countries: [
-      { name: 'USA', code: 'USA', lat: 37.0902, lng: -95.7129 }
-    ]
-  },
-  {
     key: 'asia',
     name: 'Asia',
     lat: 35.0,
@@ -44,7 +45,7 @@ const continents = [
 const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const globeRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<any>(null);
-  const [currentContinentIndex, setCurrentContinentIndex] = useState(0);
+  const [currentContinentIndex, setCurrentContinentIndex] = useState(1); // Inizia con Europa (centro)
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const hoveredPolygonRef = useRef<any>(null);
@@ -69,12 +70,15 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .atmosphereColor('#4f46e5')
       .atmosphereAltitude(0.25)
       .showGraticules(true)
-      // Configurazione poligoni per i paesi con colore neutro uniforme
+      // Configurazione poligoni per i paesi con hover evidenziato
       .polygonsData([])
-      .polygonCapColor(() => 'rgba(200, 200, 200, 0.3)') // Colore neutro grigio per tutti i paesi
+      .polygonCapColor((d: any) => d === hoveredPolygonRef.current
+        ? 'rgba(255, 215, 0, 0.6)'  // colore oro evidenziato per l'hover
+        : 'rgba(200, 200, 200, 0.3)' // colore neutro grigio base
+      )
       .polygonSideColor(() => 'rgba(180, 180, 180, 0.15)')
       .polygonStrokeColor(() => '#666')
-      .polygonAltitude(() => 0.002)
+      .polygonAltitude((d: any) => d === hoveredPolygonRef.current ? 0.004 : 0.002)
       // Configurazione punti per le università
       .pointsData([])
       .pointAltitude(0.01)
@@ -115,7 +119,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           geojsonDataRef.current = geojson;
           world.polygonsData(geojson);
           
-          // Configurazione hover sui poligoni con il nuovo metodo
+          // Configurazione hover sui poligoni
           world.onPolygonHover((d: any) => {
             hoveredPolygonRef.current = d;
             world.polygonsData([...geojsonDataRef.current]); // forza il refresh dei colori
