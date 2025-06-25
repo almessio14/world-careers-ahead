@@ -69,15 +69,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .atmosphereColor('#4f46e5')
       .atmosphereAltitude(0.25)
       .showGraticules(true)
-      // Configurazione poligoni per i paesi con hover migliorato
+      // Configurazione poligoni per i paesi con colore neutro uniforme
       .polygonsData([])
-      .polygonCapColor((d: any) => d === hoveredPolygonRef.current
-        ? 'rgba(0, 255, 255, 0.5)'  // colore evidenziato
-        : 'rgba(255, 255, 255, 0.05)'  // colore base
-      )
-      .polygonSideColor(() => 'rgba(255, 255, 255, 0.02)')
-      .polygonStrokeColor(() => '#222')
-      .polygonAltitude(() => 0.003)
+      .polygonCapColor(() => 'rgba(200, 200, 200, 0.3)') // Colore neutro grigio per tutti i paesi
+      .polygonSideColor(() => 'rgba(180, 180, 180, 0.15)')
+      .polygonStrokeColor(() => '#666')
+      .polygonAltitude(() => 0.002)
       // Configurazione punti per le università
       .pointsData([])
       .pointAltitude(0.01)
@@ -88,22 +85,22 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         console.log('Point clicked:', point);
         setSelectedCountry(point.code);
       })
-      // Configurazione controlli per zoom maggiore e movimento solo orizzontale
+      // Configurazione controlli con zoom ottimizzato per contenere il globo
       .enablePointerInteraction(true)
       .onZoom(() => {
-        // Forza il mantenimento della distanza più ravvicinata
+        // Mantieni zoom appropriato per contenere il globo nella sezione
         if (worldRef.current) {
-          worldRef.current.pointOfView({ altitude: 1.0 });
+          worldRef.current.pointOfView({ altitude: 1.8 });
         }
       });
 
     worldRef.current = world;
 
-    // Imposta vista iniziale con zoom maggiore
+    // Imposta vista iniziale con zoom ottimizzato
     world.pointOfView({
       lat: continents[currentContinentIndex].lat,
       lng: continents[currentContinentIndex].lng,
-      altitude: 1.0 // Zoom molto più ravvicinato
+      altitude: 1.8 // Zoom ottimizzato per vedere i paesi ma rimanere nella sezione
     });
 
     // Carica i dati GeoJSON per i poligoni dei paesi
@@ -164,7 +161,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     updatePoints();
     loadCountryPolygons();
 
-    // Gestione eventi per limitare il movimento
+    // Gestione eventi per limitare il movimento e mantenere zoom appropriato
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault(); // Blocca lo zoom con la rotella
     };
@@ -173,11 +170,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       // Mantieni sempre l'altitudine fissa durante il movimento
       if (worldRef.current) {
         const currentView = worldRef.current.pointOfView();
-        if (currentView.altitude !== 1.0) {
+        if (currentView.altitude !== 1.8) {
           worldRef.current.pointOfView({ 
             lat: currentView.lat,
             lng: currentView.lng,
-            altitude: 1.0 
+            altitude: 1.8 
           });
         }
       }
@@ -216,11 +213,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       console.log('Continent changed, updating points:', points);
       worldRef.current.pointsData(points);
       
-      // Centra la vista sul continente con zoom maggiore
+      // Centra la vista sul continente con zoom ottimizzato
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: 1.0 // Mantieni zoom molto ravvicinato
+        altitude: 1.8 // Mantieni zoom ottimizzato per contenere nella sezione
       }, 1000);
     }
   }, [currentContinentIndex]);
