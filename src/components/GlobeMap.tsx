@@ -58,8 +58,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
     console.log('Initializing Globe.gl');
 
-    // Inizializza Globe.gl
-    const world = Globe(globeRef.current)
+    // Inizializza Globe.gl with 'new' keyword
+    const world = new Globe(globeRef.current)
       .width(globeRef.current.clientWidth)
       .height(400)
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
