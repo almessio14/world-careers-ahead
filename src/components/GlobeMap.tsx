@@ -62,11 +62,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     const world = new Globe(globeRef.current)
       .width(globeRef.current.clientWidth)
       .height(400)
-      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
       .backgroundColor('rgba(0,0,0,0)')
       .showAtmosphere(true)
-      .atmosphereColor('#3a228a')
+      .atmosphereColor('#4f46e5')
       .atmosphereAltitude(0.25)
       .showGraticules(true)
       // Configurazione poligoni per i paesi con hover migliorato
@@ -88,22 +88,22 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         console.log('Point clicked:', point);
         setSelectedCountry(point.code);
       })
-      // Configurazione controlli per zoom fisso e movimento solo orizzontale
+      // Configurazione controlli per zoom maggiore e movimento solo orizzontale
       .enablePointerInteraction(true)
       .onZoom(() => {
-        // Forza il mantenimento della distanza fissa
+        // Forza il mantenimento della distanza più ravvicinata
         if (worldRef.current) {
-          worldRef.current.pointOfView({ altitude: 1.5 });
+          worldRef.current.pointOfView({ altitude: 1.0 });
         }
       });
 
     worldRef.current = world;
 
-    // Imposta vista iniziale con zoom fisso
+    // Imposta vista iniziale con zoom maggiore
     world.pointOfView({
       lat: continents[currentContinentIndex].lat,
       lng: continents[currentContinentIndex].lng,
-      altitude: 1.5 // Zoom fisso ravvicinato
+      altitude: 1.0 // Zoom molto più ravvicinato
     });
 
     // Carica i dati GeoJSON per i poligoni dei paesi
@@ -173,11 +173,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       // Mantieni sempre l'altitudine fissa durante il movimento
       if (worldRef.current) {
         const currentView = worldRef.current.pointOfView();
-        if (currentView.altitude !== 1.5) {
+        if (currentView.altitude !== 1.0) {
           worldRef.current.pointOfView({ 
             lat: currentView.lat,
             lng: currentView.lng,
-            altitude: 1.5 
+            altitude: 1.0 
           });
         }
       }
@@ -216,11 +216,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       console.log('Continent changed, updating points:', points);
       worldRef.current.pointsData(points);
       
-      // Centra la vista sul continente con zoom fisso
+      // Centra la vista sul continente con zoom maggiore
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: 1.5 // Mantieni zoom fisso
+        altitude: 1.0 // Mantieni zoom molto ravvicinato
       }, 1000);
     }
   }, [currentContinentIndex]);
