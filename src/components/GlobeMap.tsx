@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
@@ -63,11 +62,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     const world = new Globe(globeRef.current)
       .width(globeRef.current.clientWidth)
       .height(400)
-      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-natural.jpg')
       .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
       .backgroundColor('rgba(0,0,0,0)')
       .showAtmosphere(true)
-      .atmosphereColor('#4f46e5')
+      .atmosphereColor('#87CEEB')
       .atmosphereAltitude(0.25)
       .showGraticules(true)
       // Configurazione poligoni per i paesi con hover evidenziato
@@ -89,12 +88,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         console.log('Point clicked:', point);
         setSelectedCountry(point.code);
       })
-      // Configurazione controlli con zoom ottimizzato per contenere il globo
+      // Configurazione controlli con zoom ottimizzato per contenere il globo nella sezione
       .enablePointerInteraction(true)
       .onZoom(() => {
         // Mantieni zoom appropriato per contenere il globo nella sezione
         if (worldRef.current) {
-          worldRef.current.pointOfView({ altitude: 1.8 });
+          worldRef.current.pointOfView({ altitude: 1.0 });
         }
       });
 
@@ -104,7 +103,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     world.pointOfView({
       lat: continents[currentContinentIndex].lat,
       lng: continents[currentContinentIndex].lng,
-      altitude: 1.8 // Zoom ottimizzato per vedere i paesi ma rimanere nella sezione
+      altitude: 1.0 // Zoom ottimizzato per vedere i paesi ma rimanere nella sezione
     });
 
     // Carica i dati GeoJSON per i poligoni dei paesi
@@ -174,11 +173,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       // Mantieni sempre l'altitudine fissa durante il movimento
       if (worldRef.current) {
         const currentView = worldRef.current.pointOfView();
-        if (currentView.altitude !== 1.8) {
+        if (currentView.altitude !== 1.0) {
           worldRef.current.pointOfView({ 
             lat: currentView.lat,
             lng: currentView.lng,
-            altitude: 1.8 
+            altitude: 1.0 
           });
         }
       }
@@ -221,7 +220,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: 1.8 // Mantieni zoom ottimizzato per contenere nella sezione
+        altitude: 1.0 // Mantieni zoom ottimizzato per contenere nella sezione
       }, 1000);
     }
   }, [currentContinentIndex]);
