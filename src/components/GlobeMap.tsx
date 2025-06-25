@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
@@ -58,8 +59,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
     console.log('Initializing Globe.gl');
 
-    // Inizializza Globe.gl with 'new' keyword
-    const world = new Globe(globeRef.current)
+    // Inizializza Globe.gl senza 'new' keyword - Globe.gl può essere chiamato direttamente
+    const world = Globe(globeRef.current)
       .width(globeRef.current.clientWidth)
       .height(400)
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-natural.jpg')
@@ -68,7 +69,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .showAtmosphere(true)
       .atmosphereColor('#87CEEB')
       .atmosphereAltitude(0.25)
-      .showGraticules(true)
+      .showGraticules(false)
       // Configurazione poligoni per i paesi con hover evidenziato
       .polygonsData([])
       .polygonCapColor((d: any) => d === hoveredPolygonRef.current
@@ -93,7 +94,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .onZoom(() => {
         // Mantieni zoom appropriato per contenere il globo nella sezione
         if (worldRef.current) {
-          worldRef.current.pointOfView({ altitude: 1.0 });
+          worldRef.current.pointOfView({ altitude: 2.5 });
         }
       });
 
@@ -103,7 +104,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     world.pointOfView({
       lat: continents[currentContinentIndex].lat,
       lng: continents[currentContinentIndex].lng,
-      altitude: 1.0 // Zoom ottimizzato per vedere i paesi ma rimanere nella sezione
+      altitude: 2.5 // Zoom ottimizzato per vedere i paesi ma rimanere nella sezione
     });
 
     // Carica i dati GeoJSON per i poligoni dei paesi
@@ -112,34 +113,30 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         const response = await fetch('https://unpkg.com/world-atlas/countries-110m.json');
         const countries = await response.json();
         
-        // Dinamicamente importa topojson se disponibile
-        if (typeof window !== 'undefined' && (window as any).topojson) {
-          const geojson = (window as any).topojson.feature(countries, countries.objects.countries).features;
-          geojsonDataRef.current = geojson;
-          world.polygonsData(geojson);
-          
-          // Configurazione hover sui poligoni
-          world.onPolygonHover((d: any) => {
-            hoveredPolygonRef.current = d;
-            world.polygonsData([...geojsonDataRef.current]); // forza il refresh dei colori
+        // Carica topojson dinamicamente se non disponibile
+        const loadTopojson = () => {
+          return new Promise((resolve) => {
+            if (typeof window !== 'undefined' && (window as any).topojson) {
+              resolve((window as any).topojson);
+            } else {
+              const script = document.createElement('script');
+              script.src = 'https://unpkg.com/topojson@3';
+              script.onload = () => resolve((window as any).topojson);
+              document.head.appendChild(script);
+            }
           });
-        } else {
-          console.warn('topojson library not available, loading via script');
-          // Carica topojson dinamicamente
-          const script = document.createElement('script');
-          script.src = 'https://unpkg.com/topojson@3';
-          script.onload = () => {
-            const geojson = (window as any).topojson.feature(countries, countries.objects.countries).features;
-            geojsonDataRef.current = geojson;
-            world.polygonsData(geojson);
-            
-            world.onPolygonHover((d: any) => {
-              hoveredPolygonRef.current = d;
-              world.polygonsData([...geojsonDataRef.current]); // forza il refresh dei colori
-            });
-          };
-          document.head.appendChild(script);
-        }
+        };
+
+        const topojson = await loadTopojson();
+        const geojson = (topojson as any).feature(countries, countries.objects.countries).features;
+        geojsonDataRef.current = geojson;
+        world.polygonsData(geojson);
+        
+        // Configurazione hover sui poligoni
+        world.onPolygonHover((d: any) => {
+          hoveredPolygonRef.current = d;
+          world.polygonsData([...geojsonDataRef.current]); // forza il refresh dei colori
+        });
       } catch (error) {
         console.error('Error loading country data:', error);
       }
@@ -173,11 +170,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       // Mantieni sempre l'altitudine fissa durante il movimento
       if (worldRef.current) {
         const currentView = worldRef.current.pointOfView();
-        if (currentView.altitude !== 1.0) {
+        if (currentView.altitude !== 2.5) {
           worldRef.current.pointOfView({ 
             lat: currentView.lat,
             lng: currentView.lng,
-            altitude: 1.0 
+            altitude: 2.5 
           });
         }
       }
@@ -220,7 +217,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: 1.0 // Mantieni zoom ottimizzato per contenere nella sezione
+        altitude: 2.5 // Mantieni zoom ottimizzato per contenere nella sezione
       }, 1000);
     }
   }, [currentContinentIndex]);
