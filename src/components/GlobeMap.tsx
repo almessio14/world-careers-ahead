@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
@@ -59,15 +58,15 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
     console.log('Initializing Globe.gl');
 
-    // Inizializza Globe.gl senza 'new' keyword - Globe.gl può essere chiamato direttamente
-    const world = Globe(globeRef.current)
+    // Inizializza Globe.gl con 'new' keyword - Globe.gl è un costruttore
+    const world = new Globe(globeRef.current)
       .width(globeRef.current.clientWidth)
       .height(400)
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-natural.jpg')
       .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
       .backgroundColor('rgba(0,0,0,0)')
       .showAtmosphere(true)
-      .atmosphereColor('#87CEEB')
+      .atmosphereColor('#4A90E2')
       .atmosphereAltitude(0.25)
       .showGraticules(false)
       // Configurazione poligoni per i paesi con hover evidenziato
@@ -89,10 +88,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         console.log('Point clicked:', point);
         setSelectedCountry(point.code);
       })
-      // Configurazione controlli con zoom ottimizzato per contenere il globo nella sezione
+      // Configurazione controlli con zoom ottimizzato
       .enablePointerInteraction(true)
       .onZoom(() => {
-        // Mantieni zoom appropriato per contenere il globo nella sezione
+        // Mantieni zoom appropriato
         if (worldRef.current) {
           worldRef.current.pointOfView({ altitude: 2.5 });
         }
@@ -104,7 +103,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     world.pointOfView({
       lat: continents[currentContinentIndex].lat,
       lng: continents[currentContinentIndex].lng,
-      altitude: 2.5 // Zoom ottimizzato per vedere i paesi ma rimanere nella sezione
+      altitude: 2.5 // Zoom ottimizzato
     });
 
     // Carica i dati GeoJSON per i poligoni dei paesi
