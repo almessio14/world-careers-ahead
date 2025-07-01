@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
@@ -60,8 +59,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     setIsLoading(true);
 
     try {
-      // Inizializza Globe.gl
-      const world = Globe(globeRef.current)
+      // Fix: Add 'new' keyword for Globe.gl initialization
+      const world = new Globe(globeRef.current)
         .width(globeRef.current.clientWidth)
         .height(400)
         .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-natural.jpg')
