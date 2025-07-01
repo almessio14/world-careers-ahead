@@ -1,51 +1,20 @@
 
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
-import { universitiesByCountry } from '../data/universities';
+import { continents, globeConfig } from './globe/globeConfig';
+import GlobeControls from './globe/GlobeControls';
+import ContinentIndicator from './globe/ContinentIndicator';
+import UniversitySidebar from './globe/UniversitySidebar';
 import { University } from '../types';
 
 interface GlobeMapProps {
   onUniversitySelect: (university: University) => void;
 }
 
-// Coordinate geografiche dei continenti - RIORDINATI: Nord America, Europa, Asia
-const continents = [
-  {
-    key: 'nordamerica',
-    name: 'Nord America',
-    lat: 45.0,
-    lng: -100.0,
-    countries: [
-      { name: 'USA', code: 'USA', lat: 37.0902, lng: -95.7129 }
-    ]
-  },
-  {
-    key: 'europa',
-    name: 'Europa',
-    lat: 54.5260,
-    lng: 15.2551,
-    countries: [
-      { name: 'UK', code: 'UK', lat: 55.3781, lng: -3.4360 },
-      { name: 'France', code: 'France', lat: 46.6034, lng: 1.8883 },
-      { name: 'Germany', code: 'Germany', lat: 51.1657, lng: 10.4515 },
-      { name: 'Switzerland', code: 'Switzerland', lat: 46.8182, lng: 8.2275 },
-      { name: 'Italy', code: 'Italy', lat: 41.8719, lng: 12.5674 }
-    ]
-  },
-  {
-    key: 'asia',
-    name: 'Asia',
-    lat: 35.0,
-    lng: 100.0,
-    countries: []
-  }
-];
-
 const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const globeRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<any>(null);
-  const [currentContinentIndex, setCurrentContinentIndex] = useState(1); // Inizia con Europa (centro)
+  const [currentContinentIndex, setCurrentContinentIndex] = useState(1); // Inizia con Europa
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,25 +30,22 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     setIsLoading(true);
 
     try {
-      // Configurazione del globo con texture Google Maps-like e controlli ottimizzati
       const world = new Globe(globeRef.current)
         .width(globeRef.current.clientWidth)
-        .height(400)
-        // Usa una texture più simile a Google Maps con colori naturali
-        .globeImageUrl('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/img/section/backgroundmap/world.png')
-        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-        .backgroundColor('rgba(0,0,0,0)')
-        .showAtmosphere(true)
-        .atmosphereColor('#87ceeb')
-        .atmosphereAltitude(0.15)
-        .showGraticules(false)
-        .enablePointerInteraction(true)
-        // Configurazione punti per le università con effetti hover migliorati
+        .height(globeConfig.height)
+        .globeImageUrl(globeConfig.globeImageUrl)
+        .bumpImageUrl(globeConfig.bumpImageUrl)
+        .backgroundColor(globeConfig.backgroundColor)
+        .showAtmosphere(globeConfig.showAtmosphere)
+        .atmosphereColor(globeConfig.atmosphereColor)
+        .atmosphereAltitude(globeConfig.atmosphereAltitude)
+        .showGraticules(globeConfig.showGraticules)
+        .enablePointerInteraction(globeConfig.enablePointerInteraction)
         .pointsData([])
-        .pointAltitude(0.03)
-        .pointRadius((d: any) => hoveredPoint === d.code ? 2.0 : 1.2)
-        .pointColor((d: any) => hoveredPoint === d.code ? '#fbbf24' : '#dc2626')
-        .pointResolution(12)
+        .pointAltitude(globeConfig.pointAltitude)
+        .pointRadius((d: any) => hoveredPoint === d.code ? globeConfig.pointRadius.hover : globeConfig.pointRadius.normal)
+        .pointColor((d: any) => hoveredPoint === d.code ? globeConfig.pointColor.hover : globeConfig.pointColor.normal)
+        .pointResolution(globeConfig.pointResolution)
         .pointLabel((d: any) => `
           <div style="
             background: rgba(0,0,0,0.9); 
@@ -105,29 +71,28 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .onPointHover((point: any) => {
           console.log('Point hovered:', point);
           setHoveredPoint(point ? point.code : null);
-          // Cambia il cursore
           if (globeRef.current) {
             globeRef.current.style.cursor = point ? 'pointer' : 'grab';
           }
         });
 
-      // Configurazione controlli senza auto-rotazione e con zoom disabilitato
+      // Configurazione controlli
       const controls = world.controls();
       controls.enableZoom = false;
       controls.enablePan = false;
-      controls.autoRotate = false; // Rimossa auto-rotazione
+      controls.autoRotate = false;
       controls.enableRotate = true;
 
-      // Impostazione vista iniziale con zoom più vicino
+      // Vista iniziale
       world.pointOfView({
         lat: continents[currentContinentIndex].lat,
         lng: continents[currentContinentIndex].lng,
-        altitude: 1.8 // Zoom più vicino
+        altitude: globeConfig.initialView.altitude
       });
 
       worldRef.current = world;
 
-      // Aggiorna i punti iniziali
+      // Aggiorna punti iniziali
       const updatePoints = () => {
         if (!worldRef.current) return;
         
@@ -152,7 +117,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       setIsLoading(false);
     }
 
-    // Cleanup
     return () => {
       console.log('Cleaning up Globe');
       if (worldRef.current) {
@@ -162,7 +126,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     };
   }, []);
 
-  // Aggiorna i punti quando cambia il continente
+  // Aggiorna punti quando cambia continente
   useEffect(() => {
     if (worldRef.current) {
       const currentContinent = continents[currentContinentIndex];
@@ -176,11 +140,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       console.log('Continent changed, updating points:', points);
       worldRef.current.pointsData(points);
       
-      // Centra la vista sul continente con transizione fluida e zoom più vicino
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: 1.8 // Zoom più vicino
+        altitude: globeConfig.initialView.altitude
       }, 1500);
     }
   }, [currentContinentIndex]);
@@ -204,36 +167,19 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     }, 200);
   };
 
-  const currentContinent = continents[currentContinentIndex];
-
   return (
     <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-2xl">
       <h2 className="text-3xl font-bold text-white mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
         🌍 Globo Interattivo delle Università
       </h2>
       
-      {/* Indicatore continente corrente migliorato */}
-      <div className="text-center mb-6">
-        <h3 className={`text-2xl font-bold text-white transition-all duration-300 ${
-          isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
-        } bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent`}>
-          ✨ {currentContinent.name} ✨
-        </h3>
-        <div className="flex justify-center space-x-3 mt-3">
-          {continents.map((_, index) => (
-            <div
-              key={index}
-              className={`w-4 h-4 rounded-full transition-all duration-300 shadow-lg ${
-                index === currentContinentIndex 
-                  ? 'bg-gradient-to-r from-yellow-400 to-orange-400 scale-125 shadow-yellow-400/50' 
-                  : 'bg-white/30 hover:bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+      <ContinentIndicator 
+        continents={continents}
+        currentIndex={currentContinentIndex}
+        isTransitioning={isTransitioning}
+      />
 
-      {/* Container del globo ridotto */}
+      {/* Container del globo */}
       <div className="h-[400px] w-full relative bg-gradient-to-b from-black/20 to-black/40 rounded-xl backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/50 backdrop-blur-sm rounded-xl">
@@ -252,75 +198,24 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           }}
         />
 
-        {/* Frecce di navigazione migliorate */}
         {!isLoading && (
-          <>
-            <button
-              onClick={() => handleContinentChange('prev')}
-              disabled={isTransitioning}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 shadow-lg hover:shadow-blue-500/50 z-10"
-            >
-              <ChevronLeft size={28} />
-            </button>
-
-            <button
-              onClick={() => handleContinentChange('next')}
-              disabled={isTransitioning}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 shadow-lg hover:shadow-purple-500/50 z-10"
-            >
-              <ChevronRight size={28} />
-            </button>
-          </>
+          <GlobeControls
+            onPrevious={() => handleContinentChange('prev')}
+            onNext={() => handleContinentChange('next')}
+            isTransitioning={isTransitioning}
+          />
         )}
 
-        {/* Effetto di brillantezza sui bordi */}
         <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse pointer-events-none" />
       </div>
 
-      {/* Pannello laterale migliorato */}
-      {selectedCountry && universitiesByCountry[selectedCountry] && (
-        <div className="absolute top-0 right-0 h-full w-80 bg-gradient-to-b from-black/80 to-black/90 backdrop-blur-xl text-white p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-white/20 shadow-2xl z-30">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              🎓 {selectedCountry}
-            </h3>
-            <button
-              onClick={() => setSelectedCountry(null)}
-              className="text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition-all duration-200 hover:scale-110"
-            >
-              <X size={20} />
-            </button>
-          </div>
-          
-          <div className="space-y-4 max-h-[calc(100%-100px)] overflow-y-auto custom-scrollbar">
-            {universitiesByCountry[selectedCountry].map((university, index) => (
-              <div
-                key={university.id}
-                onClick={() => onUniversitySelect(university)}
-                className="bg-gradient-to-r from-white/10 to-white/5 hover:from-white/20 hover:to-white/15 p-4 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 border border-white/20 hover:border-white/40 shadow-lg hover:shadow-blue-500/20"
-                style={{
-                  animationDelay: `${index * 100}ms`
-                }}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-semibold text-sm leading-tight">{university.name}</h4>
-                  <span className="text-xs bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 rounded-full ml-2 flex-shrink-0 shadow-lg">
-                    #{university.ranking}
-                  </span>
-                </div>
-                
-                <div className="text-xs text-white/80 space-y-1">
-                  <div>📍 {university.city}</div>
-                  <div>🗣️ {university.language}</div>
-                  <div>💰 {university.tuitionFee}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <UniversitySidebar
+        selectedCountry={selectedCountry}
+        onClose={() => setSelectedCountry(null)}
+        onUniversitySelect={onUniversitySelect}
+      />
 
-      {/* Istruzioni aggiornate */}
+      {/* Istruzioni */}
       <div className="text-center text-white/90 mt-6 space-y-2">
         <p className="text-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
           🎯 Trascina per ruotare il globo manualmente
@@ -330,11 +225,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         </p>
       </div>
 
-      {/* Loading overlay migliorato */}
+      {/* Loading overlay */}
       {isTransitioning && (
         <div className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
           <div className="text-white text-xl font-bold animate-pulse bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            ✨ Esplorando {currentContinent.name}... ✨
+            ✨ Esplorando {continents[currentContinentIndex].name}... ✨
           </div>
         </div>
       )}
