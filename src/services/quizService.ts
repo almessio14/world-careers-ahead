@@ -42,6 +42,8 @@ export interface DatabaseSecondaryQuestion {
 }
 
 export const fetchInitialQuestions = async () => {
+  console.log('Fetching initial questions...');
+  
   const { data, error } = await supabase
     .from('Domande Iniziali')
     .select('*')
@@ -49,13 +51,20 @@ export const fetchInitialQuestions = async () => {
 
   if (error) {
     console.error('Error fetching initial questions:', error);
-    throw error;
+    throw new Error(`Failed to fetch initial questions: ${error.message}`);
   }
+
+  if (!data || data.length === 0) {
+    console.error('No initial questions found');
+    throw new Error('No initial questions found in database');
+  }
+
+  console.log('Raw initial questions data:', data);
 
   // Group by question ID to create question objects with options
   const questionsMap = new Map();
   
-  data?.forEach((row: DatabaseQuestion) => {
+  data.forEach((row: DatabaseQuestion) => {
     if (!questionsMap.has(row.id)) {
       questionsMap.set(row.id, {
         id: row.id,
@@ -81,10 +90,15 @@ export const fetchInitialQuestions = async () => {
     question.weights[row.opzione] = optionWeights;
   });
 
-  return Array.from(questionsMap.values());
+  const questions = Array.from(questionsMap.values());
+  console.log('Processed initial questions:', questions);
+  
+  return questions;
 };
 
 export const fetchSecondaryQuestions = async (macroArea: string) => {
+  console.log('Fetching secondary questions for:', macroArea);
+  
   const { data, error } = await supabase
     .from('Domande Secondarie')
     .select('*')
@@ -93,13 +107,20 @@ export const fetchSecondaryQuestions = async (macroArea: string) => {
 
   if (error) {
     console.error('Error fetching secondary questions:', error);
-    throw error;
+    throw new Error(`Failed to fetch secondary questions: ${error.message}`);
   }
+
+  if (!data || data.length === 0) {
+    console.error('No secondary questions found for macro area:', macroArea);
+    throw new Error(`No secondary questions found for macro area: ${macroArea}`);
+  }
+
+  console.log('Raw secondary questions data:', data);
 
   // Group by question ID
   const questionsMap = new Map();
   
-  data?.forEach((row: DatabaseSecondaryQuestion) => {
+  data.forEach((row: DatabaseSecondaryQuestion) => {
     if (!questionsMap.has(row.id)) {
       questionsMap.set(row.id, {
         id: row.id,
@@ -156,5 +177,8 @@ export const fetchSecondaryQuestions = async (macroArea: string) => {
     question.weights[row.opzione] = optionWeights;
   });
 
-  return Array.from(questionsMap.values());
+  const questions = Array.from(questionsMap.values());
+  console.log('Processed secondary questions:', questions);
+  
+  return questions;
 };

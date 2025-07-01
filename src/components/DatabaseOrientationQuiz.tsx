@@ -79,7 +79,7 @@ const microAreaResults = {
 };
 
 const DatabaseOrientationQuiz = ({ onClose }: DatabaseOrientationQuizProps) => {
-  const [phase, setPhase] = useState<'loading' | 'macro' | 'micro' | 'result'>('loading');
+  const [phase, setPhase] = useState<'loading' | 'macro' | 'micro' | 'result' | 'error'>('loading');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [macroQuestions, setMacroQuestions] = useState<QuizQuestion[]>([]);
   const [microQuestions, setMicroQuestions] = useState<QuizQuestion[]>([]);
@@ -87,15 +87,21 @@ const DatabaseOrientationQuiz = ({ onClose }: DatabaseOrientationQuizProps) => {
   const [microAnswers, setMicroAnswers] = useState<string[]>([]);
   const [topMacroArea, setTopMacroArea] = useState<string | null>(null);
   const [finalResult, setFinalResult] = useState<{ macroArea: string; microArea: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadInitialQuestions = async () => {
       try {
+        setError(null);
+        console.log('Loading initial questions...');
         const questions = await fetchInitialQuestions();
+        console.log('Loaded questions:', questions);
         setMacroQuestions(questions);
         setPhase('macro');
       } catch (error) {
         console.error('Failed to load questions:', error);
+        setError(error instanceof Error ? error.message : 'Failed to load questions');
+        setPhase('error');
       }
     };
 
@@ -142,12 +148,16 @@ const DatabaseOrientationQuiz = ({ onClose }: DatabaseOrientationQuizProps) => {
       
       // Load secondary questions
       try {
+        console.log('Loading secondary questions for:', topArea);
         const secondaryQuestions = await fetchSecondaryQuestions(topArea);
+        console.log('Loaded secondary questions:', secondaryQuestions);
         setMicroQuestions(secondaryQuestions);
         setPhase('micro');
         setCurrentQuestion(0);
       } catch (error) {
         console.error('Failed to load secondary questions:', error);
+        setError(error instanceof Error ? error.message : 'Failed to load secondary questions');
+        setPhase('error');
       }
     }
   };
@@ -203,6 +213,7 @@ const DatabaseOrientationQuiz = ({ onClose }: DatabaseOrientationQuizProps) => {
     setMicroAnswers([]);
     setTopMacroArea(null);
     setFinalResult(null);
+    setError(null);
     
     // Reload questions
     const loadInitialQuestions = async () => {
@@ -212,6 +223,8 @@ const DatabaseOrientationQuiz = ({ onClose }: DatabaseOrientationQuizProps) => {
         setPhase('macro');
       } catch (error) {
         console.error('Failed to load questions:', error);
+        setError(error instanceof Error ? error.message : 'Failed to load questions');
+        setPhase('error');
       }
     };
 
@@ -223,7 +236,33 @@ const DatabaseOrientationQuiz = ({ onClose }: DatabaseOrientationQuizProps) => {
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
         <div className="bg-white rounded-xl p-6 max-w-lg w-full text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Caricamento domande...</p>
+          <p>Caricamento domande dal database...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (phase === 'error') {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-xl p-6 max-w-lg w-full text-center">
+          <div className="text-red-500 text-4xl mb-4">⚠️</div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Errore nel caricamento</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <div className="flex space-x-3">
+            <button
+              onClick={resetQuiz}
+              className="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Riprova
+            </button>
+            <button
+              onClick={onClose}
+              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+            >
+              Chiudi
+            </button>
+          </div>
         </div>
       </div>
     );
