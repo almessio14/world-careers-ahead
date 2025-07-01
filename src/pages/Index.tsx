@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Navigation from '../components/Navigation';
 import CareerCard from '../components/CareerCard';
 import Quiz from '../components/Quiz';
-import OrientationQuiz from '../components/OrientationQuiz';
+import DatabaseOrientationQuiz from '../components/DatabaseOrientationQuiz';
 import GlobeMap from '../components/GlobeMap';
 import UniversityModal from '../components/UniversityModal';
 import FavoritesModal from '../components/FavoritesModal';
@@ -64,7 +64,7 @@ const Index = () => {
 
       {/* Modals */}
       {showQuiz && <Quiz onClose={() => setShowQuiz(false)} />}
-      {showOrientationQuiz && <OrientationQuiz onClose={() => setShowOrientationQuiz(false)} />}
+      {showOrientationQuiz && <DatabaseOrientationQuiz onClose={() => setShowOrientationQuiz(false)} />}
       {selectedUniversity && (
         <UniversityModal
           university={selectedUniversity}
