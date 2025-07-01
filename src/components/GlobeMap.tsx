@@ -48,18 +48,18 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .pointResolution(globeConfig.pointResolution)
         .pointLabel((d: any) => `
           <div style="
-            background: rgba(0,0,0,0.9); 
-            color: white; 
+            background: rgba(0, 33, 71, 0.95); 
+            color: #FAF3E0; 
             padding: 12px 16px; 
             border-radius: 8px; 
             font-size: 14px;
-            border: 2px solid #4A90E2;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border: 2px solid #CDA434;
+            box-shadow: 0 4px 15px rgba(0, 33, 71, 0.4);
             font-family: Arial, sans-serif;
             font-weight: 500;
           ">
             🎓 <strong>${d.name}</strong><br/>
-            <span style="font-size: 12px; color: #93C5FD;">
+            <span style="font-size: 12px; color: #D3D3D3;">
               Clicca per vedere le università
             </span>
           </div>
@@ -83,7 +83,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       controls.autoRotate = false;
       controls.enableRotate = true;
 
-      // Vista iniziale
+      // Vista iniziale con zoom ravvicinato
       world.pointOfView({
         lat: continents[currentContinentIndex].lat,
         lng: continents[currentContinentIndex].lng,
@@ -168,8 +168,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-2xl">
-      <h2 className="text-3xl font-bold text-white mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+    <div className="bg-gradient-to-b from-[#002147] via-[#003366] to-[#004080] rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-2xl">
+      <h2 className="text-3xl font-bold text-[#FAF3E0] mb-6 text-center bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
         🌍 Globo Interattivo delle Università
       </h2>
       
@@ -180,10 +180,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       />
 
       {/* Container del globo */}
-      <div className="h-[400px] w-full relative bg-gradient-to-b from-black/20 to-black/40 rounded-xl backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden">
+      <div className="h-[400px] w-full relative bg-gradient-to-b from-[#002147]/20 to-[#002147]/40 rounded-xl backdrop-blur-sm border border-[#CDA434]/20 shadow-2xl overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/50 backdrop-blur-sm rounded-xl">
-            <div className="text-white text-xl font-bold animate-pulse bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#002147]/50 backdrop-blur-sm rounded-xl">
+            <div className="text-[#FAF3E0] text-xl font-bold animate-pulse bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
               🌍 Caricamento globo magico...
             </div>
           </div>
@@ -206,7 +206,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           />
         )}
 
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse pointer-events-none" />
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-[#CDA434]/5 to-transparent animate-pulse pointer-events-none" />
       </div>
 
       <UniversitySidebar
@@ -216,19 +216,19 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       />
 
       {/* Istruzioni */}
-      <div className="text-center text-white/90 mt-6 space-y-2">
-        <p className="text-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+      <div className="text-center text-[#FAF3E0]/90 mt-6 space-y-2">
+        <p className="text-lg font-semibold bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
           🎯 Trascina per ruotare il globo manualmente
         </p>
-        <p className="text-sm text-white/70">
-          Usa le frecce per cambiare continente. Passa il mouse sui punti rossi e clicca per le università.
+        <p className="text-sm text-[#D3D3D3]">
+          Usa le frecce per cambiare continente. Passa il mouse sui punti bordeaux e clicca per le università.
         </p>
       </div>
 
       {/* Loading overlay */}
       {isTransitioning && (
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
-          <div className="text-white text-xl font-bold animate-pulse bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <div className="absolute inset-0 bg-[#002147]/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
+          <div className="text-[#FAF3E0] text-xl font-bold animate-pulse bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
             ✨ Esplorando {continents[currentContinentIndex].name}... ✨
           </div>
         </div>

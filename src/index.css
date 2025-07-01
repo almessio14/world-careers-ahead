@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,83 +7,83 @@
 
 @layer base {
   :root {
-    --background: 248 250 255;
-    --foreground: 15 23 42;
+    --background: 250 243 224; /* Crema carta */
+    --foreground: 0 33 71; /* Blu Oxford */
 
     --card: 255 255 255;
-    --card-foreground: 15 23 42;
+    --card-foreground: 0 33 71;
 
     --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
+    --popover-foreground: 0 33 71;
 
-    --primary: 14 165 233;
-    --primary-foreground: 255 255 255;
+    --primary: 0 33 71; /* Blu Oxford */
+    --primary-foreground: 250 243 224;
 
-    --secondary: 226 232 240;
-    --secondary-foreground: 30 41 59;
+    --secondary: 211 211 211; /* Grigio chiaro */
+    --secondary-foreground: 0 33 71;
 
-    --muted: 241 245 249;
-    --muted-foreground: 100 116 139;
+    --muted: 211 211 211;
+    --muted-foreground: 123 30 59; /* Bordeaux */
 
-    --accent: 6 182 212;
-    --accent-foreground: 255 255 255;
+    --accent: 205 164 52; /* Oro spento */
+    --accent-foreground: 0 33 71;
 
     --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
+    --destructive-foreground: 250 243 224;
 
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 14 165 233;
+    --border: 211 211 211;
+    --input: 211 211 211;
+    --ring: 205 164 52;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 255 255 255;
-    --sidebar-foreground: 15 23 42;
-    --sidebar-primary: 14 165 233;
-    --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 241 245 249;
-    --sidebar-accent-foreground: 15 23 42;
-    --sidebar-border: 226 232 240;
-    --sidebar-ring: 14 165 233;
+    --sidebar-background: 250 243 224;
+    --sidebar-foreground: 0 33 71;
+    --sidebar-primary: 0 33 71;
+    --sidebar-primary-foreground: 250 243 224;
+    --sidebar-accent: 211 211 211;
+    --sidebar-accent-foreground: 0 33 71;
+    --sidebar-border: 211 211 211;
+    --sidebar-ring: 205 164 52;
   }
 
   .dark {
-    --background: 2 6 23;
-    --foreground: 248 250 252;
+    --background: 0 33 71; /* Blu Oxford */
+    --foreground: 250 243 224; /* Crema carta */
 
-    --card: 15 23 42;
-    --card-foreground: 248 250 252;
+    --card: 0 33 71;
+    --card-foreground: 250 243 224;
 
-    --popover: 15 23 42;
-    --popover-foreground: 248 250 252;
+    --popover: 0 33 71;
+    --popover-foreground: 250 243 224;
 
-    --primary: 56 189 248;
-    --primary-foreground: 2 6 23;
+    --primary: 205 164 52; /* Oro spento */
+    --primary-foreground: 0 33 71;
 
-    --secondary: 30 41 59;
-    --secondary-foreground: 226 232 240;
+    --secondary: 123 30 59; /* Bordeaux */
+    --secondary-foreground: 250 243 224;
 
-    --muted: 30 41 59;
-    --muted-foreground: 148 163 184;
+    --muted: 123 30 59;
+    --muted-foreground: 211 211 211;
 
-    --accent: 34 211 238;
-    --accent-foreground: 2 6 23;
+    --accent: 205 164 52;
+    --accent-foreground: 0 33 71;
 
     --destructive: 220 38 38;
-    --destructive-foreground: 248 250 252;
+    --destructive-foreground: 250 243 224;
 
-    --border: 30 41 59;
-    --input: 30 41 59;
-    --ring: 56 189 248;
+    --border: 123 30 59;
+    --input: 123 30 59;
+    --ring: 205 164 52;
 
-    --sidebar-background: 15 23 42;
-    --sidebar-foreground: 248 250 252;
-    --sidebar-primary: 56 189 248;
-    --sidebar-primary-foreground: 2 6 23;
-    --sidebar-accent: 30 41 59;
-    --sidebar-accent-foreground: 226 232 240;
-    --sidebar-border: 30 41 59;
-    --sidebar-ring: 56 189 248;
+    --sidebar-background: 0 33 71;
+    --sidebar-foreground: 250 243 224;
+    --sidebar-primary: 205 164 52;
+    --sidebar-primary-foreground: 0 33 71;
+    --sidebar-accent: 123 30 59;
+    --sidebar-accent-foreground: 250 243 224;
+    --sidebar-border: 123 30 59;
+    --sidebar-ring: 205 164 52;
   }
 }
 
@@ -96,31 +97,31 @@
   }
 
   .gradient-bg {
-    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #3b82f6 100%);
+    background: linear-gradient(135deg, #002147 0%, #7B1E3B 50%, #CDA434 100%);
   }
 
   .glass-effect {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(250, 243, 224, 0.1);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(205, 164, 52, 0.2);
   }
 }
 
 @layer components {
   .career-card {
-    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100;
+    @apply bg-[#FAF3E0] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-[#D3D3D3];
   }
 
   .career-card:hover {
-    @apply -translate-y-1 shadow-2xl;
+    @apply -translate-y-1 shadow-2xl border-[#CDA434];
   }
 
   .quiz-option {
-    @apply p-4 rounded-lg border-2 border-gray-200 cursor-pointer transition-all duration-200 hover:border-primary hover:bg-primary/5;
+    @apply p-4 rounded-lg border-2 border-[#D3D3D3] cursor-pointer transition-all duration-200 hover:border-[#CDA434] hover:bg-[#CDA434]/5;
   }
 
   .quiz-option.selected {
-    @apply border-primary bg-primary/10;
+    @apply border-[#CDA434] bg-[#CDA434]/10;
   }
 
   .world-map {
@@ -194,7 +195,7 @@
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  scrollbar-color: rgba(205, 164, 52, 0.3) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -206,10 +207,10 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(205, 164, 52, 0.3);
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(205, 164, 52, 0.5);
 }

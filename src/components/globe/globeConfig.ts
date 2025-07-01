@@ -34,23 +34,25 @@ export const continents = [
   }
 ];
 
-// Configurazione del globo
+// Configurazione del globo con texture chiara e zoom ravvicinato
 export const globeConfig = {
   width: 800,
   height: 400,
-  globeImageUrl: 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+  // Texture più chiara e dettagliata simile a Google Maps con confini
+  globeImageUrl: 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/img/section/backgroundmap/world.png',
   bumpImageUrl: '//unpkg.com/three-globe/example/img/earth-topology.png',
   backgroundColor: 'rgba(0,0,0,0)',
   showAtmosphere: true,
-  atmosphereColor: '#87ceeb',
-  atmosphereAltitude: 0.15,
-  showGraticules: false,
+  atmosphereColor: '#CDA434', // Oro spento per l'atmosfera
+  atmosphereAltitude: 0.12,
+  showGraticules: true, // Mostra le linee di latitudine/longitudine
+  graticulesLineColor: '#D3D3D3', // Grigio chiaro per le griglie
   enablePointerInteraction: true,
-  pointAltitude: 0.03,
-  pointRadius: { normal: 1.2, hover: 2.0 },
-  pointColor: { normal: '#dc2626', hover: '#fbbf24' },
-  pointResolution: 12,
+  pointAltitude: 0.04,
+  pointRadius: { normal: 1.5, hover: 2.5 },
+  pointColor: { normal: '#7B1E3B', hover: '#CDA434' }, // Bordeaux normale, oro hover
+  pointResolution: 16,
   initialView: {
-    altitude: 1.8 // Zoom più vicino
+    altitude: 1.3 // Zoom molto più ravvicinato per vedere bene i continenti
   }
 };
