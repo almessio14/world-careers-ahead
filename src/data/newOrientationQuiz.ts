@@ -3,14 +3,14 @@ export interface NewQuizQuestion {
   id: string;
   question: string;
   options: string[];
-  weights: number[]; // Array di 6 numeri per le macrocategorie
+  weights: number[][]; // Array of arrays for each option's weights
 }
 
 export interface SpecificQuestion {
   id: string;
   question: string;
   options: string[];
-  weights: number[]; // Array per le sottocategorie specifiche
+  weights: number[][]; // Array of arrays for each option's weights
 }
 
 export interface MacroCategory {
@@ -50,10 +50,10 @@ export const level1Questions: NewQuizQuestion[] = [
     id: 'q2',
     question: 'Cosa ti viene più naturale quando partecipi a una sfida di gruppo?',
     options: [
-      'Lavorare con numeri e grafici',
+      'Lavorare con numeri e grafici per capire la situazione',
       'Suddividere compiti e guidare il gruppo',
       'Parlare con gli altri per trovare un accordo',
-      'Proporre un\'idea originale'
+      'Proporre un\'idea originale e prendere l\'iniziativa'
     ],
     weights: [
       [3, 1, 0, 2, 1, 3],
@@ -64,12 +64,12 @@ export const level1Questions: NewQuizQuestion[] = [
   },
   {
     id: 'q3',
-    question: 'Immagina la tua giornata ideale al lavoro:',
+    question: 'Immagina la tua giornata ideale al lavoro: cosa ti piacerebbe fare di più?',
     options: [
-      'Gestire risorse e profitti',
-      'Risolvere problemi complessi',
-      'Lavorare per cambiare le regole',
-      'Creare qualcosa di nuovo'
+      'Gestire risorse e far crescere i profitti',
+      'Risolvere problemi complessi e trovare soluzioni',
+      'Lavorare per cambiare le regole e aiutare la società',
+      'Creare qualcosa di nuovo che non esiste ancora'
     ],
     weights: [
       [3, 1, 0, 2, 1, 3],
@@ -96,12 +96,12 @@ export const level1Questions: NewQuizQuestion[] = [
   },
   {
     id: 'q5',
-    question: 'In quale ambito ti senti più portato?',
+    question: 'In quale di questi ambiti ti senti più portato a eccellere?',
     options: [
-      'Far fruttare risorse economiche',
-      'Guidare le aziende',
-      'Influenzare decisioni pubbliche',
-      'Start-up e innovazione'
+      'Controllare e far fruttare al meglio le risorse economiche',
+      'Guidare le aziende verso nuovi traguardi',
+      'Influenzare decisioni pubbliche e normative',
+      'Dare vita a start-up o progetti innovativi'
     ],
     weights: [
       [3, 1, 0, 2, 1, 3],
@@ -112,12 +112,12 @@ export const level1Questions: NewQuizQuestion[] = [
   },
   {
     id: 'q6',
-    question: 'Come affronti un problema complicato?',
+    question: 'Quando incontri un problema complicato, come ti comporti?',
     options: [
-      'Calcolo rischi e benefici',
-      'Analizzo il processo',
-      'Provo a influenzare la situazione',
-      'Trovo un\'idea nuova'
+      'Calcolo rischi e benefici per decidere in modo sicuro',
+      'Analizzo il processo per capire dove migliorare',
+      'Provo a influenzare chi può cambiare la situazione',
+      'Trovo un\'idea nuova e passo subito all\'azione'
     ],
     weights: [
       [3, 1, 0, 2, 1, 3],
@@ -128,12 +128,12 @@ export const level1Questions: NewQuizQuestion[] = [
   },
   {
     id: 'q7',
-    question: 'Giornata tipo ideale?',
+    question: 'Se dovessi scegliere una giornata tipo, quale ti suona meglio?',
     options: [
-      'Numeri e strategie',
-      'Interazione continua',
-      'Relazioni istituzionali',
-      'Innovazione e decisioni'
+      'Focalizzato su numeri e strategie',
+      'Variegato, con interazione continua',
+      'Relazioni istituzionali e comunicazione',
+      'Dinamico, innovazione e decisioni'
     ],
     weights: [
       [3, 1, 0, 2, 1, 3],
@@ -183,8 +183,8 @@ export const macroCategories: MacroCategory[] = [
   },
   {
     id: 'academic',
-    name: 'Academic',
-    description: 'Sei orientato verso ricerca, insegnamento e produzione di conoscenza nel campo economico.',
+    name: 'Academic & Media',
+    description: 'Sei orientato verso ricerca, comunicazione e produzione di conoscenza nel campo economico.',
     icon: '📚',
     subcategories: ['Ricercatore', 'Giornalista']
   }
@@ -264,9 +264,9 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       question: 'In che modo affronti un progetto difficile?',
       options: [
         'Scomponendolo in fasi strategiche',
-        'Analizzando ogni dato',
-        'Cercando alternative creative',
-        'Seguendo metodi testati'
+        'Analizzando ogni dato per prendere decisioni concrete',
+        'Cercando alternative creative con il team',
+        'Seguendo metodi già testati e collaborando con i team operativi'
       ],
       weights: [
         [3, 1],
@@ -279,7 +279,7 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       id: 'c3',
       question: 'Cosa ti appassiona del lavoro in consulenza?',
       options: [
-        'Influenzare CEO',
+        'Influenzare scelte di dirigenti',
         'Migliorare performance aziendali',
         'Guidare trasformazioni',
         'Risolvere crisi complesse'
@@ -299,8 +299,8 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       options: [
         'Ambasciatore/Diplomatico',
         'Manager in organizzazioni internazionali',
-        'Policy maker',
-        'Comunicazione politica'
+        'Legislatore o policy maker',
+        'Esperto in comunicazione politica e istituzionale'
       ],
       weights: [
         [3, 1, 1], // Dipl, Org_Int, Policy
@@ -348,9 +348,9 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       question: 'Quale ruolo in una startup ti attira di più?',
       options: [
         'Lanciare un\'idea rivoluzionaria',
-        'Motore operativo',
+        'Essere il motore operativo che tiene tutto insieme',
         'Sviluppare un prodotto innovativo',
-        'Controllo costi e budget'
+        'Tenere sotto controllo costi e budget'
       ],
       weights: [
         [3, 1], // Start_up, CFO
@@ -364,9 +364,9 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       question: 'Qual è la tua forza principale?',
       options: [
         'Trovare finanziamenti',
-        'Gestire i conti',
+        'Gestire i conti con precisione',
         'Anticipare bisogni',
-        'Strategie a lungo termine'
+        'Pianificare strategie a lungo termine'
       ],
       weights: [
         [3, 1],
@@ -379,10 +379,10 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       id: 'e3',
       question: 'Cosa ti motiva in un progetto?',
       options: [
-        'Lanciare qualcosa di nuovo',
-        'Migliorare l\'efficienza',
-        'Convincere investitori',
-        'Previsioni economiche'
+        'Lanciare qualcosa che prima non esisteva',
+        'Migliorare l\'efficienza del sistema aziendale',
+        'Convincere investitori e partner',
+        'Fare previsioni economiche accurate'
       ],
       weights: [
         [3, 1],
@@ -399,8 +399,8 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       options: [
         'Tecnologia d\'avanguardia',
         'Gestione progetti complessi',
-        'Efficienza interna',
-        'Sviluppo team'
+        'Lavorare sull\'efficienza interna e i risultati aziendali',
+        'Sviluppo dei team e gestione delle persone'
       ],
       weights: [
         [3, 1, 1], // Big_Tech, PM, Corporate
@@ -416,7 +416,7 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
         'Innovazione di prodotto',
         'Coordinamento tempistiche',
         'Ottimizzazione risorse',
-        'Leadership cross-funzionale'
+        'Leadership'
       ],
       weights: [
         [3, 1, 1],
@@ -427,12 +427,12 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
     },
     {
       id: 'b3',
-      question: 'Cosa ti entusiasma di più?',
+      question: 'Cosa ti entusiasma maggiormente?',
       options: [
-        'Tecnologie rivoluzionarie',
-        'Progetti iconici',
-        'Redditività',
-        'Trasformazioni aziendali'
+        'Creare tecnologie rivoluzionarie',
+        'Guidare il lancio di nuovi prodotti',
+        'Aumentare i guadagni',
+        'Guidare trasformazioni aziendali'
       ],
       weights: [
         [3, 1, 1],
@@ -447,10 +447,10 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       id: 'a1',
       question: 'Quale profilo ti rappresenta di più?',
       options: [
-        'Studioso',
-        'Reporter',
-        'Analista',
-        'Comunicatore'
+        'Studioso che approfondisce temi complessi e li analizza',
+        'Reporter che scopre e racconta ciò che accade nel mondo',
+        'Analista che raccoglie dati complessi',
+        'Comunicatore che divulga al grande pubblico'
       ],
       weights: [
         [3, 1], // Ricercatore, Giornalista
@@ -463,10 +463,10 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       id: 'a2',
       question: 'Quale attività ti incuriosisce di più?',
       options: [
-        'Scrivere articoli tecnici',
-        'Intervistare e raccontare',
-        'Studiare tendenze',
-        'Spiegare temi complessi'
+        'Scrivere articoli tecnici e report approfonditi',
+        'Intervistare persone e raccontare la realtà',
+        'Studiare tendenze sociali e culturali',
+        'Spiegare in modo chiaro temi complessi'
       ],
       weights: [
         [3, 1],
@@ -479,10 +479,10 @@ export const level2Questions: Record<string, SpecificQuestion[]> = {
       id: 'a3',
       question: 'Cosa ti entusiasma nel lavoro ideale?',
       options: [
-        'Fare ricerca',
-        'Dare voce',
-        'Interpretare i cambiamenti',
-        'Scrivere in tempo reale'
+        'Fare ricerca e scoprire qualcosa di nuovo',
+        'Dare voce a chi non ce l\'ha',
+        'Interpretare e spiegare i cambiamenti del mondo',
+        'Scrivere per informare in tempo reale'
       ],
       weights: [
         [3, 0],
