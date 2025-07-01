@@ -11,7 +11,7 @@ import { careers } from '../data/careers';
 import { University } from '../types';
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState<'careers' | 'universities'>('careers');
+  const [activeTab, setActiveTab] = useState<'quiz' | 'careers' | 'universities'>('quiz');
   const [showOrientationQuiz, setShowOrientationQuiz] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
   const [showFavorites, setShowFavorites] = useState(false);
@@ -22,33 +22,33 @@ const Index = () => {
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
       <main className="container mx-auto px-4 py-8">
-        {activeTab === 'careers' ? (
+        {activeTab === 'quiz' ? (
           <div>
-            {/* Hero section with buttons */}
+            {/* Hero section solo per il quiz */}
             <div className="text-center mb-12">
               <div className="gradient-bg text-white p-8 rounded-xl shadow-lg mb-8">
                 <h2 className="text-3xl font-bold mb-4">Scopri il Tuo Futuro Professionale</h2>
                 <p className="text-xl mb-6 text-blue-100">
-                  Esplora carriere internazionali che cambieranno il mondo
+                  Rispondi al nostro quiz personalizzato per scoprire la carriera perfetta per te
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button
-                    onClick={() => setShowOrientationQuiz(true)}
-                    className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors animate-bounce-light"
-                  >
-                    🎯 Quiz di Orientamento
-                  </button>
-                  <button
-                    className="bg-white/10 border border-white/20 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors"
-                  >
-                    📚 Guida alle Università
-                  </button>
-                  <button
-                    className="bg-white/10 border border-white/20 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors"
-                  >
-                    💼 Esplora Carriere
-                  </button>
-                </div>
+                <button
+                  onClick={() => setShowOrientationQuiz(true)}
+                  className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors animate-bounce-light"
+                >
+                  🎯 Inizia il Quiz di Orientamento
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : activeTab === 'careers' ? (
+          <div>
+            {/* Hero section per le carriere */}
+            <div className="text-center mb-12">
+              <div className="gradient-bg text-white p-8 rounded-xl shadow-lg mb-8">
+                <h2 className="text-3xl font-bold mb-4">Esplora le Carriere Internazionali</h2>
+                <p className="text-xl mb-6 text-blue-100">
+                  Scopri opportunità professionali che cambieranno il mondo
+                </p>
               </div>
             </div>
 
