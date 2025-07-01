@@ -64,30 +64,34 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       // Configurazione del globo con texture migliore e controlli ottimizzati
       const world = new Globe(globeRef.current)
         .width(globeRef.current.clientWidth)
-        .height(400)
-        // Usa texture più luminosa e dettagliata
-        .globeImageUrl('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/img/section/backgroundMapWorld.png')
+        .height(500)
+        // Usa una texture più luminosa per il globo
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
         .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
         .backgroundColor('rgba(0,0,0,0)')
         .showAtmosphere(true)
         .atmosphereColor('#4A90E2')
         .atmosphereAltitude(0.25)
         .showGraticules(false)
-        // Configurazione punti per le università con effetti hover
+        .enablePointerInteraction(true)
+        // Configurazione punti per le università con effetti hover migliorati
         .pointsData([])
-        .pointAltitude(0.015)
-        .pointRadius((d: any) => hoveredPoint === d.code ? 1.2 : 0.8)
+        .pointAltitude(0.02)
+        .pointRadius((d: any) => hoveredPoint === d.code ? 1.5 : 1.0)
         .pointColor((d: any) => hoveredPoint === d.code ? '#fbbf24' : '#dc2626')
+        .pointResolution(8)
         .pointLabel((d: any) => `
           <div style="
-            background: rgba(0,0,0,0.8); 
+            background: rgba(0,0,0,0.9); 
             color: white; 
-            padding: 8px 12px; 
-            border-radius: 6px; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
             font-size: 14px;
-            border: 1px solid #4A90E2;
+            border: 2px solid #4A90E2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
           ">
-            🎓 ${d.name}<br/>
+            🎓 <strong>${d.name}</strong><br/>
             <span style="font-size: 12px; color: #93C5FD;">
               Clicca per vedere le università
             </span>
@@ -99,26 +103,25 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         })
         .onPointHover((point: any) => {
           setHoveredPoint(point ? point.code : null);
-        })
-        // Configurazione controlli con zoom limitato e rotazione fluida
-        .enablePointerInteraction(true)
-        .pointOfView({ lat: 0, lng: 0, altitude: 2.5 }, 0);
+          // Cambia il cursore
+          globeRef.current!.style.cursor = point ? 'pointer' : 'grab';
+        });
 
-      // Blocca il controllo zoom per mantenere la vista ottimale
+      // Configurazione controlli con zoom bloccato e rotazione automatica
       const controls = world.controls();
       controls.enableZoom = false;
       controls.enablePan = false;
       controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.5;
+      controls.autoRotateSpeed = 0.3;
 
-      worldRef.current = world;
-
-      // Imposta vista iniziale con zoom ottimizzato
+      // Impostazione vista iniziale
       world.pointOfView({
         lat: continents[currentContinentIndex].lat,
         lng: continents[currentContinentIndex].lng,
         altitude: 2.5
       });
+
+      worldRef.current = world;
 
       // Aggiorna i punti iniziali
       const updatePoints = () => {
@@ -149,10 +152,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     return () => {
       console.log('Cleaning up Globe');
       if (worldRef.current) {
+        worldRef.current._destructor?.();
         worldRef.current = null;
       }
     };
-  }, [hoveredPoint]);
+  }, []);
 
   // Aggiorna i punti quando cambia il continente
   useEffect(() => {
@@ -199,13 +203,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const currentContinent = continents[currentContinentIndex];
 
   return (
-    <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[700px] relative overflow-hidden shadow-2xl">
+    <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[800px] relative overflow-hidden shadow-2xl">
       <h2 className="text-3xl font-bold text-white mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
         🌍 Globo Interattivo delle Università
       </h2>
       
       {/* Indicatore continente corrente migliorato */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-6">
         <h3 className={`text-2xl font-bold text-white transition-all duration-300 ${
           isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
         } bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent`}>
@@ -226,9 +230,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       </div>
 
       {/* Container del globo migliorato */}
-      <div className="h-96 w-full relative bg-gradient-to-b from-black/20 to-black/40 rounded-xl backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden">
+      <div className="h-[500px] w-full relative bg-gradient-to-b from-black/20 to-black/40 rounded-xl backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/50 backdrop-blur-sm rounded-xl">
             <div className="text-white text-xl font-bold animate-pulse bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               🌍 Caricamento globo magico...
             </div>
@@ -238,7 +242,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         <div 
           ref={globeRef} 
           className="w-full h-full rounded-xl"
-          style={{ minHeight: '400px' }}
+          style={{ 
+            minHeight: '500px',
+            cursor: 'grab'
+          }}
         />
 
         {/* Frecce di navigazione migliorate */}
@@ -247,7 +254,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             <button
               onClick={() => handleContinentChange('prev')}
               disabled={isTransitioning}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 shadow-lg hover:shadow-blue-500/50"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 shadow-lg hover:shadow-blue-500/50 z-10"
             >
               <ChevronLeft size={28} />
             </button>
@@ -255,7 +262,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             <button
               onClick={() => handleContinentChange('next')}
               disabled={isTransitioning}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 shadow-lg hover:shadow-purple-500/50"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 shadow-lg hover:shadow-purple-500/50 z-10"
             >
               <ChevronRight size={28} />
             </button>
@@ -268,7 +275,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       {/* Pannello laterale migliorato */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
-        <div className="absolute top-0 right-0 h-full w-80 bg-gradient-to-b from-black/80 to-black/90 backdrop-blur-xl text-white p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-white/20 shadow-2xl">
+        <div className="absolute top-0 right-0 h-full w-80 bg-gradient-to-b from-black/80 to-black/90 backdrop-blur-xl text-white p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-white/20 shadow-2xl z-30">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               🎓 {selectedCountry}
@@ -321,9 +328,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       {/* Loading overlay migliorato */}
       {isTransitioning && (
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl">
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
           <div className="text-white text-xl font-bold animate-pulse bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            ✨ Esplorando {continents[currentContinentIndex].name}... ✨
+            ✨ Esplorando {currentContinent.name}... ✨
           </div>
         </div>
       )}
