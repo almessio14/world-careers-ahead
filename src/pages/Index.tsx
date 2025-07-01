@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
 import CareerCard from '../components/CareerCard';
-import DatabaseOrientationQuiz from '../components/DatabaseOrientationQuiz';
+import NewOrientationQuiz from '../components/NewOrientationQuiz';
 import GlobeMap from '../components/GlobeMap';
 import UniversityModal from '../components/UniversityModal';
 import FavoritesModal from '../components/FavoritesModal';
@@ -53,7 +53,7 @@ const Index = () => {
       </main>
 
       {/* Modals */}
-      {showOrientationQuiz && <DatabaseOrientationQuiz onClose={() => setShowOrientationQuiz(false)} />}
+      {showOrientationQuiz && <NewOrientationQuiz onClose={() => setShowOrientationQuiz(false)} />}
       {selectedUniversity && (
         <UniversityModal
           university={selectedUniversity}
