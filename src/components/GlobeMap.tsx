@@ -61,35 +61,36 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     setIsLoading(true);
 
     try {
-      // Configurazione del globo con texture migliore e controlli ottimizzati
+      // Configurazione del globo con texture Google Maps-like e controlli ottimizzati
       const world = new Globe(globeRef.current)
         .width(globeRef.current.clientWidth)
-        .height(500)
-        // Usa una texture più luminosa per il globo
-        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+        .height(400)
+        // Usa una texture più simile a Google Maps con colori naturali
+        .globeImageUrl('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/img/section/backgroundmap/world.png')
         .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
         .backgroundColor('rgba(0,0,0,0)')
         .showAtmosphere(true)
-        .atmosphereColor('#4A90E2')
-        .atmosphereAltitude(0.25)
+        .atmosphereColor('#87ceeb')
+        .atmosphereAltitude(0.15)
         .showGraticules(false)
         .enablePointerInteraction(true)
         // Configurazione punti per le università con effetti hover migliorati
         .pointsData([])
-        .pointAltitude(0.02)
-        .pointRadius((d: any) => hoveredPoint === d.code ? 1.5 : 1.0)
+        .pointAltitude(0.03)
+        .pointRadius((d: any) => hoveredPoint === d.code ? 2.0 : 1.2)
         .pointColor((d: any) => hoveredPoint === d.code ? '#fbbf24' : '#dc2626')
-        .pointResolution(8)
+        .pointResolution(12)
         .pointLabel((d: any) => `
           <div style="
             background: rgba(0,0,0,0.9); 
             color: white; 
-            padding: 10px 15px; 
+            padding: 12px 16px; 
             border-radius: 8px; 
             font-size: 14px;
             border: 2px solid #4A90E2;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             font-family: Arial, sans-serif;
+            font-weight: 500;
           ">
             🎓 <strong>${d.name}</strong><br/>
             <span style="font-size: 12px; color: #93C5FD;">
@@ -102,23 +103,26 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           setSelectedCountry(point.code);
         })
         .onPointHover((point: any) => {
+          console.log('Point hovered:', point);
           setHoveredPoint(point ? point.code : null);
           // Cambia il cursore
-          globeRef.current!.style.cursor = point ? 'pointer' : 'grab';
+          if (globeRef.current) {
+            globeRef.current.style.cursor = point ? 'pointer' : 'grab';
+          }
         });
 
-      // Configurazione controlli con zoom bloccato e rotazione automatica
+      // Configurazione controlli senza auto-rotazione e con zoom disabilitato
       const controls = world.controls();
       controls.enableZoom = false;
       controls.enablePan = false;
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.3;
+      controls.autoRotate = false; // Rimossa auto-rotazione
+      controls.enableRotate = true;
 
-      // Impostazione vista iniziale
+      // Impostazione vista iniziale con zoom più vicino
       world.pointOfView({
         lat: continents[currentContinentIndex].lat,
         lng: continents[currentContinentIndex].lng,
-        altitude: 2.5
+        altitude: 1.8 // Zoom più vicino
       });
 
       worldRef.current = world;
@@ -172,11 +176,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       console.log('Continent changed, updating points:', points);
       worldRef.current.pointsData(points);
       
-      // Centra la vista sul continente con transizione fluida
+      // Centra la vista sul continente con transizione fluida e zoom più vicino
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: 2.5
+        altitude: 1.8 // Zoom più vicino
       }, 1500);
     }
   }, [currentContinentIndex]);
@@ -203,7 +207,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const currentContinent = continents[currentContinentIndex];
 
   return (
-    <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[800px] relative overflow-hidden shadow-2xl">
+    <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-2xl">
       <h2 className="text-3xl font-bold text-white mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
         🌍 Globo Interattivo delle Università
       </h2>
@@ -229,8 +233,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         </div>
       </div>
 
-      {/* Container del globo migliorato */}
-      <div className="h-[500px] w-full relative bg-gradient-to-b from-black/20 to-black/40 rounded-xl backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden">
+      {/* Container del globo ridotto */}
+      <div className="h-[400px] w-full relative bg-gradient-to-b from-black/20 to-black/40 rounded-xl backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/50 backdrop-blur-sm rounded-xl">
             <div className="text-white text-xl font-bold animate-pulse bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
@@ -243,7 +247,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           ref={globeRef} 
           className="w-full h-full rounded-xl"
           style={{ 
-            minHeight: '500px',
+            minHeight: '400px',
             cursor: 'grab'
           }}
         />
@@ -316,10 +320,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         </div>
       )}
 
-      {/* Istruzioni migliorate */}
+      {/* Istruzioni aggiornate */}
       <div className="text-center text-white/90 mt-6 space-y-2">
         <p className="text-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-          🎯 Il globo ruota automaticamente per te!
+          🎯 Trascina per ruotare il globo manualmente
         </p>
         <p className="text-sm text-white/70">
           Usa le frecce per cambiare continente. Passa il mouse sui punti rossi e clicca per le università.
