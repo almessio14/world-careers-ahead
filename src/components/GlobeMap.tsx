@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Globe from 'globe.gl';
@@ -59,12 +60,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     setIsLoading(true);
 
     try {
-      // Fix: Add 'new' keyword for Globe.gl initialization
+      // Ripristina l'URL originale della texture che funzionava
       const world = new Globe(globeRef.current)
         .width(globeRef.current.clientWidth)
         .height(400)
-        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-natural.jpg')
-        .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
         .backgroundColor('rgba(0,0,0,0)')
         .showAtmosphere(true)
         .atmosphereColor('#4A90E2')
