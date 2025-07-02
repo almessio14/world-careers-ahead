@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
 import { continents, globeConfig } from './globe/globeConfig';
@@ -20,8 +21,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [allCountries, setAllCountries] = useState<any[]>([]);
 
-  // Sposto la funzione getCountryCode prima dell'useEffect
+  // Funzione migliorata per il mapping dei paesi
   const getCountryCode = (countryName: string): string | null => {
+    if (!countryName) return null;
+    
     const countryMappings: Record<string, string> = {
       'United States of America': 'USA',
       'United States': 'USA',
@@ -49,7 +52,28 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       'Ireland': 'Ireland'
     };
 
-    return countryMappings[countryName] || null;
+    // Cerca prima una corrispondenza esatta
+    if (countryMappings[countryName]) {
+      return countryMappings[countryName];
+    }
+
+    // Cerca una corrispondenza parziale
+    for (const [key, value] of Object.entries(countryMappings)) {
+      if (countryName.toLowerCase().includes(key.toLowerCase()) || 
+          key.toLowerCase().includes(countryName.toLowerCase())) {
+        return value;
+      }
+    }
+
+    return null;
+  };
+
+  // Funzione per verificare se un paese ha università
+  const hasUniversities = (countryName: string): boolean => {
+    const countryCode = getCountryCode(countryName);
+    const result = countryCode && universitiesByCountry[countryCode] && universitiesByCountry[countryCode].length > 0;
+    console.log(`Country: ${countryName} -> Code: ${countryCode} -> Has universities: ${result}`);
+    return !!result;
   };
 
   useEffect(() => {
@@ -77,29 +101,32 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .polygonsData([])
         .polygonAltitude(0.01)
         .polygonCapColor((d: any) => {
-          const countryCode = getCountryCode(d.properties?.NAME);
-          if (countryCode && universitiesByCountry[countryCode]) {
+          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+          console.log('Polygon cap color for:', countryName);
+          
+          if (hasUniversities(countryName)) {
+            console.log('Country has universities, applying gold color');
             return d.hovered ? '#FFD700' : 'rgba(205, 164, 52, 0.8)';
           }
           return 'rgba(100, 100, 100, 0.3)';
         })
         .polygonSideColor((d: any) => {
-          const countryCode = getCountryCode(d.properties?.NAME);
-          if (countryCode && universitiesByCountry[countryCode]) {
+          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+          if (hasUniversities(countryName)) {
             return d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.6)';
           }
           return 'rgba(80, 80, 80, 0.2)';
         })
         .polygonStrokeColor((d: any) => {
-          const countryCode = getCountryCode(d.properties?.NAME);
-          if (countryCode && universitiesByCountry[countryCode]) {
+          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+          if (hasUniversities(countryName)) {
             return d.hovered ? '#FFFF00' : 'rgba(205, 164, 52, 0.9)';
           }
           return 'rgba(120, 120, 120, 0.4)';
         })
         .polygonLabel((d: any) => {
-          const countryCode = getCountryCode(d.properties?.NAME);
-          if (countryCode && universitiesByCountry[countryCode]) {
+          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+          if (hasUniversities(countryName)) {
             return `
               <div style="
                 background: rgba(0, 0, 0, 0.9); 
@@ -110,7 +137,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
                 font-family: Arial, sans-serif;
                 box-shadow: 0 4px 8px rgba(0,0,0,0.3);
               ">
-                🎓 <strong>${d.properties.NAME}</strong><br/>
+                🎓 <strong>${countryName}</strong><br/>
                 Clicca per le università
               </div>
             `;
@@ -118,27 +145,31 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           return '';
         })
         .onPolygonClick((polygon: any) => {
-          console.log('Country clicked:', polygon);
-          const countryName = polygon.properties?.NAME;
+          const countryName = polygon.properties?.NAME || polygon.properties?.name || polygon.properties?.NAME_EN;
+          console.log('Polygon clicked:', countryName);
+          
           const countryCode = getCountryCode(countryName);
-          console.log('Country code found:', countryCode);
+          console.log('Country code from click:', countryCode);
+          
           if (countryCode && universitiesByCountry[countryCode]) {
-            console.log('Setting selected country:', countryCode);
+            console.log('Opening universities for:', countryCode);
             setSelectedCountry(countryCode);
+          } else {
+            console.log('No universities found for:', countryName);
           }
         })
         .onPolygonHover((polygon: any, prevPolygon: any) => {
-          console.log('Polygon hover:', polygon?.properties?.NAME);
-          
-          if (prevPolygon && prevPolygon !== polygon) {
+          // Reset previous polygon
+          if (prevPolygon) {
             prevPolygon.hovered = false;
           }
           
           if (polygon) {
-            const countryCode = getCountryCode(polygon.properties?.NAME);
-            console.log('Hover country code:', countryCode);
-            if (countryCode && universitiesByCountry[countryCode]) {
-              console.log('Setting hover true for:', polygon.properties?.NAME);
+            const countryName = polygon.properties?.NAME || polygon.properties?.name || polygon.properties?.NAME_EN;
+            console.log('Hovering over:', countryName);
+            
+            if (hasUniversities(countryName)) {
+              console.log('Setting hover for country with universities:', countryName);
               polygon.hovered = true;
               if (globeRef.current) {
                 globeRef.current.style.cursor = 'pointer';
@@ -154,15 +185,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               globeRef.current.style.cursor = 'grab';
             }
           }
-          
-          // Forza il re-render dei poligoni
-          setTimeout(() => {
-            if (worldRef.current) {
-              const currentData = worldRef.current.polygonsData();
-              worldRef.current.polygonsData([]);
-              worldRef.current.polygonsData(currentData);
-            }
-          }, 10);
         });
 
       const controls = world.controls();
@@ -178,11 +200,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       worldRef.current = world;
 
-      // Carica i dati dei paesi una volta sola
+      // Carica i dati dei paesi
       fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
         .then(res => res.json())
         .then(countries => {
           console.log('Countries loaded:', countries.features.length);
+          console.log('Sample country properties:', countries.features[0]?.properties);
           setAllCountries(countries.features);
           setIsLoading(false);
           console.log('Globe initialized successfully');
