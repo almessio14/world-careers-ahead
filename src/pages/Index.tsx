@@ -3,11 +3,14 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
 import CareerCard from '../components/CareerCard';
+import CareerExplorationCard from '../components/CareerExplorationCard';
+import MicroareaModal from '../components/MicroareaModal';
 import NewOrientationQuiz from '../components/NewOrientationQuiz';
 import GlobeMap from '../components/GlobeMap';
 import UniversityModal from '../components/UniversityModal';
 import FavoritesModal from '../components/FavoritesModal';
 import { careers } from '../data/careers';
+import { careerExplorationData, Microarea } from '../data/careerExploration';
 import { University } from '../types';
 
 const Index = () => {
@@ -15,6 +18,7 @@ const Index = () => {
   const [showOrientationQuiz, setShowOrientationQuiz] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [selectedMicroarea, setSelectedMicroarea] = useState<Microarea | null>(null);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -52,10 +56,14 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Careers grid */}
+            {/* Career Exploration Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {careers.map((career) => (
-                <CareerCard key={career.id} career={career} />
+              {careerExplorationData.map((category) => (
+                <CareerExplorationCard 
+                  key={category.id} 
+                  category={category}
+                  onMicroareaClick={setSelectedMicroarea}
+                />
               ))}
             </div>
           </div>
@@ -70,6 +78,12 @@ const Index = () => {
         <UniversityModal
           university={selectedUniversity}
           onClose={() => setSelectedUniversity(null)}
+        />
+      )}
+      {selectedMicroarea && (
+        <MicroareaModal
+          microarea={selectedMicroarea}
+          onClose={() => setSelectedMicroarea(null)}
         />
       )}
       {showFavorites && <FavoritesModal onClose={() => setShowFavorites(false)} />}
