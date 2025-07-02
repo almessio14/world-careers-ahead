@@ -56,6 +56,13 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Disclaimer sugli stipendi */}
+            <div className="mb-6">
+              <p className="text-sm text-gray-600 italic text-center">
+                *Stipendi medi indicativi in Europa Occidentale/Nord America per posizioni entry level (2-3 anni)
+              </p>
+            </div>
+
             {/* Career Exploration Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
               {careerExplorationData.map((category) => (

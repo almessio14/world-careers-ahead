@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { Progress } from './ui/progress';
 import { 
   level1Questions, 
   level2Questions, 
@@ -87,6 +88,20 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     }
   };
 
+  const getMicroareaForCategory = (categoryId: string): string => {
+    const microareas: Record<string, string[]> = {
+      finance: ['Investment Banking', 'Private Equity', 'Venture Capital', 'Hedge Funds', 'Quantitative Finance', 'Asset Management'],
+      consulting: ['Strategy Consulting (MBB)', 'Management Consulting (Big 4)', 'Transformation Consulting'],
+      policy: ['Diplomatic Services', 'International Organizations', 'Policy Research & Think Tanks'],
+      business: ['Big Tech', 'Product Management', 'Corporate Strategy', 'Marketing & Brand Management', 'Human Resources'],
+      entrepreneurship: ['Startup Founder', 'Chief Financial Officer (CFO)', 'Business Development'],
+      academic: ['Economic Research', 'Financial Journalism', 'Data Analysis & Research']
+    };
+    
+    const categoryMicroareas = microareas[categoryId] || [];
+    return categoryMicroareas[Math.floor(Math.random() * categoryMicroareas.length)] || 'Area specialistica';
+  };
+
   const resetQuiz = () => {
     setPhase('level1');
     setCurrentQuestion(0);
@@ -115,7 +130,19 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
                 <h4 className="font-semibold text-gray-900 mb-2">Specializzazione consigliata:</h4>
                 <h5 className="text-lg font-medium text-primary mb-2">{finalResult.name}</h5>
                 <p className="text-sm text-gray-600 mb-2">{finalResult.description}</p>
-                <p className="text-xs text-gray-500">{finalResult.details}</p>
+                <p className="text-xs text-gray-500 mb-3">{finalResult.details}</p>
+                
+                <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Microarea consigliata:</span> {getMicroareaForCategory(topMacroCategory.id)}
+                  </p>
+                  <button
+                    onClick={onClose}
+                    className="text-sm text-primary hover:text-primary/80 underline"
+                  >
+                    → Vai a vedere i dettagli nella schermata scopri le carriere
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -174,12 +201,7 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
                </span>
                <span>Domanda {currentQuestionNumber} di 10</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-primary h-2 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
+            <Progress value={progress} className="w-full" />
           </div>
         </div>
 
