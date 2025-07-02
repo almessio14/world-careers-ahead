@@ -19,6 +19,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [allCountries, setAllCountries] = useState<any[]>([]);
 
   useEffect(() => {
     if (!globeRef.current) return;
@@ -94,31 +95,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       worldRef.current = world;
 
-      // Carica i dati dei paesi
+      // Carica i dati dei paesi una volta sola
       fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
         .then(res => res.json())
         .then(countries => {
-          const currentContinent = continents[currentContinentIndex];
-          const continentCountries = countries.features.filter((d: any) => {
-            const countryName = d.properties?.NAME;
-            if (!countryName) return false;
-            
-            return currentContinent.countries.some(c => 
-              countryName.toLowerCase().includes(c.name.toLowerCase()) ||
-              c.name.toLowerCase().includes(countryName.toLowerCase()) ||
-              getCountryCode(countryName) === c.code
-            );
-          });
-
-          world.polygonsData(continentCountries);
-          
-          const currentCont = continents[currentContinentIndex];
-          world.pointOfView({
-            lat: currentCont.lat,
-            lng: currentCont.lng,
-            altitude: 2
-          }, 1000);
-
+          setAllCountries(countries.features);
           setIsLoading(false);
           console.log('Globe initialized successfully');
         })
@@ -142,7 +123,34 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         worldRef.current = null;
       }
     };
-  }, [currentContinentIndex]);
+  }, []);
+
+  // Effetto separato per aggiornare i paesi quando cambia il continente
+  useEffect(() => {
+    if (!worldRef.current || !allCountries.length) return;
+
+    const currentContinent = continents[currentContinentIndex];
+    const continentCountries = allCountries.filter((d: any) => {
+      const countryName = d.properties?.NAME;
+      if (!countryName) return false;
+      
+      return currentContinent.countries.some(c => 
+        countryName.toLowerCase().includes(c.name.toLowerCase()) ||
+        c.name.toLowerCase().includes(countryName.toLowerCase()) ||
+        getCountryCode(countryName) === c.code
+      );
+    });
+
+    worldRef.current.polygonsData(continentCountries);
+    
+    // Sposta semplicemente la vista senza reinizializzare
+    worldRef.current.pointOfView({
+      lat: currentContinent.lat,
+      lng: currentContinent.lng,
+      altitude: 2
+    }, 1000);
+
+  }, [currentContinentIndex, allCountries]);
 
   const getCountryCode = (countryName: string): string | null => {
     const countryMappings: Record<string, string> = {
@@ -182,21 +190,19 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     setIsTransitioning(true);
     setSelectedCountry(null);
     
+    if (direction === 'prev') {
+      setCurrentContinentIndex((prev) => 
+        prev === 0 ? continents.length - 1 : prev - 1
+      );
+    } else {
+      setCurrentContinentIndex((prev) => 
+        prev === continents.length - 1 ? 0 : prev + 1
+      );
+    }
+    
     setTimeout(() => {
-      if (direction === 'prev') {
-        setCurrentContinentIndex((prev) => 
-          prev === 0 ? continents.length - 1 : prev - 1
-        );
-      } else {
-        setCurrentContinentIndex((prev) => 
-          prev === continents.length - 1 ? 0 : prev + 1
-        );
-      }
-      
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 1000);
-    }, 100);
+      setIsTransitioning(false);
+    }, 1000);
   };
 
   return (
