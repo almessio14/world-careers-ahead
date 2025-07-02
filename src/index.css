@@ -7,83 +7,83 @@
 
 @layer base {
   :root {
-    --background: 250 243 224; /* Crema carta */
-    --foreground: 0 33 71; /* Blu Oxford */
+    --background: 255 255 255; /* Bianco */
+    --foreground: 30 58 138; /* Navy Blue */
 
     --card: 255 255 255;
-    --card-foreground: 0 33 71;
+    --card-foreground: 30 58 138;
 
     --popover: 255 255 255;
-    --popover-foreground: 0 33 71;
+    --popover-foreground: 30 58 138;
 
-    --primary: 0 33 71; /* Blu Oxford */
-    --primary-foreground: 250 243 224;
+    --primary: 30 58 138; /* Navy Blue */
+    --primary-foreground: 255 255 255;
 
-    --secondary: 211 211 211; /* Grigio chiaro */
-    --secondary-foreground: 0 33 71;
+    --secondary: 229 231 235; /* Grigio chiaro */
+    --secondary-foreground: 30 58 138;
 
-    --muted: 211 211 211;
-    --muted-foreground: 123 30 59; /* Bordeaux */
+    --muted: 229 231 235;
+    --muted-foreground: 127 29 29; /* Bordeaux */
 
-    --accent: 205 164 52; /* Oro spento */
-    --accent-foreground: 0 33 71;
+    --accent: 251 191 36; /* Oro */
+    --accent-foreground: 30 58 138;
 
     --destructive: 239 68 68;
-    --destructive-foreground: 250 243 224;
+    --destructive-foreground: 255 255 255;
 
-    --border: 211 211 211;
-    --input: 211 211 211;
-    --ring: 205 164 52;
+    --border: 229 231 235;
+    --input: 229 231 235;
+    --ring: 251 191 36;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 250 243 224;
-    --sidebar-foreground: 0 33 71;
-    --sidebar-primary: 0 33 71;
-    --sidebar-primary-foreground: 250 243 224;
-    --sidebar-accent: 211 211 211;
-    --sidebar-accent-foreground: 0 33 71;
-    --sidebar-border: 211 211 211;
-    --sidebar-ring: 205 164 52;
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 30 58 138;
+    --sidebar-primary: 30 58 138;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 229 231 235;
+    --sidebar-accent-foreground: 30 58 138;
+    --sidebar-border: 229 231 235;
+    --sidebar-ring: 251 191 36;
   }
 
   .dark {
-    --background: 0 33 71; /* Blu Oxford */
-    --foreground: 250 243 224; /* Crema carta */
+    --background: 30 58 138; /* Navy Blue */
+    --foreground: 255 255 255; /* Bianco */
 
-    --card: 0 33 71;
-    --card-foreground: 250 243 224;
+    --card: 30 58 138;
+    --card-foreground: 255 255 255;
 
-    --popover: 0 33 71;
-    --popover-foreground: 250 243 224;
+    --popover: 30 58 138;
+    --popover-foreground: 255 255 255;
 
-    --primary: 205 164 52; /* Oro spento */
-    --primary-foreground: 0 33 71;
+    --primary: 251 191 36; /* Oro */
+    --primary-foreground: 30 58 138;
 
-    --secondary: 123 30 59; /* Bordeaux */
-    --secondary-foreground: 250 243 224;
+    --secondary: 127 29 29; /* Bordeaux */
+    --secondary-foreground: 255 255 255;
 
-    --muted: 123 30 59;
-    --muted-foreground: 211 211 211;
+    --muted: 127 29 29;
+    --muted-foreground: 229 231 235;
 
-    --accent: 205 164 52;
-    --accent-foreground: 0 33 71;
+    --accent: 251 191 36;
+    --accent-foreground: 30 58 138;
 
     --destructive: 220 38 38;
-    --destructive-foreground: 250 243 224;
+    --destructive-foreground: 255 255 255;
 
-    --border: 123 30 59;
-    --input: 123 30 59;
-    --ring: 205 164 52;
+    --border: 127 29 29;
+    --input: 127 29 29;
+    --ring: 251 191 36;
 
-    --sidebar-background: 0 33 71;
-    --sidebar-foreground: 250 243 224;
-    --sidebar-primary: 205 164 52;
-    --sidebar-primary-foreground: 0 33 71;
-    --sidebar-accent: 123 30 59;
-    --sidebar-accent-foreground: 250 243 224;
-    --sidebar-border: 123 30 59;
-    --sidebar-ring: 205 164 52;
+    --sidebar-background: 30 58 138;
+    --sidebar-foreground: 255 255 255;
+    --sidebar-primary: 251 191 36;
+    --sidebar-primary-foreground: 30 58 138;
+    --sidebar-accent: 127 29 29;
+    --sidebar-accent-foreground: 255 255 255;
+    --sidebar-border: 127 29 29;
+    --sidebar-ring: 251 191 36;
   }
 }
 
@@ -97,31 +97,31 @@
   }
 
   .gradient-bg {
-    background: linear-gradient(135deg, #002147 0%, #7B1E3B 50%, #CDA434 100%);
+    background: #1e3a8a; /* Navy solido */
   }
 
   .glass-effect {
-    background: rgba(250, 243, 224, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(205, 164, 52, 0.2);
+    border: 1px solid rgba(251, 191, 36, 0.2);
   }
 }
 
 @layer components {
   .career-card {
-    @apply bg-[#FAF3E0] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-[#D3D3D3];
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-200;
   }
 
   .career-card:hover {
-    @apply -translate-y-1 shadow-2xl border-[#CDA434];
+    @apply -translate-y-1 shadow-2xl border-accent;
   }
 
   .quiz-option {
-    @apply p-4 rounded-lg border-2 border-[#D3D3D3] cursor-pointer transition-all duration-200 hover:border-[#CDA434] hover:bg-[#CDA434]/5;
+    @apply p-4 rounded-lg border-2 border-gray-200 cursor-pointer transition-all duration-200 hover:border-accent hover:bg-accent/5;
   }
 
   .quiz-option.selected {
-    @apply border-[#CDA434] bg-[#CDA434]/10;
+    @apply border-accent bg-accent/10;
   }
 
   .world-map {
@@ -195,7 +195,7 @@
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(205, 164, 52, 0.3) transparent;
+  scrollbar-color: rgba(251, 191, 36, 0.3) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -207,10 +207,10 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(205, 164, 52, 0.3);
+  background-color: rgba(251, 191, 36, 0.3);
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(205, 164, 52, 0.5);
+  background-color: rgba(251, 191, 36, 0.5);
 }

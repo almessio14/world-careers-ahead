@@ -22,30 +22,32 @@ const CareerCard = ({ career }: CareerCardProps) => {
   };
 
   return (
-    <div className="career-card animate-fadeIn">
-      <div className="flex items-start justify-between mb-4">
+    <div className="career-card animate-fadeIn relative">
+      {/* Cuore bordeaux in alto a destra */}
+      <button
+        onClick={handleFavoriteClick}
+        className={`absolute top-4 right-4 p-2 rounded-full transition-colors z-10 ${
+          isFavorite(career.id)
+            ? 'text-[#7f1d1d] bg-[#7f1d1d]/10 hover:bg-[#7f1d1d]/20'
+            : 'text-gray-400 hover:text-[#7f1d1d] hover:bg-[#7f1d1d]/10'
+        }`}
+      >
+        <Heart className={`h-5 w-5 ${isFavorite(career.id) ? 'fill-current' : ''}`} />
+      </button>
+
+      <div className="flex items-start justify-between mb-4 pr-12">
         <div className="flex items-center space-x-3">
           <span className="text-3xl">{career.icon}</span>
           <div>
-            <h3 className="text-xl font-semibold text-gray-900">{career.title}</h3>
+            <h3 className="text-xl font-semibold text-[#1e3a8a]">{career.title}</h3>
             <p className="text-gray-600 text-sm mt-1">{career.description}</p>
           </div>
         </div>
-        <button
-          onClick={handleFavoriteClick}
-          className={`p-2 rounded-full transition-colors ${
-            isFavorite(career.id)
-              ? 'text-red-500 bg-red-50 hover:bg-red-100'
-              : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
-          }`}
-        >
-          <Heart className={`h-5 w-5 ${isFavorite(career.id) ? 'fill-current' : ''}`} />
-        </button>
       </div>
 
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+        className="w-full bg-[#1e3a8a] text-white py-2 px-4 rounded-lg hover:bg-[#1e3a8a]/90 transition-colors text-sm font-medium"
       >
         {isExpanded ? 'Riduci' : 'Scopri di più'}
       </button>
@@ -56,11 +58,11 @@ const CareerCard = ({ career }: CareerCardProps) => {
           
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Competenze richieste:</h4>
+              <h4 className="font-semibold text-[#1e3a8a] mb-2">Competenze richieste:</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {career.skills.map((skill, index) => (
                   <li key={index} className="flex items-center">
-                    <span className="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                    <span className="w-2 h-2 bg-[#1e3a8a] rounded-full mr-2"></span>
                     {skill}
                   </li>
                 ))}
@@ -68,11 +70,11 @@ const CareerCard = ({ career }: CareerCardProps) => {
             </div>
             
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Formazione:</h4>
+              <h4 className="font-semibold text-[#1e3a8a] mb-2">Formazione:</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {career.education.map((edu, index) => (
                   <li key={index} className="flex items-center">
-                    <span className="w-2 h-2 bg-accent rounded-full mr-2"></span>
+                    <span className="w-2 h-2 bg-[#fbbf24] rounded-full mr-2"></span>
                     {edu}
                   </li>
                 ))}

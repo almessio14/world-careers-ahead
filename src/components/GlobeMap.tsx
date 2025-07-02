@@ -192,7 +192,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
   return (
     <div className="bg-gradient-to-b from-[#002147] via-[#003366] to-[#004080] rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-2xl">
-      <h2 className="text-3xl font-bold text-[#FAF3E0] mb-6 text-center bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
+      <h2 className="text-3xl font-bold text-white mb-6 text-center">
         🌍 Globo Interattivo delle Università
       </h2>
       
@@ -237,11 +237,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       />
 
       {/* Istruzioni */}
-      <div className="text-center text-[#FAF3E0]/90 mt-6 space-y-2">
-        <p className="text-lg font-semibold bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
+      <div className="text-center text-white mt-6 space-y-2">
+        <p className="text-lg font-semibold text-[#1e3a8a]">
           🎯 Usa le frecce per cambiare continente
         </p>
-        <p className="text-sm text-[#D3D3D3]">
+        <p className="text-sm text-gray-300">
           Trascina per ruotare il globo. I punti rossi diventano gialli al passaggio del mouse.
         </p>
       </div>
