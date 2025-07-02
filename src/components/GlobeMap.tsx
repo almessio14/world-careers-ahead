@@ -14,7 +14,7 @@ interface GlobeMapProps {
 const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const globeRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<any>(null);
-  const [currentContinentIndex, setCurrentContinentIndex] = useState(1); // Inizia con Europa
+  const [currentContinentIndex, setCurrentContinentIndex] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,22 +23,24 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   useEffect(() => {
     if (!globeRef.current) return;
 
-    console.log('Initializing Globe with fixed configuration...');
+    console.log('Initializing simplified Globe...');
     setIsLoading(true);
 
     try {
-      // Pulisci completamente il container
+      // Pulisci completamente
       globeRef.current.innerHTML = '';
 
       const world = new Globe(globeRef.current)
         .width(globeRef.current.clientWidth)
         .height(globeConfig.height)
-        .globeImageUrl(globeConfig.globeImageUrl)
-        .bumpImageUrl(globeConfig.bumpImageUrl)
         .backgroundColor(globeConfig.backgroundColor)
+        .showGlobe(true)
+        .globeMaterial(new (window as any).THREE.MeshBasicMaterial({ 
+          color: 0x4A90E2, // Blu per il globo
+          transparent: true,
+          opacity: 0.8
+        }))
         .showAtmosphere(globeConfig.showAtmosphere)
-        .atmosphereColor(globeConfig.atmosphereColor)
-        .atmosphereAltitude(globeConfig.atmosphereAltitude)
         .enablePointerInteraction(globeConfig.enablePointerInteraction)
         .pointsData([])
         .pointAltitude(globeConfig.pointAltitude)
@@ -47,20 +49,15 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .pointResolution(globeConfig.pointResolution)
         .pointLabel((d: any) => `
           <div style="
-            background: rgba(0, 33, 71, 0.95); 
-            color: #FAF3E0; 
-            padding: 12px 16px; 
-            border-radius: 8px; 
-            font-size: 14px;
-            border: 2px solid #CDA434;
-            box-shadow: 0 4px 15px rgba(0, 33, 71, 0.4);
+            background: rgba(0, 0, 0, 0.9); 
+            color: white; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            font-size: 12px;
             font-family: Arial, sans-serif;
-            font-weight: 500;
           ">
             🎓 <strong>${d.name}</strong><br/>
-            <span style="font-size: 12px; color: #D3D3D3;">
-              Clicca per vedere le università
-            </span>
+            Clicca per università
           </div>
         `)
         .onPointClick((point: any) => {
@@ -75,17 +72,17 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           }
         });
 
-      // Configurazione controlli - ZOOM COMPLETAMENTE FISSO
+      // Controlli COMPLETAMENTE FISSI
       const controls = world.controls();
       controls.enableZoom = false;
       controls.enablePan = false;
       controls.autoRotate = false;
       controls.enableRotate = true;
-      controls.rotateSpeed = 0.8;
+      controls.rotateSpeed = 0.5;
       controls.minDistance = globeConfig.initialView.altitude;
       controls.maxDistance = globeConfig.initialView.altitude;
 
-      // Imposta vista iniziale
+      // Vista iniziale
       world.pointOfView({
         lat: continents[currentContinentIndex].lat,
         lng: continents[currentContinentIndex].lng,
@@ -94,8 +91,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       worldRef.current = world;
 
-      // Imposta punti iniziali
-      const updateInitialPoints = () => {
+      // Aggiungi punti immediatamente
+      const updatePoints = () => {
         if (!worldRef.current) return;
         
         const currentContinent = continents[currentContinentIndex];
@@ -106,31 +103,35 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           code: country.code
         }));
         
-        console.log('Setting points for', currentContinent.name, ':', points);
+        console.log('Adding points:', points);
         worldRef.current.pointsData(points);
       };
 
-      // Aspetta che il globo sia caricato
+      // Timeout breve per il rendering
       setTimeout(() => {
-        updateInitialPoints();
+        updatePoints();
         setIsLoading(false);
-        console.log('Globe ready and visible');
-      }, 1500);
+        console.log('Globe should be visible now');
+      }, 500);
 
     } catch (error) {
-      console.error('Error initializing Globe:', error);
+      console.error('Globe initialization error:', error);
       setIsLoading(false);
     }
 
     return () => {
       if (worldRef.current) {
-        worldRef.current._destructor?.();
+        try {
+          worldRef.current._destructor?.();
+        } catch (e) {
+          console.log('Globe cleanup completed');
+        }
         worldRef.current = null;
       }
     };
-  }, []); // Rimuovo hoveredPoint per evitare re-render
+  }, []);
 
-  // Aggiorna colori punti quando cambia hover
+  // Aggiorna colori hover
   useEffect(() => {
     if (worldRef.current && !isLoading) {
       worldRef.current
@@ -139,7 +140,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     }
   }, [hoveredPoint, isLoading]);
 
-  // Aggiorna punti quando cambia continente
+  // Cambio continente
   useEffect(() => {
     if (worldRef.current && !isLoading) {
       const currentContinent = continents[currentContinentIndex];
@@ -150,15 +151,14 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         code: country.code
       }));
       
-      console.log('Changing to continent:', currentContinent.name, 'with points:', points);
+      console.log('Changing continent to:', currentContinent.name);
       worldRef.current.pointsData(points);
       
-      // Transizione verso il nuovo continente
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
         altitude: globeConfig.initialView.altitude
-      }, 1500);
+      }, 1000);
     }
   }, [currentContinentIndex, isLoading]);
 
@@ -180,7 +180,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         );
       }
       setIsTransitioning(false);
-    }, 200);
+    }, 100);
   };
 
   return (
@@ -195,23 +195,23 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         isTransitioning={isTransitioning}
       />
 
-      {/* Container del globo */}
-      <div className="h-[400px] w-full relative bg-[#002147] rounded-xl border border-[#CDA434]/20 shadow-2xl overflow-hidden">
+      {/* Container del globo SEMPLIFICATO */}
+      <div className="h-[400px] w-full relative rounded-xl border border-[#CDA434]/20 shadow-2xl overflow-hidden" style={{ backgroundColor: '#001122' }}>
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#002147]/50 backdrop-blur-sm rounded-xl">
-            <div className="text-[#FAF3E0] text-xl font-bold animate-pulse bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
-              🌍 Caricamento globo...
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#001122]/80">
+            <div className="text-white text-xl font-bold animate-pulse">
+              🌍 Caricamento globo semplificato...
             </div>
           </div>
         )}
         
         <div 
           ref={globeRef} 
-          className="w-full h-full rounded-xl"
+          className="w-full h-full"
           style={{ 
             minHeight: '400px',
             cursor: 'grab',
-            background: '#002147'
+            background: '#001122'
           }}
         />
 
@@ -236,14 +236,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           🎯 Usa le frecce per cambiare continente
         </p>
         <p className="text-sm text-[#D3D3D3]">
-          Trascina per ruotare. Passa il mouse sui punti bordeaux e clicca per le università.
+          Trascina per ruotare. I punti rossi diventano gialli al passaggio del mouse.
         </p>
       </div>
 
-      {/* Loading overlay per transizioni */}
       {isTransitioning && (
-        <div className="absolute inset-0 bg-[#002147]/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
-          <div className="text-[#FAF3E0] text-xl font-bold animate-pulse bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
+        <div className="absolute inset-0 bg-[#001122]/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
+          <div className="text-white text-xl font-bold animate-pulse">
             ✨ Esplorando {continents[currentContinentIndex].name}... ✨
           </div>
         </div>

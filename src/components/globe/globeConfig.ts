@@ -34,23 +34,23 @@ export const continents = [
   }
 ];
 
-// Configurazione del globo ottimizzata per la visibilità
+// Configurazione semplificata - SOLO COLORI SOLIDI
 export const globeConfig = {
   width: 800,
   height: 400,
-  // Texture semplici e affidabili
-  globeImageUrl: 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
-  bumpImageUrl: 'https://unpkg.com/three-globe/example/img/earth-topology.png',
-  backgroundColor: '#002147', // Blu Oxford solido per sfondo visibile
-  showAtmosphere: true,
+  // NESSUNA TEXTURE - solo colore solido
+  globeImageUrl: null,
+  bumpImageUrl: null,
+  backgroundColor: '#001122', // Blu scuro per contrasto
+  showAtmosphere: false, // Disabilitato per semplicità
   atmosphereColor: '#CDA434',
-  atmosphereAltitude: 0.15,
+  atmosphereAltitude: 0.1,
   enablePointerInteraction: true,
-  pointAltitude: 0.05,
-  pointRadius: { normal: 3, hover: 4 }, // Punti più grandi
-  pointColor: { normal: '#7B1E3B', hover: '#CDA434' },
-  pointResolution: 12,
+  pointAltitude: 0.1,
+  pointRadius: { normal: 4, hover: 6 },
+  pointColor: { normal: '#FF0000', hover: '#FFFF00' }, // Rosso e giallo per visibilità
+  pointResolution: 8,
   initialView: {
-    altitude: 1.8 // Zoom fisso ma non troppo vicino
+    altitude: 2.5 // Zoom fisso ravvicinato
   }
 };
