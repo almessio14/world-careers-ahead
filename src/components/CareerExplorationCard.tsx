@@ -13,7 +13,9 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
 
   return (
     <Card 
-      className="min-h-80 h-auto cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-card border border-border"
+      className={`cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-card border border-border ${
+        isHovered ? 'h-auto min-h-64' : 'h-64'
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

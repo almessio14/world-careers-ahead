@@ -57,7 +57,7 @@ const Index = () => {
             </div>
 
             {/* Career Exploration Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
               {careerExplorationData.map((category) => (
                 <CareerExplorationCard 
                   key={category.id} 
