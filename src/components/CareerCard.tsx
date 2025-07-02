@@ -23,13 +23,13 @@ const CareerCard = ({ career }: CareerCardProps) => {
 
   return (
     <div className="career-card animate-fadeIn relative">
-      {/* Cuore bordeaux in alto a destra */}
+      {/* Cuore dorato in alto a destra */}
       <button
         onClick={handleFavoriteClick}
         className={`absolute top-4 right-4 p-2 rounded-full transition-colors z-10 ${
           isFavorite(career.id)
-            ? 'text-[#7f1d1d] bg-[#7f1d1d]/10 hover:bg-[#7f1d1d]/20'
-            : 'text-gray-400 hover:text-[#7f1d1d] hover:bg-[#7f1d1d]/10'
+            ? 'text-[#fbbf24] bg-[#fbbf24]/10 hover:bg-[#fbbf24]/20'
+            : 'text-gray-400 hover:text-[#fbbf24] hover:bg-[#fbbf24]/10'
         }`}
       >
         <Heart className={`h-5 w-5 stroke-2 ${isFavorite(career.id) ? 'fill-current' : 'fill-none'}`} />

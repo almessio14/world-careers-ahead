@@ -15,7 +15,7 @@ const Header = ({ onFavoritesClick }: HeaderProps) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <img 
-              src="/lovable-uploads/12c26666-a89b-4c11-93a0-272c8f6115e3.png" 
+              src="/lovable-uploads/0a10cf19-3500-400d-b171-36dc48fb95be.png" 
               alt="OrientMe Logo" 
               className="h-12 w-auto"
             />
@@ -31,9 +31,9 @@ const Header = ({ onFavoritesClick }: HeaderProps) => {
             onClick={onFavoritesClick}
             className="relative p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
           >
-            <Heart className="h-6 w-6 text-[#7f1d1d] fill-none stroke-2" />
+            <Heart className="h-6 w-6 text-[#fbbf24] fill-none stroke-2" />
             {favorites.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#7f1d1d] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
+              <span className="absolute -top-1 -right-1 bg-[#fbbf24] text-[#14213d] text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white font-semibold">
                 {favorites.length}
               </span>
             )}
