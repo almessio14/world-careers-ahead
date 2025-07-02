@@ -1,13 +1,11 @@
 
-import * as THREE from 'three';
-
 // Coordinate geografiche dei continenti
 export const continents = [
   {
     key: 'europa',
     name: 'Europa',
-    lat: 50.0,
-    lng: 10.0,
+    lat: 54.0,
+    lng: 15.0,
     countries: [
       { name: 'UK', code: 'UK', lat: 55.3781, lng: -3.4360 },
       { name: 'France', code: 'France', lat: 46.6034, lng: 1.8883 },

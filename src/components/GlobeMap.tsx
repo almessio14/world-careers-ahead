@@ -1,15 +1,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
-import * as THREE from 'three';
 import { continents, globeConfig } from './globe/globeConfig';
 import GlobeControls from './globe/GlobeControls';
 import ContinentIndicator from './globe/ContinentIndicator';
 import UniversitySidebar from './globe/UniversitySidebar';
 import { University } from '../types';
-
-// Rendi THREE disponibile globalmente per Globe.gl
-(window as any).THREE = THREE;
 
 interface GlobeMapProps {
   onUniversitySelect: (university: University) => void;
@@ -27,15 +23,17 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   useEffect(() => {
     if (!globeRef.current) return;
 
-    console.log('Initializing Globe with THREE.js...', !!THREE);
+    console.log('Initializing Globe...');
     setIsLoading(true);
 
     try {
       // Pulisci completamente il container
-      globeRef.current.innerHTML = '';
+      if (globeRef.current) {
+        globeRef.current.innerHTML = '';
+      }
 
-      const world = new Globe(globeRef.current)
-        .width(globeRef.current.clientWidth)
+      const world = new Globe(globeRef.current!)
+        .width(globeRef.current!.clientWidth)
         .height(globeConfig.height)
         .backgroundColor(globeConfig.backgroundColor)
         .globeImageUrl(globeConfig.globeImageUrl)
@@ -76,30 +74,32 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       // Controlli: solo rotazione, zoom fisso
       const controls = world.controls();
-      controls.enableZoom = false;
-      controls.enablePan = false;
-      controls.autoRotate = false;
-      controls.enableRotate = true;
-      controls.rotateSpeed = 0.3;
-      controls.minDistance = globeConfig.initialView.altitude;
-      controls.maxDistance = globeConfig.initialView.altitude;
+      if (controls) {
+        controls.enableZoom = false;
+        controls.enablePan = false;
+        controls.autoRotate = false;
+        controls.enableRotate = true;
+        controls.rotateSpeed = 0.3;
+        controls.minDistance = globeConfig.initialView.altitude * 100;
+        controls.maxDistance = globeConfig.initialView.altitude * 100;
+      }
 
       worldRef.current = world;
 
-      // Imposta vista iniziale
-      const initialContinent = continents[currentContinentIndex];
+      // Imposta vista iniziale su Europa (centro)
+      const initialContinent = continents[0]; // Europa
       world.pointOfView({
         lat: initialContinent.lat,
         lng: initialContinent.lng,
         altitude: globeConfig.initialView.altitude
-      });
+      }, 0);
 
       // Aggiungi punti dopo breve delay per dare tempo al globo di renderizzare
       setTimeout(() => {
         updatePoints();
         setIsLoading(false);
         console.log('Globe initialized successfully');
-      }, 1000);
+      }, 1500);
 
     } catch (error) {
       console.error('Globe initialization error:', error);
