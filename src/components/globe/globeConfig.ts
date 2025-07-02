@@ -38,21 +38,21 @@ export const continents = [
 export const globeConfig = {
   width: 800,
   height: 400,
-  // Texture più chiara e dettagliata simile a Google Maps con confini
-  globeImageUrl: 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/img/section/backgroundmap/world.png',
+  // Texture più semplice e sicura
+  globeImageUrl: '//unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
   bumpImageUrl: '//unpkg.com/three-globe/example/img/earth-topology.png',
-  backgroundColor: 'rgba(0,0,0,0)',
+  backgroundColor: 'rgba(0,33,71,0.1)', // Sfondo più visibile
   showAtmosphere: true,
   atmosphereColor: '#CDA434', // Oro spento per l'atmosfera
-  atmosphereAltitude: 0.12,
+  atmosphereAltitude: 0.15,
   showGraticules: true, // Mostra le linee di latitudine/longitudine
   graticulesLineColor: '#D3D3D3', // Grigio chiaro per le griglie
   enablePointerInteraction: true,
-  pointAltitude: 0.04,
-  pointRadius: { normal: 1.5, hover: 2.5 },
+  pointAltitude: 0.05,
+  pointRadius: { normal: 2, hover: 3 },
   pointColor: { normal: '#7B1E3B', hover: '#CDA434' }, // Bordeaux normale, oro hover
-  pointResolution: 16,
+  pointResolution: 12,
   initialView: {
-    altitude: 1.3 // Zoom molto più ravvicinato per vedere bene i continenti
+    altitude: 1.5 // Zoom molto ravvicinato ma sicuro
   }
 };
