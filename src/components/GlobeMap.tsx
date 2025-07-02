@@ -21,16 +21,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!globeRef.current) {
-      console.log('Globe container not ready');
-      return;
-    }
+    if (!globeRef.current) return;
 
-    console.log('Initializing Globe.gl...');
+    console.log('Initializing Globe with fixed configuration...');
     setIsLoading(true);
 
     try {
-      // Pulisci il container prima di inizializzare
+      // Pulisci completamente il container
       globeRef.current.innerHTML = '';
 
       const world = new Globe(globeRef.current)
@@ -78,17 +75,17 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           }
         });
 
-      // Configurazione controlli - DISABILITA COMPLETAMENTE ZOOM
+      // Configurazione controlli - ZOOM COMPLETAMENTE FISSO
       const controls = world.controls();
-      controls.enableZoom = false; // Nessun zoom
-      controls.minDistance = globeConfig.initialView.altitude; // Blocca distanza minima
-      controls.maxDistance = globeConfig.initialView.altitude; // Blocca distanza massima
-      controls.enablePan = false; // Nessun pan
-      controls.autoRotate = false; // Nessuna rotazione automatica
-      controls.enableRotate = true; // Solo rotazione manuale
-      controls.rotateSpeed = 0.5;
+      controls.enableZoom = false;
+      controls.enablePan = false;
+      controls.autoRotate = false;
+      controls.enableRotate = true;
+      controls.rotateSpeed = 0.8;
+      controls.minDistance = globeConfig.initialView.altitude;
+      controls.maxDistance = globeConfig.initialView.altitude;
 
-      // Vista iniziale con zoom fisso
+      // Imposta vista iniziale
       world.pointOfView({
         lat: continents[currentContinentIndex].lat,
         lng: continents[currentContinentIndex].lng,
@@ -97,8 +94,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       worldRef.current = world;
 
-      // Aggiorna punti iniziali
-      const updatePoints = () => {
+      // Imposta punti iniziali
+      const updateInitialPoints = () => {
         if (!worldRef.current) return;
         
         const currentContinent = continents[currentContinentIndex];
@@ -109,16 +106,16 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           code: country.code
         }));
         
-        console.log('Setting initial points:', points);
+        console.log('Setting points for', currentContinent.name, ':', points);
         worldRef.current.pointsData(points);
       };
 
-      // Aspetta che il globo sia completamente caricato
+      // Aspetta che il globo sia caricato
       setTimeout(() => {
-        updatePoints();
+        updateInitialPoints();
         setIsLoading(false);
-        console.log('Globe initialized successfully');
-      }, 1000);
+        console.log('Globe ready and visible');
+      }, 1500);
 
     } catch (error) {
       console.error('Error initializing Globe:', error);
@@ -126,13 +123,21 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     }
 
     return () => {
-      console.log('Cleaning up Globe');
       if (worldRef.current) {
         worldRef.current._destructor?.();
         worldRef.current = null;
       }
     };
-  }, [hoveredPoint]); // Aggiunto hoveredPoint come dipendenza per aggiornare i colori
+  }, []); // Rimuovo hoveredPoint per evitare re-render
+
+  // Aggiorna colori punti quando cambia hover
+  useEffect(() => {
+    if (worldRef.current && !isLoading) {
+      worldRef.current
+        .pointRadius((d: any) => hoveredPoint === d.code ? globeConfig.pointRadius.hover : globeConfig.pointRadius.normal)
+        .pointColor((d: any) => hoveredPoint === d.code ? globeConfig.pointColor.hover : globeConfig.pointColor.normal);
+    }
+  }, [hoveredPoint, isLoading]);
 
   // Aggiorna punti quando cambia continente
   useEffect(() => {
@@ -145,20 +150,20 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         code: country.code
       }));
       
-      console.log('Continent changed, updating points:', points);
+      console.log('Changing to continent:', currentContinent.name, 'with points:', points);
       worldRef.current.pointsData(points);
       
-      // Transizione fluida verso il nuovo continente mantenendo zoom fisso
+      // Transizione verso il nuovo continente
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: globeConfig.initialView.altitude // Mantieni sempre lo stesso zoom
+        altitude: globeConfig.initialView.altitude
       }, 1500);
     }
   }, [currentContinentIndex, isLoading]);
 
   const handleContinentChange = (direction: 'prev' | 'next') => {
-    if (isTransitioning) return; // Previeni cambi multipli
+    if (isTransitioning) return;
     
     setIsTransitioning(true);
     setSelectedCountry(null);
@@ -190,12 +195,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         isTransitioning={isTransitioning}
       />
 
-      {/* Container del globo con altezza fissa */}
-      <div className="h-[400px] w-full relative bg-gradient-to-b from-[#002147]/20 to-[#002147]/40 rounded-xl backdrop-blur-sm border border-[#CDA434]/20 shadow-2xl overflow-hidden">
+      {/* Container del globo */}
+      <div className="h-[400px] w-full relative bg-[#002147] rounded-xl border border-[#CDA434]/20 shadow-2xl overflow-hidden">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#002147]/50 backdrop-blur-sm rounded-xl">
             <div className="text-[#FAF3E0] text-xl font-bold animate-pulse bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
-              🌍 Caricamento globo magico...
+              🌍 Caricamento globo...
             </div>
           </div>
         )}
@@ -205,7 +210,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           className="w-full h-full rounded-xl"
           style={{ 
             minHeight: '400px',
-            cursor: 'grab'
+            cursor: 'grab',
+            background: '#002147'
           }}
         />
 
@@ -216,8 +222,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             isTransitioning={isTransitioning}
           />
         )}
-
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-[#CDA434]/5 to-transparent animate-pulse pointer-events-none" />
       </div>
 
       <UniversitySidebar
@@ -229,10 +233,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       {/* Istruzioni */}
       <div className="text-center text-[#FAF3E0]/90 mt-6 space-y-2">
         <p className="text-lg font-semibold bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
-          🎯 Trascina per ruotare il globo manualmente
+          🎯 Usa le frecce per cambiare continente
         </p>
         <p className="text-sm text-[#D3D3D3]">
-          Usa le frecce per cambiare continente. Passa il mouse sui punti bordeaux e clicca per le università.
+          Trascina per ruotare. Passa il mouse sui punti bordeaux e clicca per le università.
         </p>
       </div>
 
