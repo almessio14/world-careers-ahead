@@ -45,40 +45,80 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .pointsData([])
         .polygonsData([])
         .polygonAltitude(0.01)
-        .polygonCapColor((d: any) => d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.6)')
-        .polygonSideColor((d: any) => d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.4)')
-        .polygonStrokeColor((d: any) => d.hovered ? '#FFD700' : 'rgba(205, 164, 52, 0.8)')
-        .polygonLabel((d: any) => `
-          <div style="
-            background: rgba(0, 0, 0, 0.9); 
-            color: white; 
-            padding: 8px 12px; 
-            border-radius: 4px; 
-            font-size: 12px;
-            font-family: Arial, sans-serif;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-          ">
-            🎓 <strong>${d.properties.NAME}</strong><br/>
-            Clicca per le università
-          </div>
-        `)
+        .polygonCapColor((d: any) => {
+          const countryCode = getCountryCode(d.properties?.NAME);
+          if (countryCode && universitiesByCountry[countryCode]) {
+            return d.hovered ? '#FFD700' : 'rgba(205, 164, 52, 0.8)';
+          }
+          return 'rgba(100, 100, 100, 0.3)';
+        })
+        .polygonSideColor((d: any) => {
+          const countryCode = getCountryCode(d.properties?.NAME);
+          if (countryCode && universitiesByCountry[countryCode]) {
+            return d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.6)';
+          }
+          return 'rgba(80, 80, 80, 0.2)';
+        })
+        .polygonStrokeColor((d: any) => {
+          const countryCode = getCountryCode(d.properties?.NAME);
+          if (countryCode && universitiesByCountry[countryCode]) {
+            return d.hovered ? '#FFFF00' : 'rgba(205, 164, 52, 0.9)';
+          }
+          return 'rgba(120, 120, 120, 0.4)';
+        })
+        .polygonLabel((d: any) => {
+          const countryCode = getCountryCode(d.properties?.NAME);
+          if (countryCode && universitiesByCountry[countryCode]) {
+            return `
+              <div style="
+                background: rgba(0, 0, 0, 0.9); 
+                color: white; 
+                padding: 8px 12px; 
+                border-radius: 4px; 
+                font-size: 12px;
+                font-family: Arial, sans-serif;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+              ">
+                🎓 <strong>${d.properties.NAME}</strong><br/>
+                Clicca per le università
+              </div>
+            `;
+          }
+          return '';
+        })
         .onPolygonClick((polygon: any) => {
           console.log('Country clicked:', polygon);
-          const countryName = polygon.properties.NAME;
+          const countryName = polygon.properties?.NAME;
           const countryCode = getCountryCode(countryName);
           if (countryCode && universitiesByCountry[countryCode]) {
             setSelectedCountry(countryCode);
           }
         })
         .onPolygonHover((polygon: any, prevPolygon: any) => {
-          if (prevPolygon) {
+          if (prevPolygon && prevPolygon !== polygon) {
             prevPolygon.hovered = false;
           }
           if (polygon) {
-            polygon.hovered = true;
+            const countryCode = getCountryCode(polygon.properties?.NAME);
+            if (countryCode && universitiesByCountry[countryCode]) {
+              polygon.hovered = true;
+              if (globeRef.current) {
+                globeRef.current.style.cursor = 'pointer';
+              }
+            } else {
+              if (globeRef.current) {
+                globeRef.current.style.cursor = 'grab';
+              }
+            }
+          } else {
+            if (globeRef.current) {
+              globeRef.current.style.cursor = 'grab';
+            }
           }
-          if (globeRef.current) {
-            globeRef.current.style.cursor = polygon ? 'pointer' : 'grab';
+          
+          // Forza il re-render
+          if (worldRef.current) {
+            worldRef.current.polygonsData(worldRef.current.polygonsData());
           }
         });
 
