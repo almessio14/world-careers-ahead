@@ -10,7 +10,7 @@ const Header = ({ onFavoritesClick }: HeaderProps) => {
   const { favorites } = useFavorites();
   
   return (
-    <header className="bg-[#1e3a8a] text-white shadow-lg">
+    <header className="bg-[#14213d] text-white shadow-lg">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -20,16 +20,18 @@ const Header = ({ onFavoritesClick }: HeaderProps) => {
               className="h-12 w-auto"
             />
             <div>
-              <h1 className="text-2xl font-bold text-white">OrientMe</h1>
+              <h1 className="text-2xl font-bold text-white">
+                Orient<span className="text-[#fbbf24]">Me</span>
+              </h1>
               <p className="text-blue-100 text-sm">La bussola per il tuo futuro</p>
             </div>
           </div>
           
           <button
             onClick={onFavoritesClick}
-            className="relative p-3 bg-[#7f1d1d] hover:bg-[#991b1b] rounded-full transition-colors"
+            className="relative p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
           >
-            <Heart className="h-6 w-6 text-white" />
+            <Heart className="h-6 w-6 text-[#7f1d1d] fill-none stroke-2" />
             {favorites.length > 0 && (
               <span className="absolute -top-1 -right-1 bg-[#7f1d1d] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
                 {favorites.length}

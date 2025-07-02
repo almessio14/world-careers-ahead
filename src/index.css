@@ -8,25 +8,25 @@
 @layer base {
   :root {
     --background: 255 255 255; /* Bianco */
-    --foreground: 30 58 138; /* Navy Blue */
+    --foreground: 20 33 61; /* Navy più scuro del logo */
 
     --card: 255 255 255;
-    --card-foreground: 30 58 138;
+    --card-foreground: 20 33 61;
 
     --popover: 255 255 255;
-    --popover-foreground: 30 58 138;
+    --popover-foreground: 20 33 61;
 
-    --primary: 30 58 138; /* Navy Blue */
+    --primary: 20 33 61; /* Navy del logo */
     --primary-foreground: 255 255 255;
 
     --secondary: 229 231 235; /* Grigio chiaro */
-    --secondary-foreground: 30 58 138;
+    --secondary-foreground: 20 33 61;
 
     --muted: 229 231 235;
     --muted-foreground: 127 29 29; /* Bordeaux */
 
     --accent: 251 191 36; /* Oro */
-    --accent-foreground: 30 58 138;
+    --accent-foreground: 20 33 61;
 
     --destructive: 239 68 68;
     --destructive-foreground: 255 255 255;
@@ -38,27 +38,27 @@
     --radius: 0.75rem;
 
     --sidebar-background: 255 255 255;
-    --sidebar-foreground: 30 58 138;
-    --sidebar-primary: 30 58 138;
+    --sidebar-foreground: 20 33 61;
+    --sidebar-primary: 20 33 61;
     --sidebar-primary-foreground: 255 255 255;
     --sidebar-accent: 229 231 235;
-    --sidebar-accent-foreground: 30 58 138;
+    --sidebar-accent-foreground: 20 33 61;
     --sidebar-border: 229 231 235;
     --sidebar-ring: 251 191 36;
   }
 
   .dark {
-    --background: 30 58 138; /* Navy Blue */
+    --background: 20 33 61; /* Navy del logo */
     --foreground: 255 255 255; /* Bianco */
 
-    --card: 30 58 138;
+    --card: 20 33 61;
     --card-foreground: 255 255 255;
 
-    --popover: 30 58 138;
+    --popover: 20 33 61;
     --popover-foreground: 255 255 255;
 
     --primary: 251 191 36; /* Oro */
-    --primary-foreground: 30 58 138;
+    --primary-foreground: 20 33 61;
 
     --secondary: 127 29 29; /* Bordeaux */
     --secondary-foreground: 255 255 255;
@@ -67,7 +67,7 @@
     --muted-foreground: 229 231 235;
 
     --accent: 251 191 36;
-    --accent-foreground: 30 58 138;
+    --accent-foreground: 20 33 61;
 
     --destructive: 220 38 38;
     --destructive-foreground: 255 255 255;
@@ -76,10 +76,10 @@
     --input: 127 29 29;
     --ring: 251 191 36;
 
-    --sidebar-background: 30 58 138;
+    --sidebar-background: 20 33 61;
     --sidebar-foreground: 255 255 255;
     --sidebar-primary: 251 191 36;
-    --sidebar-primary-foreground: 30 58 138;
+    --sidebar-primary-foreground: 20 33 61;
     --sidebar-accent: 127 29 29;
     --sidebar-accent-foreground: 255 255 255;
     --sidebar-border: 127 29 29;
@@ -97,7 +97,7 @@
   }
 
   .gradient-bg {
-    background: #1e3a8a; /* Navy solido */
+    background: rgb(20, 33, 61); /* Navy del logo */
   }
 
   .glass-effect {
