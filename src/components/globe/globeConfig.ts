@@ -2,12 +2,22 @@
 // Coordinate geografiche dei continenti
 export const continents = [
   {
+    key: 'nordamerica',
+    name: 'Nord America',
+    lat: 45.0,
+    lng: -100.0,
+    countries: [
+      { name: 'United States of America', code: 'USA', lat: 37.0902, lng: -95.7129 },
+      { name: 'Canada', code: 'Canada', lat: 56.1304, lng: -106.3468 }
+    ]
+  },
+  {
     key: 'europa',
     name: 'Europa',
     lat: 54.0,
     lng: 15.0,
     countries: [
-      { name: 'UK', code: 'UK', lat: 55.3781, lng: -3.4360 },
+      { name: 'United Kingdom', code: 'UK', lat: 55.3781, lng: -3.4360 },
       { name: 'France', code: 'France', lat: 46.6034, lng: 1.8883 },
       { name: 'Germany', code: 'Germany', lat: 51.1657, lng: 10.4515 },
       { name: 'Switzerland', code: 'Switzerland', lat: 46.8182, lng: 8.2275 },
@@ -22,16 +32,6 @@ export const continents = [
       { name: 'Finland', code: 'Finland', lat: 61.9241, lng: 25.7482 },
       { name: 'Norway', code: 'Norway', lat: 60.4720, lng: 8.4689 },
       { name: 'Ireland', code: 'Ireland', lat: 53.4129, lng: -8.2439 }
-    ]
-  },
-  {
-    key: 'nordamerica',
-    name: 'Nord America',
-    lat: 45.0,
-    lng: -100.0,
-    countries: [
-      { name: 'USA', code: 'USA', lat: 37.0902, lng: -95.7129 },
-      { name: 'Canada', code: 'Canada', lat: 56.1304, lng: -106.3468 }
     ]
   },
   {

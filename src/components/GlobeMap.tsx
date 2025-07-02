@@ -35,7 +35,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .width(globeRef.current!.clientWidth)
         .height(globeConfig.height)
         .backgroundColor(globeConfig.backgroundColor)
-        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-day.jpg')
+        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
         .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
         .showAtmosphere(true)
         .atmosphereColor('#69b7d3')
@@ -44,9 +44,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .pointsData([])
         .polygonsData([])
         .polygonAltitude(0.01)
-        .polygonCapColor(() => 'rgba(205, 164, 52, 0.6)')
-        .polygonSideColor(() => 'rgba(205, 164, 52, 0.4)')
-        .polygonStrokeColor(() => 'rgba(205, 164, 52, 0.8)')
+        .polygonCapColor((d: any) => d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.6)')
+        .polygonSideColor((d: any) => d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.4)')
+        .polygonStrokeColor((d: any) => d.hovered ? '#FFD700' : 'rgba(205, 164, 52, 0.8)')
         .polygonLabel((d: any) => `
           <div style="
             background: rgba(0, 0, 0, 0.9); 
@@ -69,7 +69,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             setSelectedCountry(countryCode);
           }
         })
-        .onPolygonHover((polygon: any) => {
+        .onPolygonHover((polygon: any, prevPolygon: any) => {
+          if (prevPolygon) {
+            prevPolygon.hovered = false;
+          }
+          if (polygon) {
+            polygon.hovered = true;
+          }
           if (globeRef.current) {
             globeRef.current.style.cursor = polygon ? 'pointer' : 'grab';
           }
@@ -77,14 +83,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       const controls = world.controls();
       if (controls) {
-        controls.enableZoom = true;
+        controls.enableZoom = false;
         controls.enablePan = false;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
+        controls.autoRotate = false;
         controls.enableRotate = true;
         controls.rotateSpeed = 0.3;
-        controls.minDistance = 150;
-        controls.maxDistance = 400;
+        controls.minDistance = 200;
+        controls.maxDistance = 200;
       }
 
       worldRef.current = world;
@@ -95,7 +100,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .then(countries => {
           const currentContinent = continents[currentContinentIndex];
           const continentCountries = countries.features.filter((d: any) => {
-            const countryName = d.properties.NAME;
+            const countryName = d.properties?.NAME;
+            if (!countryName) return false;
+            
             return currentContinent.countries.some(c => 
               countryName.toLowerCase().includes(c.name.toLowerCase()) ||
               c.name.toLowerCase().includes(countryName.toLowerCase()) ||
@@ -105,10 +112,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
           world.polygonsData(continentCountries);
           
-          const initialContinent = continents[0];
+          const currentCont = continents[currentContinentIndex];
           world.pointOfView({
-            lat: initialContinent.lat,
-            lng: initialContinent.lng,
+            lat: currentCont.lat,
+            lng: currentCont.lng,
             altitude: 2
           }, 1000);
 
@@ -146,6 +153,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       'Japan': 'Japan',
       'South Korea': 'South Korea',
       'Republic of Korea': 'South Korea',
+      'Korea': 'South Korea',
       'Singapore': 'Singapore',
       'Italy': 'Italy',
       'Portugal': 'Portugal',
