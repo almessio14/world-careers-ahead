@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
 import { continents, globeConfig } from './globe/globeConfig';
@@ -15,11 +14,43 @@ interface GlobeMapProps {
 const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const globeRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<any>(null);
-  const [currentContinentIndex, setCurrentContinentIndex] = useState(0);
+  const [currentContinentIndex, setCurrentContinentIndex] = useState(1); // Europa di default (indice 1)
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [allCountries, setAllCountries] = useState<any[]>([]);
+
+  // Sposto la funzione getCountryCode prima dell'useEffect
+  const getCountryCode = (countryName: string): string | null => {
+    const countryMappings: Record<string, string> = {
+      'United States of America': 'USA',
+      'United States': 'USA',
+      'Canada': 'Canada',
+      'China': 'China',
+      'Japan': 'Japan',
+      'South Korea': 'South Korea',
+      'Republic of Korea': 'South Korea',
+      'Korea': 'South Korea',
+      'Singapore': 'Singapore',
+      'Italy': 'Italy',
+      'Portugal': 'Portugal',
+      'Spain': 'Spain',
+      'France': 'France',
+      'Netherlands': 'Netherlands',
+      'Belgium': 'Belgium',
+      'Switzerland': 'Switzerland',
+      'Germany': 'Germany',
+      'Austria': 'Austria',
+      'Denmark': 'Denmark',
+      'Sweden': 'Sweden',
+      'Finland': 'Finland',
+      'Norway': 'Norway',
+      'United Kingdom': 'UK',
+      'Ireland': 'Ireland'
+    };
+
+    return countryMappings[countryName] || null;
+  };
 
   useEffect(() => {
     if (!globeRef.current) return;
@@ -90,22 +121,30 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           console.log('Country clicked:', polygon);
           const countryName = polygon.properties?.NAME;
           const countryCode = getCountryCode(countryName);
+          console.log('Country code found:', countryCode);
           if (countryCode && universitiesByCountry[countryCode]) {
+            console.log('Setting selected country:', countryCode);
             setSelectedCountry(countryCode);
           }
         })
         .onPolygonHover((polygon: any, prevPolygon: any) => {
+          console.log('Polygon hover:', polygon?.properties?.NAME);
+          
           if (prevPolygon && prevPolygon !== polygon) {
             prevPolygon.hovered = false;
           }
+          
           if (polygon) {
             const countryCode = getCountryCode(polygon.properties?.NAME);
+            console.log('Hover country code:', countryCode);
             if (countryCode && universitiesByCountry[countryCode]) {
+              console.log('Setting hover true for:', polygon.properties?.NAME);
               polygon.hovered = true;
               if (globeRef.current) {
                 globeRef.current.style.cursor = 'pointer';
               }
             } else {
+              polygon.hovered = false;
               if (globeRef.current) {
                 globeRef.current.style.cursor = 'grab';
               }
@@ -116,10 +155,14 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             }
           }
           
-          // Forza il re-render
-          if (worldRef.current) {
-            worldRef.current.polygonsData(worldRef.current.polygonsData());
-          }
+          // Forza il re-render dei poligoni
+          setTimeout(() => {
+            if (worldRef.current) {
+              const currentData = worldRef.current.polygonsData();
+              worldRef.current.polygonsData([]);
+              worldRef.current.polygonsData(currentData);
+            }
+          }, 10);
         });
 
       const controls = world.controls();
@@ -139,6 +182,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
         .then(res => res.json())
         .then(countries => {
+          console.log('Countries loaded:', countries.features.length);
           setAllCountries(countries.features);
           setIsLoading(false);
           console.log('Globe initialized successfully');
@@ -191,37 +235,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     }, 1000);
 
   }, [currentContinentIndex, allCountries]);
-
-  const getCountryCode = (countryName: string): string | null => {
-    const countryMappings: Record<string, string> = {
-      'United States of America': 'USA',
-      'United States': 'USA',
-      'Canada': 'Canada',
-      'China': 'China',
-      'Japan': 'Japan',
-      'South Korea': 'South Korea',
-      'Republic of Korea': 'South Korea',
-      'Korea': 'South Korea',
-      'Singapore': 'Singapore',
-      'Italy': 'Italy',
-      'Portugal': 'Portugal',
-      'Spain': 'Spain',
-      'France': 'France',
-      'Netherlands': 'Netherlands',
-      'Belgium': 'Belgium',
-      'Switzerland': 'Switzerland',
-      'Germany': 'Germany',
-      'Austria': 'Austria',
-      'Denmark': 'Denmark',
-      'Sweden': 'Sweden',
-      'Finland': 'Finland',
-      'Norway': 'Norway',
-      'United Kingdom': 'UK',
-      'Ireland': 'Ireland'
-    };
-
-    return countryMappings[countryName] || null;
-  };
 
   const handleContinentChange = (direction: 'prev' | 'next') => {
     if (isTransitioning || isLoading) return;
