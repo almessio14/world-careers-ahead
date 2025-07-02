@@ -10,15 +10,9 @@ interface MicroareaModalProps {
 
 export default function MicroareaModal({ microarea, onClose }: MicroareaModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       {/* Modal */}
-      <Card className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-card shadow-2xl">
+      <Card className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white shadow-2xl">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
             <CardTitle className="text-2xl font-bold text-foreground pr-8">
@@ -38,24 +32,23 @@ export default function MicroareaModal({ microarea, onClose }: MicroareaModalPro
         <CardContent className="space-y-6">
           {/* Descrizione */}
           <div>
-            <h4 className="font-semibold text-foreground mb-3">Descrizione</h4>
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-gray-700 leading-relaxed">
               {microarea.description}
             </p>
           </div>
           
           {/* Aziende note */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3">Aziende note</h4>
-            <p className="text-muted-foreground">
+          <div className="bg-green-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-green-800 mb-3">Aziende note</h4>
+            <p className="text-green-700">
               {microarea.companies}
             </p>
           </div>
           
           {/* Stipendio medio */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3">Stipendio medio</h4>
-            <p className="text-accent font-medium text-lg">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-blue-800 mb-3">Stipendio medio</h4>
+            <p className="text-blue-700 font-medium text-lg">
               {microarea.salary}
             </p>
           </div>
