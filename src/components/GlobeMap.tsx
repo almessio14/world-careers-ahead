@@ -42,8 +42,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .showAtmosphere(globeConfig.showAtmosphere)
         .atmosphereColor(globeConfig.atmosphereColor)
         .atmosphereAltitude(globeConfig.atmosphereAltitude)
-        .showGraticules(globeConfig.showGraticules)
-        .graticulesLineColor(globeConfig.graticulesLineColor)
         .enablePointerInteraction(globeConfig.enablePointerInteraction)
         .pointsData([])
         .pointAltitude(globeConfig.pointAltitude)
@@ -80,15 +78,17 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           }
         });
 
-      // Configurazione controlli - disabilita zoom e pan, abilita rotazione
+      // Configurazione controlli - DISABILITA COMPLETAMENTE ZOOM
       const controls = world.controls();
-      controls.enableZoom = false;
-      controls.enablePan = false;
-      controls.autoRotate = false;
-      controls.enableRotate = true;
+      controls.enableZoom = false; // Nessun zoom
+      controls.minDistance = globeConfig.initialView.altitude; // Blocca distanza minima
+      controls.maxDistance = globeConfig.initialView.altitude; // Blocca distanza massima
+      controls.enablePan = false; // Nessun pan
+      controls.autoRotate = false; // Nessuna rotazione automatica
+      controls.enableRotate = true; // Solo rotazione manuale
       controls.rotateSpeed = 0.5;
 
-      // Vista iniziale con zoom ravvicinato
+      // Vista iniziale con zoom fisso
       world.pointOfView({
         lat: continents[currentContinentIndex].lat,
         lng: continents[currentContinentIndex].lng,
@@ -132,7 +132,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         worldRef.current = null;
       }
     };
-  }, []);
+  }, [hoveredPoint]); // Aggiunto hoveredPoint come dipendenza per aggiornare i colori
 
   // Aggiorna punti quando cambia continente
   useEffect(() => {
@@ -148,15 +148,18 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       console.log('Continent changed, updating points:', points);
       worldRef.current.pointsData(points);
       
+      // Transizione fluida verso il nuovo continente mantenendo zoom fisso
       worldRef.current.pointOfView({
         lat: currentContinent.lat,
         lng: currentContinent.lng,
-        altitude: globeConfig.initialView.altitude
+        altitude: globeConfig.initialView.altitude // Mantieni sempre lo stesso zoom
       }, 1500);
     }
   }, [currentContinentIndex, isLoading]);
 
   const handleContinentChange = (direction: 'prev' | 'next') => {
+    if (isTransitioning) return; // Previeni cambi multipli
+    
     setIsTransitioning(true);
     setSelectedCountry(null);
     setHoveredPoint(null);
@@ -233,7 +236,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         </p>
       </div>
 
-      {/* Loading overlay */}
+      {/* Loading overlay per transizioni */}
       {isTransitioning && (
         <div className="absolute inset-0 bg-[#002147]/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
           <div className="text-[#FAF3E0] text-xl font-bold animate-pulse bg-gradient-to-r from-[#CDA434] to-[#7B1E3B] bg-clip-text text-transparent">
