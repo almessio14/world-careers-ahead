@@ -35,7 +35,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .width(globeRef.current!.clientWidth)
         .height(globeConfig.height)
         .backgroundColor(globeConfig.backgroundColor)
-        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-day.jpg')
         .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
         .showAtmosphere(true)
         .atmosphereColor('#69b7d3')
@@ -44,9 +44,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .pointsData([])
         .polygonsData([])
         .polygonAltitude(0.01)
-        .polygonCapColor((d: any) => d.hovered ? '#CDA434' : 'rgba(255, 255, 255, 0.1)')
-        .polygonSideColor((d: any) => d.hovered ? '#B8860B' : 'rgba(255, 255, 255, 0.05)')
-        .polygonStrokeColor((d: any) => d.hovered ? '#CDA434' : 'rgba(255, 255, 255, 0.2)')
+        .polygonCapColor(() => 'rgba(205, 164, 52, 0.6)')
+        .polygonSideColor(() => 'rgba(205, 164, 52, 0.4)')
+        .polygonStrokeColor(() => 'rgba(205, 164, 52, 0.8)')
         .polygonLabel((d: any) => `
           <div style="
             background: rgba(0, 0, 0, 0.9); 
@@ -57,16 +57,19 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             font-family: Arial, sans-serif;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
           ">
-            🎓 <strong>${d.name}</strong><br/>
+            🎓 <strong>${d.properties.NAME}</strong><br/>
             Clicca per le università
           </div>
         `)
         .onPolygonClick((polygon: any) => {
           console.log('Country clicked:', polygon);
-          setSelectedCountry(polygon.code);
+          const countryName = polygon.properties.NAME;
+          const countryCode = getCountryCode(countryName);
+          if (countryCode && universitiesByCountry[countryCode]) {
+            setSelectedCountry(countryCode);
+          }
         })
         .onPolygonHover((polygon: any) => {
-          updatePolygons(polygon ? polygon.code : null);
           if (globeRef.current) {
             globeRef.current.style.cursor = polygon ? 'pointer' : 'grab';
           }
@@ -74,58 +77,53 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       const controls = world.controls();
       if (controls) {
-        controls.enableZoom = false;
+        controls.enableZoom = true;
         controls.enablePan = false;
-        controls.autoRotate = false;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
         controls.enableRotate = true;
-        controls.rotateSpeed = 0.2;
-        controls.minDistance = globeConfig.initialView.altitude * 100;
-        controls.maxDistance = globeConfig.initialView.altitude * 100;
+        controls.rotateSpeed = 0.3;
+        controls.minDistance = 150;
+        controls.maxDistance = 400;
       }
 
       worldRef.current = world;
 
-      const initialContinent = continents[0];
-      world.pointOfView({
-        lat: initialContinent.lat,
-        lng: initialContinent.lng,
-        altitude: globeConfig.initialView.altitude
-      }, 0);
+      // Carica i dati dei paesi
+      fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+        .then(res => res.json())
+        .then(countries => {
+          const currentContinent = continents[currentContinentIndex];
+          const continentCountries = countries.features.filter((d: any) => {
+            const countryName = d.properties.NAME;
+            return currentContinent.countries.some(c => 
+              countryName.toLowerCase().includes(c.name.toLowerCase()) ||
+              c.name.toLowerCase().includes(countryName.toLowerCase()) ||
+              getCountryCode(countryName) === c.code
+            );
+          });
 
-      setTimeout(() => {
-        updatePolygons();
-        setIsLoading(false);
-        console.log('Globe initialized successfully');
-      }, 1000);
+          world.polygonsData(continentCountries);
+          
+          const initialContinent = continents[0];
+          world.pointOfView({
+            lat: initialContinent.lat,
+            lng: initialContinent.lng,
+            altitude: 2
+          }, 1000);
+
+          setIsLoading(false);
+          console.log('Globe initialized successfully');
+        })
+        .catch(error => {
+          console.error('Error loading countries:', error);
+          setIsLoading(false);
+        });
 
     } catch (error) {
       console.error('Globe initialization error:', error);
       setIsLoading(false);
     }
-
-    const updatePolygons = (hoveredCountry?: string | null) => {
-      if (!worldRef.current) return;
-      
-      const currentContinent = continents[currentContinentIndex];
-      
-      const polygons = currentContinent.countries.map(country => ({
-        name: country.name,
-        code: country.code,
-        hovered: hoveredCountry === country.code,
-        geometry: {
-          type: 'Polygon',
-          coordinates: [[
-            [country.lng - 3, country.lat - 3],
-            [country.lng + 3, country.lat - 3],
-            [country.lng + 3, country.lat + 3],
-            [country.lng - 3, country.lat + 3],
-            [country.lng - 3, country.lat - 3]
-          ]]
-        }
-      }));
-      
-      worldRef.current.polygonsData(polygons);
-    };
 
     return () => {
       if (worldRef.current) {
@@ -138,6 +136,36 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       }
     };
   }, [currentContinentIndex]);
+
+  const getCountryCode = (countryName: string): string | null => {
+    const countryMappings: Record<string, string> = {
+      'United States of America': 'USA',
+      'United States': 'USA',
+      'Canada': 'Canada',
+      'China': 'China',
+      'Japan': 'Japan',
+      'South Korea': 'South Korea',
+      'Republic of Korea': 'South Korea',
+      'Singapore': 'Singapore',
+      'Italy': 'Italy',
+      'Portugal': 'Portugal',
+      'Spain': 'Spain',
+      'France': 'France',
+      'Netherlands': 'Netherlands',
+      'Belgium': 'Belgium',
+      'Switzerland': 'Switzerland',
+      'Germany': 'Germany',
+      'Austria': 'Austria',
+      'Denmark': 'Denmark',
+      'Sweden': 'Sweden',
+      'Finland': 'Finland',
+      'Norway': 'Norway',
+      'United Kingdom': 'UK',
+      'Ireland': 'Ireland'
+    };
+
+    return countryMappings[countryName] || null;
+  };
 
   const handleContinentChange = (direction: 'prev' | 'next') => {
     if (isTransitioning || isLoading) return;
@@ -217,11 +245,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             </button>
           </div>
           
-          <div className="space-y-3 max-h-[calc(100%-100px)] overflow-y-auto custom-scrollbar">
+          <div className="space-y-4 max-h-[calc(100%-100px)] overflow-y-auto custom-scrollbar">
             {universitiesByCountry[selectedCountry].map((university) => (
               <div
                 key={university.id}
-                className="bg-gradient-to-r from-white/10 to-white/5 p-4 rounded-lg border border-white/20 hover:border-[#CDA434]/40 transition-all duration-300"
+                className="bg-gradient-to-r from-white/10 to-white/5 p-4 rounded-lg border border-white/20"
               >
                 <div className="flex justify-between items-start mb-3">
                   <h4 className="font-bold text-sm text-white leading-tight pr-2">{university.name}</h4>
@@ -266,7 +294,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           🎯 Usa le frecce per cambiare continente
         </p>
         <p className="text-sm text-gray-300">
-          Trascina per ruotare il globo. I paesi si illuminano di oro al passaggio del mouse.
+          Clicca sui paesi evidenziati in oro per vedere le università disponibili.
         </p>
       </div>
 
