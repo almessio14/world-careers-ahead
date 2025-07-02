@@ -10,7 +10,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 1,
-      programs: ['Economics', 'International Relations', 'Government'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '~$86,000/year',
       scholarships: true,
       website: 'https://harvard.edu'
@@ -22,7 +22,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 2,
-      programs: ['Economics', 'Finance', 'Innovation'],
+      programs: ['Innovation', 'Finance'],
       tuitionFee: '~$86,000/year',
       scholarships: true,
       website: 'https://stanford.edu'
@@ -34,7 +34,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 3,
-      programs: ['Economics', 'Business', 'International Studies'],
+      programs: ['Economics', 'Business'],
       tuitionFee: '~$74,000/year',
       scholarships: true,
       website: 'https://ucla.edu'
@@ -46,7 +46,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 4,
-      programs: ['Economics', 'Business', 'Innovation'],
+      programs: ['Innovation', 'Sustainability'],
       tuitionFee: '~$76,000/year',
       scholarships: true,
       website: 'https://berkeley.edu'
@@ -58,7 +58,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 5,
-      programs: ['Economics', 'Finance', 'International Relations'],
+      programs: ['Finance', 'International Relations'],
       tuitionFee: '~$85,000/year',
       scholarships: true,
       website: 'https://columbia.edu'
@@ -70,7 +70,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 6,
-      programs: ['Economics', 'Political Science', 'International Studies'],
+      programs: ['Economics', 'Political Science'],
       tuitionFee: '~$84,000/year',
       scholarships: true,
       website: 'https://yale.edu'
@@ -82,7 +82,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 7,
-      programs: ['Economics', 'Finance', 'Quantitative Analysis'],
+      programs: ['Quantitative Economics', 'Finance'],
       tuitionFee: '~$85,000/year',
       scholarships: true,
       website: 'https://uchicago.edu'
@@ -94,7 +94,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 8,
-      programs: ['Economics', 'Finance', 'Entrepreneurship'],
+      programs: ['Quantitative Finance', 'Entrepreneurship'],
       tuitionFee: '~$85,000/year',
       scholarships: true,
       website: 'https://mit.edu'
@@ -106,7 +106,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 9,
-      programs: ['Finance', 'Business', 'Management'],
+      programs: ['Finance', 'Management'],
       tuitionFee: '~$85,000/year',
       scholarships: true,
       website: 'https://wharton.upenn.edu'
@@ -118,7 +118,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 10,
-      programs: ['Economics', 'Public Policy', 'International Relations'],
+      programs: ['Theoretical Economics', 'Economic Policy'],
       tuitionFee: '~$79,000/year',
       scholarships: true,
       website: 'https://princeton.edu'
@@ -130,7 +130,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 11,
-      programs: ['Economics', 'Finance', 'Business'],
+      programs: ['Finance', 'Economics'],
       tuitionFee: '~$88,000/year',
       scholarships: true,
       website: 'https://nyu.edu'
@@ -142,7 +142,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'USA',
       language: 'English',
       ranking: 12,
-      programs: ['Economics', 'Business', 'International Relations'],
+      programs: ['Economics', 'Business'],
       tuitionFee: '~$85,000/year',
       scholarships: true,
       website: 'https://bu.edu'
@@ -156,7 +156,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Canada',
       language: 'English',
       ranking: 13,
-      programs: ['Economics', 'Finance', 'Business'],
+      programs: ['Economics', 'Finance'],
       tuitionFee: '~$45,000/year',
       scholarships: true,
       website: 'https://utoronto.ca'
@@ -168,7 +168,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Canada',
       language: 'English/French',
       ranking: 14,
-      programs: ['Economics', 'International Relations', 'Business'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '$30,000–$38,000/year',
       scholarships: true,
       website: 'https://mcgill.ca'
@@ -180,7 +180,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Canada',
       language: 'English',
       ranking: 15,
-      programs: ['Economics', 'International Trade', 'Sustainability'],
+      programs: ['Sustainable Economics', 'International Trade'],
       tuitionFee: '$30,000–$42,000/year',
       scholarships: true,
       website: 'https://ubc.ca'
@@ -194,7 +194,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'China',
       language: 'Chinese/English',
       ranking: 16,
-      programs: ['Economics', 'Management', 'International Studies'],
+      programs: ['Economics', 'Management'],
       tuitionFee: '$20,000–$25,000/year',
       scholarships: true,
       website: 'https://english.pku.edu.cn'
@@ -206,7 +206,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'China',
       language: 'Chinese/English',
       ranking: 17,
-      programs: ['Economics', 'Business', 'Engineering'],
+      programs: ['Business', 'Economics'],
       tuitionFee: '$20,000–$25,000/year',
       scholarships: true,
       website: 'https://tsinghua.edu.cn'
@@ -218,7 +218,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'China',
       language: 'Chinese/English',
       ranking: 18,
-      programs: ['Economics', 'Finance', 'International Business'],
+      programs: ['International Business', 'Finance'],
       tuitionFee: '$18,000–$22,000/year',
       scholarships: true,
       website: 'https://fudan.edu.cn'
@@ -232,7 +232,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Japan',
       language: 'Japanese/English',
       ranking: 19,
-      programs: ['Economics', 'International Relations', 'Political Science'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '$10,000–$15,000/year',
       scholarships: true,
       website: 'https://u-tokyo.ac.jp'
@@ -244,7 +244,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Japan',
       language: 'Japanese/English',
       ranking: 20,
-      programs: ['Economics', 'Social Sciences', 'Political Science'],
+      programs: ['Social Sciences', 'Political Science'],
       tuitionFee: '$10,000–$15,000/year',
       scholarships: true,
       website: 'https://kyoto-u.ac.jp'
@@ -256,7 +256,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Japan',
       language: 'Japanese/English',
       ranking: 21,
-      programs: ['Economics', 'Business', 'Social Sciences'],
+      programs: ['Economics', 'Business'],
       tuitionFee: '$10,000–$15,000/year',
       scholarships: true,
       website: 'https://osaka-u.ac.jp'
@@ -268,7 +268,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Japan',
       language: 'Japanese/English',
       ranking: 22,
-      programs: ['Economics', 'Commerce', 'Management'],
+      programs: ['Commerce', 'Management'],
       tuitionFee: '$12,000–$18,000/year',
       scholarships: true,
       website: 'https://hit-u.ac.jp'
@@ -282,7 +282,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'South Korea',
       language: 'Korean/English',
       ranking: 23,
-      programs: ['Economics', 'International Relations', 'Business'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '$10,000–$20,000/year',
       scholarships: true,
       website: 'https://snu.ac.kr'
@@ -294,7 +294,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'South Korea',
       language: 'Korean/English',
       ranking: 24,
-      programs: ['Economics', 'Business', 'International Studies'],
+      programs: ['Business', 'International Studies'],
       tuitionFee: '$15,000–$20,000/year',
       scholarships: true,
       website: 'https://yonsei.ac.kr'
@@ -320,7 +320,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Singapore',
       language: 'English/Chinese',
       ranking: 26,
-      programs: ['Economics', 'Business', 'Finance'],
+      programs: ['Economics', 'Business'],
       tuitionFee: '$18,000–$25,000/year',
       scholarships: true,
       website: 'https://cityu.edu.hk'
@@ -330,7 +330,7 @@ export const universitiesByCountry: Record<string, University[]> = {
     {
       id: 'bocconi',
       name: 'Bocconi University',
-      city: 'Milan',
+      city: 'Milano',
       country: 'Italy',
       language: 'English/Italian',
       ranking: 27,
@@ -346,7 +346,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Italy',
       language: 'Italian/English',
       ranking: 28,
-      programs: ['Economics', 'Political Science', 'International Studies'],
+      programs: ['Economics', 'Political Science'],
       tuitionFee: '€3,000–€4,000/year',
       scholarships: true,
       website: 'https://unipd.it'
@@ -354,11 +354,11 @@ export const universitiesByCountry: Record<string, University[]> = {
     {
       id: 'cafoscari',
       name: "Ca' Foscari Venezia",
-      city: 'Venice',
+      city: 'Venezia',
       country: 'Italy',
       language: 'Italian/English',
       ranking: 29,
-      programs: ['Economics', 'International Commerce', 'European Studies'],
+      programs: ['International Commerce', 'European Studies'],
       tuitionFee: '€3,000–€4,000/year',
       scholarships: true,
       website: 'https://unive.it'
@@ -366,11 +366,11 @@ export const universitiesByCountry: Record<string, University[]> = {
     {
       id: 'sapienza',
       name: 'Sapienza Università di Roma',
-      city: 'Rome',
+      city: 'Roma',
       country: 'Italy',
       language: 'Italian/English',
       ranking: 30,
-      programs: ['Economics', 'Law', 'International Relations'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '€2,500–€3,500/year',
       scholarships: true,
       website: 'https://uniroma1.it'
@@ -380,7 +380,7 @@ export const universitiesByCountry: Record<string, University[]> = {
     {
       id: 'nova',
       name: 'NOVA University Lisbon',
-      city: 'Lisbon',
+      city: 'Lisbona',
       country: 'Portugal',
       language: 'Portuguese/English',
       ranking: 31,
@@ -392,11 +392,11 @@ export const universitiesByCountry: Record<string, University[]> = {
     {
       id: 'ulisboa',
       name: 'Universidade de Lisboa',
-      city: 'Lisbon',
+      city: 'Lisbona',
       country: 'Portugal',
       language: 'Portuguese/English',
       ranking: 32,
-      programs: ['Economics', 'Commerce', 'European Studies'],
+      programs: ['Economics', 'European Studies'],
       tuitionFee: '€1,000–€3,000/year',
       scholarships: true,
       website: 'https://ulisboa.pt'
@@ -406,11 +406,11 @@ export const universitiesByCountry: Record<string, University[]> = {
     {
       id: 'esade',
       name: 'ESADE',
-      city: 'Barcelona',
+      city: 'Barcellona',
       country: 'Spain',
       language: 'Spanish/English',
       ranking: 33,
-      programs: ['Finance', 'Management', 'Business'],
+      programs: ['Finance', 'Management'],
       tuitionFee: '€20,000–€28,000/year',
       scholarships: true,
       website: 'https://esade.edu'
@@ -422,7 +422,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Spain',
       language: 'Spanish/English',
       ranking: 34,
-      programs: ['Business', 'Finance', 'International Relations'],
+      programs: ['Business', 'International Relations'],
       tuitionFee: '€20,000–€25,000/year',
       scholarships: true,
       website: 'https://ie.edu'
@@ -434,7 +434,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Spain',
       language: 'Spanish',
       ranking: 35,
-      programs: ['Economics', 'International Relations', 'Political Science'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '€1,000–€3,000/year',
       scholarships: true,
       website: 'https://uam.es'
@@ -444,11 +444,11 @@ export const universitiesByCountry: Record<string, University[]> = {
     {
       id: 'sciencespo',
       name: 'Sciences Po',
-      city: 'Paris',
+      city: 'Parigi',
       country: 'France',
       language: 'French/English',
       ranking: 36,
-      programs: ['Political Science', 'International Relations', 'Economics'],
+      programs: ['Political Science', 'International Relations'],
       tuitionFee: '€14,000–€20,000/year',
       scholarships: true,
       website: 'https://sciencespo.fr'
@@ -460,7 +460,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'France',
       language: 'French/English',
       ranking: 37,
-      programs: ['Finance', 'Management', 'Consulting'],
+      programs: ['Finance', 'Management'],
       tuitionFee: '€15,000–€25,000/year',
       scholarships: true,
       website: 'https://essec.edu'
@@ -472,7 +472,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'France',
       language: 'French/English',
       ranking: 38,
-      programs: ['Management', 'Finance', 'Strategy'],
+      programs: ['Management', 'Strategy'],
       tuitionFee: '€20,000–€30,000/year',
       scholarships: true,
       website: 'https://hec.edu'
@@ -484,7 +484,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'France',
       language: 'Multiple',
       ranking: 39,
-      programs: ['International Business', 'Management', 'Finance'],
+      programs: ['International Business', 'Finance'],
       tuitionFee: '€15,000–€25,000/year',
       scholarships: true,
       website: 'https://escp.eu'
@@ -498,7 +498,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Netherlands',
       language: 'English/Dutch',
       ranking: 40,
-      programs: ['Finance', 'International Commerce', 'Economics'],
+      programs: ['Finance', 'International Commerce'],
       tuitionFee: '€15,000–€20,000/year',
       scholarships: true,
       website: 'https://erasmusuniversity.nl'
@@ -510,7 +510,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Netherlands',
       language: 'English/Dutch',
       ranking: 41,
-      programs: ['Economics', 'International Relations', 'Business'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '€10,000–€20,000/year',
       scholarships: true,
       website: 'https://uva.nl'
@@ -522,7 +522,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Netherlands',
       language: 'English/Dutch',
       ranking: 42,
-      programs: ['Economics', 'International Business', 'European Studies'],
+      programs: ['International Business', 'European Studies'],
       tuitionFee: '€12,000–€18,000/year',
       scholarships: true,
       website: 'https://maastrichtuniversity.nl'
@@ -534,7 +534,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Netherlands',
       language: 'English/Dutch',
       ranking: 43,
-      programs: ['Economics', 'Business', 'Social Sciences'],
+      programs: ['Economics', 'Social Sciences'],
       tuitionFee: '€10,000–€15,000/year',
       scholarships: true,
       website: 'https://rug.nl'
@@ -548,7 +548,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Belgium',
       language: 'Dutch/English',
       ranking: 44,
-      programs: ['Economics', 'Business', 'European Studies'],
+      programs: ['Economics', 'European Studies'],
       tuitionFee: '€5,000–€9,000/year',
       scholarships: true,
       website: 'https://kuleuven.be'
@@ -560,7 +560,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Belgium',
       language: 'Dutch/English',
       ranking: 45,
-      programs: ['Economics', 'Social Sciences', 'Business'],
+      programs: ['Economics', 'Social Sciences'],
       tuitionFee: '€5,000–€9,000/year',
       scholarships: true,
       website: 'https://ugent.be'
@@ -574,7 +574,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Switzerland',
       language: 'German/English',
       ranking: 46,
-      programs: ['Economics', 'Finance', 'International Management'],
+      programs: ['International Management', 'Finance'],
       tuitionFee: 'CHF 20,000–25,000/year',
       scholarships: true,
       website: 'https://unisg.ch'
@@ -586,7 +586,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Switzerland',
       language: 'German/English',
       ranking: 47,
-      programs: ['Economics', 'Business', 'Finance'],
+      programs: ['Economics', 'Business'],
       tuitionFee: 'CHF 1,500–3,000/year',
       scholarships: true,
       website: 'https://uzh.ch'
@@ -598,7 +598,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Switzerland',
       language: 'English/French',
       ranking: 48,
-      programs: ['International Relations', 'Development Studies', 'International Economics'],
+      programs: ['International Relations', 'International Economics'],
       tuitionFee: 'CHF 20,000/year',
       scholarships: true,
       website: 'https://graduateinstitute.ch'
@@ -612,7 +612,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Germany',
       language: 'German/English',
       ranking: 49,
-      programs: ['Economics', 'Management', 'Finance'],
+      programs: ['Economics', 'Management'],
       tuitionFee: '€1,500/year',
       scholarships: true,
       website: 'https://uni-mannheim.de'
@@ -624,7 +624,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Germany',
       language: 'German/English',
       ranking: 50,
-      programs: ['Economics', 'Social Sciences', 'Political Science'],
+      programs: ['Economics', 'Social Sciences'],
       tuitionFee: '€1,500/year',
       scholarships: true,
       website: 'https://en.lmu.de'
@@ -636,7 +636,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Germany',
       language: 'German/English',
       ranking: 51,
-      programs: ['Economics', 'Finance', 'Business'],
+      programs: ['Economics', 'Finance'],
       tuitionFee: '€1,500/year',
       scholarships: true,
       website: 'https://goethe-university-frankfurt.de'
@@ -650,7 +650,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Austria',
       language: 'German/English',
       ranking: 52,
-      programs: ['Economics', 'Finance', 'Business'],
+      programs: ['Economics', 'Finance'],
       tuitionFee: '€1,500–€3,000/year',
       scholarships: true,
       website: 'https://wu.ac.at'
@@ -664,7 +664,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Denmark',
       language: 'Danish/English',
       ranking: 53,
-      programs: ['Finance', 'Business', 'Sustainability'],
+      programs: ['Finance', 'Sustainable Business'],
       tuitionFee: 'Free for EU/EEA',
       scholarships: true,
       website: 'https://cbs.dk'
@@ -678,7 +678,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Sweden',
       language: 'Swedish/English',
       ranking: 54,
-      programs: ['Finance', 'Entrepreneurship', 'Economics'],
+      programs: ['Finance', 'Entrepreneurship'],
       tuitionFee: 'Free for EU/EEA',
       scholarships: true,
       website: 'https://hhs.se'
@@ -692,7 +692,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Finland',
       language: 'Finnish/English',
       ranking: 55,
-      programs: ['Economics', 'Social Sciences', 'Political Science'],
+      programs: ['Economics', 'Social Sciences'],
       tuitionFee: 'Free for EU/EEA',
       scholarships: true,
       website: 'https://helsinki.fi'
@@ -706,7 +706,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Norway',
       language: 'Norwegian/English',
       ranking: 56,
-      programs: ['Finance', 'Economics', 'Management'],
+      programs: ['Finance', 'Management'],
       tuitionFee: '€14,000–€18,000/year',
       scholarships: true,
       website: 'https://bi.edu'
@@ -720,7 +720,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'UK',
       language: 'English',
       ranking: 57,
-      programs: ['Economics', 'Political Science', 'International Relations'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '£22,000–£27,000/year',
       scholarships: true,
       website: 'https://lse.ac.uk'
@@ -732,7 +732,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'UK',
       language: 'English',
       ranking: 58,
-      programs: ['Economics', 'PPE', 'Public Policy'],
+      programs: ['Economics', 'Public Policy'],
       tuitionFee: '£25,000–£35,000/year',
       scholarships: true,
       website: 'https://ox.ac.uk'
@@ -744,7 +744,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'UK',
       language: 'English',
       ranking: 59,
-      programs: ['Economics', 'International Relations', 'Political Science'],
+      programs: ['Economics', 'Political Science'],
       tuitionFee: '£25,000–£35,000/year',
       scholarships: true,
       website: 'https://cam.ac.uk'
@@ -756,7 +756,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'UK',
       language: 'English',
       ranking: 60,
-      programs: ['Economics', 'Business', 'International Studies'],
+      programs: ['Economics', 'International Studies'],
       tuitionFee: '£20,000–£25,000/year',
       scholarships: true,
       website: 'https://warwick.ac.uk'
@@ -768,7 +768,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'UK',
       language: 'English',
       ranking: 61,
-      programs: ['Economics', 'International Relations', 'Political Science'],
+      programs: ['Economics', 'International Relations'],
       tuitionFee: '£20,000–£25,000/year',
       scholarships: true,
       website: 'https://kcl.ac.uk'
@@ -782,7 +782,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Ireland',
       language: 'English',
       ranking: 62,
-      programs: ['Economics', 'International Business', 'Political Science'],
+      programs: ['Economics', 'International Business'],
       tuitionFee: '€16,000–€22,000/year',
       scholarships: true,
       website: 'https://tcd.ie'
@@ -794,7 +794,7 @@ export const universitiesByCountry: Record<string, University[]> = {
       country: 'Ireland',
       language: 'English',
       ranking: 63,
-      programs: ['Economics', 'Finance', 'Management'],
+      programs: ['Economics', 'Finance'],
       tuitionFee: '€15,000–€20,000/year',
       scholarships: true,
       website: 'https://ucd.ie'
