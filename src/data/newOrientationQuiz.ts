@@ -148,43 +148,43 @@ export const level1Questions: NewQuizQuestion[] = [
 export const macroCategories: MacroCategory[] = [
   {
     id: 'finance',
-    name: 'Finance',
-    description: 'Sei orientato verso il mondo finanziario, con focus su investimenti, mercati e analisi quantitative.',
+    name: 'FINANCE',
+    description: 'Il mondo della finanza è fatto per chi ama l\'analisi, la strategia e l\'impatto concreto. Che tu voglia lavorare in banca d\'investimento, in fondi di private equity o nelle startup del futuro, troverai ambienti competitivi, ritmi alti e grandi opportunità di crescita (e guadagno).',
     icon: '💰',
     subcategories: ['IB', 'PE', 'VC', 'HF', 'Quant', 'AM']
   },
   {
     id: 'consulting',
-    name: 'Consulting',
-    description: 'Ti attrae il problem-solving strategico e il lavoro con grandi aziende per ottimizzare performance.',
+    name: 'CONSULTING',
+    description: 'Se ti piace risolvere problemi, lavorare in team e affrontare sfide sempre nuove, la consulenza è la tua palestra ideale. Dai bilanci alla strategia, ti confronterai con clienti reali, in progetti che cambiano di continuo e accelerano il tuo sviluppo professionale.',
     icon: '📊',
     subcategories: ['MBB', 'Big4']
   },
   {
     id: 'policy',
-    name: 'Policy & Public Affairs',
-    description: 'Sei interessato alle relazioni internazionali, diplomazia e impatto su politiche pubbliche.',
+    name: 'POLICY & PUBLIC AFFAIRS',
+    description: 'Vuoi contribuire al bene pubblico, influenzare decisioni politiche o rappresentare il tuo Paese? In questa area lavori in contesti internazionali, istituzionali e multilaterali, con un impatto diretto su società, economia e ambiente.',
     icon: '🌍',
     subcategories: ['Dipl', 'Org_Int', 'Policy']
   },
   {
     id: 'business',
-    name: 'Business & Industries',
-    description: 'Ti piace lavorare in grandi aziende, gestire prodotti e guidare crescita in contesti strutturati.',
+    name: 'BUSINESS & INDUSTRIES',
+    description: 'Grandi aziende e industrie innovative cercano menti brillanti per ruoli di gestione, analisi e operatività. Se vuoi vedere il risultato concreto del tuo lavoro e contribuire allo sviluppo di prodotti e servizi globali, questo è il tuo spazio.',
     icon: '🏢',
     subcategories: ['Big_Tech', 'PM', 'Corporate']
   },
   {
     id: 'entrepreneurship',
-    name: 'Entrepreneurship',
-    description: 'Hai spirito imprenditoriale e ti attrae creare, innovare e costruire nuove realtà aziendali.',
+    name: 'ENTREPRENEURSHIP',
+    description: 'Hai spirito di iniziativa, vuoi costruire qualcosa di tuo o guidare la crescita di un\'impresa? Dal lanciare una start-up al gestire le finanze aziendali, l\'imprenditorialità richiede visione, coraggio e capacità manageriali.',
     icon: '🚀',
     subcategories: ['Start_up', 'CFO']
   },
   {
     id: 'academic',
-    name: 'Academic & Media',
-    description: 'Sei orientato verso ricerca, comunicazione e produzione di conoscenza nel campo economico.',
+    name: 'ACADEMIC & MEDIA',
+    description: 'Se ti appassiona il sapere, la ricerca o il racconto dei fatti, puoi seguire la via dell\'accademia o del giornalismo. Due mondi diversi, ma uniti dalla voglia di capire, spiegare e generare impatto culturale e sociale.',
     icon: '📚',
     subcategories: ['Ricercatore', 'Giornalista']
   }

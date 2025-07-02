@@ -145,7 +145,8 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     : level1Questions;
   const currentQuestionData = questions[currentQuestion];
   const totalQuestions = isLevel2 ? 3 : level1Questions.length;
-  const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+  const currentQuestionNumber = isLevel2 ? 7 + currentQuestion + 1 : currentQuestion + 1;
+  const progress = (currentQuestionNumber / 10) * 100; // Barra di progresso su 10 domande totali
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -167,11 +168,11 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>
                 {isLevel2 
-                  ? `Livello 2: ${topMacroCategory!.name}`
-                  : 'Livello 1: Orientamento generale'
-                }
-              </span>
-              <span>Domanda {currentQuestion + 1} di {totalQuestions}</span>
+                   ? `Livello 2: ${topMacroCategory!.name}`
+                   : 'Livello 1: Orientamento generale'
+                 }
+               </span>
+               <span>Domanda {currentQuestionNumber} di 10</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
