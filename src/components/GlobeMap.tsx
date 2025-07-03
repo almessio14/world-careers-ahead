@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
 import { continents, globeConfig } from './globe/globeConfig';
@@ -88,11 +87,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       const world = new Globe(globeRef.current!)
         .width(globeRef.current!.clientWidth)
         .height(400)
-        .backgroundColor('#f8fafc')
+        .backgroundColor('#0A1D3A')
         .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
         .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
         .showAtmosphere(true)
-        .atmosphereColor('#e0f2fe')
+        .atmosphereColor('#CDA434')
         .atmosphereAltitude(0.12)
         .enablePointerInteraction(true)
         .pointsData([])
@@ -102,41 +101,41 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
           
           if (hasUniversities(countryName)) {
-            return d.hovered ? '#1a73e8' : 'rgba(66, 133, 244, 0.7)';
+            return d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.7)';
           }
-          return 'rgba(229, 231, 235, 0.6)';
+          return 'rgba(100, 116, 139, 0.3)';
         })
         .polygonSideColor((d: any) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
           if (hasUniversities(countryName)) {
-            return d.hovered ? '#4285f4' : 'rgba(66, 133, 244, 0.5)';
+            return d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.5)';
           }
-          return 'rgba(209, 213, 219, 0.4)';
+          return 'rgba(71, 85, 105, 0.2)';
         })
         .polygonStrokeColor((d: any) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
           if (hasUniversities(countryName)) {
-            return d.hovered ? '#1a73e8' : 'rgba(66, 133, 244, 0.8)';
+            return d.hovered ? '#fbbf24' : 'rgba(205, 164, 52, 0.8)';
           }
-          return 'rgba(156, 163, 175, 0.5)';
+          return 'rgba(100, 116, 139, 0.4)';
         })
         .polygonLabel((d: any) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
           if (hasUniversities(countryName)) {
             return `
               <div style="
-                background: rgba(255, 255, 255, 0.95); 
-                color: #374151; 
+                background: rgba(10, 29, 58, 0.95); 
+                color: #CDA434; 
                 padding: 12px 16px; 
                 border-radius: 8px; 
                 font-size: 14px;
                 font-family: system-ui, -apple-system, sans-serif;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                border: 1px solid rgba(229, 231, 235, 0.8);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                border: 1px solid rgba(205, 164, 52, 0.8);
                 font-weight: 500;
               ">
-                🎓 <strong style="color: #1f2937;">${countryName}</strong><br/>
-                <span style="color: #6b7280; font-size: 12px;">Clicca per le università</span>
+                🎓 <strong style="color: #fbbf24;">${countryName}</strong><br/>
+                <span style="color: #CDA434; font-size: 12px;">Clicca per le università</span>
               </div>
             `;
           }
@@ -281,17 +280,20 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   // Se c'è un errore, mostra la mappa alternativa
   if (hasError) {
     return (
-      <div className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-200">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+      <div 
+        className="rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-600"
+        style={{ backgroundColor: '#0A1D3A' }}
+      >
+        <h2 className="text-3xl font-bold text-white mb-6 text-center">
           🌍 Mappa Interattiva delle Università
         </h2>
         
         <div className="text-center py-20">
           <div className="text-6xl mb-4">🗺️</div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <h3 className="text-xl font-semibold mb-2" style={{ color: '#CDA434' }}>
             Caricamento globo in corso...
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Se il problema persiste, prova a ricaricare la pagina.
           </p>
         </div>
@@ -300,8 +302,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-200">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+    <div 
+      className="rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-600"
+      style={{ backgroundColor: '#0A1D3A' }}
+    >
+      <h2 className="text-3xl font-bold text-white mb-6 text-center">
         🌍 Globo Interattivo delle Università
       </h2>
       
@@ -311,10 +316,16 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         isTransitioning={isTransitioning}
       />
 
-      <div className="h-[400px] w-full relative rounded-xl border border-gray-200 shadow-lg overflow-hidden bg-white">
+      <div className="h-[400px] w-full relative rounded-xl border border-gray-600 shadow-lg overflow-hidden">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-blue-50/80">
-            <div className="text-gray-700 text-xl font-semibold animate-pulse">
+          <div 
+            className="absolute inset-0 flex items-center justify-center z-20"
+            style={{ backgroundColor: 'rgba(10, 29, 58, 0.8)' }}
+          >
+            <div 
+              className="text-xl font-semibold animate-pulse"
+              style={{ color: '#CDA434' }}
+            >
               🌍 Caricamento globo terrestre...
             </div>
           </div>
@@ -338,7 +349,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         )}
       </div>
 
-      {/* Sidebar con stile Google Maps */}
+      {/* Sidebar */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
         <div className="absolute top-0 right-0 h-full w-96 bg-white/95 backdrop-blur-xl text-gray-800 p-6 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30">
           <div className="flex justify-between items-center mb-6">
@@ -387,18 +398,24 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         </div>
       )}
 
-      <div className="text-center text-gray-600 mt-6 space-y-2">
-        <p className="text-lg font-medium text-gray-700">
+      <div className="text-center mt-6 space-y-2" style={{ color: '#CDA434' }}>
+        <p className="text-lg font-medium">
           🎯 Usa le frecce per cambiare continente
         </p>
-        <p className="text-sm text-gray-500">
-          Clicca sui paesi evidenziati in blu per vedere le università disponibili.
+        <p className="text-sm opacity-80">
+          Clicca sui paesi evidenziati in oro per vedere le università disponibili.
         </p>
       </div>
 
       {isTransitioning && (
-        <div className="absolute inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl">
-          <div className="text-gray-700 text-xl font-semibold animate-pulse">
+        <div 
+          className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl"
+          style={{ backgroundColor: 'rgba(10, 29, 58, 0.8)' }}
+        >
+          <div 
+            className="text-xl font-semibold animate-pulse"
+            style={{ color: '#CDA434' }}
+          >
             ✨ Esplorando {continents[currentContinentIndex].name}... ✨
           </div>
         </div>

@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
@@ -120,7 +121,7 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo con stile Google Maps migliorato
+// Componente principale del globo con texture Google Maps
 const GoogleMapsStyleGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
@@ -133,14 +134,59 @@ const GoogleMapsStyleGlobe = ({
   const globeRef = useRef<THREE.Group>(null);
   const targetRotationY = useRef(0);
   
-  // Prova a caricare la texture, con fallback
-  let earthTexture;
-  try {
-    earthTexture = useLoader(TextureLoader, 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
-  } catch (error) {
-    console.log('Texture loading failed, using solid color');
-    earthTexture = null;
-  }
+  // Crea una texture personalizzata stile Google Maps
+  const createGoogleMapsTexture = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    
+    if (!ctx) return null;
+
+    // Sfondo oceano (azzurro Google Maps)
+    ctx.fillStyle = '#a8d5ff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Simuliamo masse terrestri con forme semplici (verde Google Maps)
+    ctx.fillStyle = '#9fc164';
+    
+    // Nord America
+    ctx.beginPath();
+    ctx.ellipse(200, 200, 120, 80, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Sud America
+    ctx.beginPath();
+    ctx.ellipse(250, 350, 60, 100, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Europa
+    ctx.beginPath();
+    ctx.ellipse(512, 180, 80, 60, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Africa
+    ctx.beginPath();
+    ctx.ellipse(520, 300, 70, 120, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Asia
+    ctx.beginPath();
+    ctx.ellipse(700, 200, 150, 100, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Australia
+    ctx.beginPath();
+    ctx.ellipse(800, 380, 80, 40, 0, 0, 2 * Math.PI);
+    ctx.fill();
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    return texture;
+  };
+
+  const googleMapsTexture = createGoogleMapsTexture();
   
   useFrame((state, delta) => {
     if (targetContinent) {
@@ -160,14 +206,13 @@ const GoogleMapsStyleGlobe = ({
 
   return (
     <group ref={globeRef}>
-      {/* Globo con colori stile Google Maps */}
+      {/* Globo con texture Google Maps personalizzata */}
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhongMaterial 
-          color="#4a90e2"
-          map={earthTexture}
+          map={googleMapsTexture}
           transparent
-          opacity={0.9}
+          opacity={0.95}
         />
       </mesh>
 
@@ -183,13 +228,13 @@ const GoogleMapsStyleGlobe = ({
         />
       ))}
 
-      {/* Atmosfera Google Maps style */}
+      {/* Atmosfera leggera */}
       <mesh scale={[1.02, 1.02, 1.02]}>
         <sphereGeometry args={[1, 32, 32]} />
         <meshBasicMaterial 
-          color="#e0f2fe" 
+          color="#ffffff" 
           transparent 
-          opacity={0.15}
+          opacity={0.1}
           side={THREE.BackSide}
         />
       </mesh>
@@ -227,16 +272,19 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
   const currentContinent = continents[currentContinentIndex];
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 rounded-xl p-6 min-h-[700px] relative overflow-hidden shadow-lg border border-gray-200">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+    <div 
+      className="rounded-xl p-6 min-h-[700px] relative overflow-hidden shadow-lg border border-gray-200"
+      style={{ backgroundColor: '#0A1D3A' }}
+    >
+      <h2 className="text-3xl font-bold text-white mb-6 text-center">
         🌍 Esplora le Università nel Mondo
       </h2>
       
-      {/* Indicatore continente corrente */}
+      {/* Indicatore continente corrente con colore oro */}
       <div className="text-center mb-4">
-        <h3 className={`text-xl font-semibold text-gray-700 transition-all duration-300 ${
+        <h3 className={`text-xl font-semibold transition-all duration-300 ${
           isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
-        }`}>
+        }`} style={{ color: '#CDA434' }}>
           {currentContinent.name}
         </h3>
         <div className="flex justify-center space-x-2 mt-2">
@@ -244,15 +292,18 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             <div
               key={index}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentContinentIndex ? 'bg-blue-500 scale-125' : 'bg-gray-300'
+                index === currentContinentIndex ? 'scale-125' : ''
               }`}
+              style={{ 
+                backgroundColor: index === currentContinentIndex ? '#CDA434' : 'rgba(205, 164, 52, 0.3)'
+              }}
             />
           ))}
         </div>
       </div>
 
-      {/* Canvas 3D con stile Google Maps - ora più visibile */}
-      <div className="h-96 w-full relative bg-white rounded-lg shadow-inner border border-gray-200">
+      {/* Canvas 3D */}
+      <div className="h-96 w-full relative rounded-lg shadow-inner border border-gray-600">
         <Canvas 
           camera={{ 
             position: [0, 0.5, 3],
@@ -261,7 +312,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             far: 1000
           }}
           style={{ 
-            background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+            backgroundColor: '#0A1D3A',
             borderRadius: '8px'
           }}
         >
@@ -280,17 +331,22 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             targetContinent={currentContinent}
           />
           
-          {/* Illuminazione migliorata */}
-          <ambientLight intensity={0.7} color="#ffffff" />
-          <directionalLight position={[5, 5, 5]} intensity={1} color="#ffffff" />
-          <pointLight position={[-5, -3, -5]} intensity={0.3} color="#e3f2fd" />
+          {/* Illuminazione */}
+          <ambientLight intensity={0.6} color="#ffffff" />
+          <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
+          <pointLight position={[-5, -3, -5]} intensity={0.3} color="#ffffff" />
         </Canvas>
 
-        {/* Frecce di navigazione stile Google Maps */}
+        {/* Frecce di navigazione dorate */}
         <button
           onClick={() => handleContinentChange('prev')}
           disabled={isTransitioning}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-gray-200"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border"
+          style={{ 
+            backgroundColor: 'rgba(205, 164, 52, 0.8)',
+            borderColor: '#CDA434',
+            color: '#0A1D3A'
+          }}
         >
           <ChevronLeft size={24} />
         </button>
@@ -298,13 +354,18 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         <button
           onClick={() => handleContinentChange('next')}
           disabled={isTransitioning}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-gray-200"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border"
+          style={{ 
+            backgroundColor: 'rgba(205, 164, 52, 0.8)',
+            borderColor: '#CDA434',
+            color: '#0A1D3A'
+          }}
         >
           <ChevronRight size={24} />
         </button>
       </div>
 
-      {/* Pannello laterale per le università con stile Google Maps */}
+      {/* Pannello laterale per le università */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
         <div className="absolute top-0 right-0 h-full w-80 bg-white/95 backdrop-blur-xl text-gray-800 p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-gray-200 shadow-xl">
           <div className="flex justify-between items-center mb-6">
@@ -347,16 +408,22 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       )}
 
-      {/* Istruzioni */}
-      <div className="text-center text-gray-600 mt-6">
+      {/* Istruzioni in oro */}
+      <div className="text-center mt-6" style={{ color: '#CDA434' }}>
         <p className="text-lg mb-2">🎯 Usa le frecce per esplorare i continenti</p>
         <p className="text-sm">Clicca sui marker rossi per vedere le università disponibili.</p>
       </div>
 
       {/* Loading overlay */}
       {isTransitioning && (
-        <div className="absolute inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-10">
-          <div className="text-gray-700 text-lg font-semibold animate-pulse">
+        <div 
+          className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-10"
+          style={{ backgroundColor: 'rgba(10, 29, 58, 0.8)' }}
+        >
+          <div 
+            className="text-lg font-semibold animate-pulse"
+            style={{ color: '#CDA434' }}
+          >
             Esplorando {continents[currentContinentIndex].name}...
           </div>
         </div>
