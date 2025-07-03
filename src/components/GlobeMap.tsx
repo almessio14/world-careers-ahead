@@ -15,6 +15,7 @@ interface GlobeMapProps {
 const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const globeRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [currentContinentIndex, setCurrentContinentIndex] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -205,13 +206,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .pointLabel((d: any) => `
         <div style="
           background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.8)); 
-          color: #FF0000; 
+          color: #DC2626; 
           padding: 12px 16px; 
           border-radius: 8px; 
           font-size: 15px;
           font-weight: bold;
           max-width: 250px;
-          border: 2px solid #FF0000;
+          border: 2px solid #DC2626;
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
           z-index: 9999;
         ">
@@ -441,6 +442,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
   return (
     <div 
+      ref={containerRef}
       className="rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-600"
       style={{ backgroundColor: '#0A1D3A' }}
     >
@@ -493,6 +495,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         onUniversitySelect={onUniversitySelect}
         onUniversityHover={handleUniversityHover}
         hoveredUniversity={hoveredUniversity}
+        containerRef={containerRef}
       />
 
       <div className="text-center mt-6 space-y-2 text-white">

@@ -1,3 +1,4 @@
+
 import { Heart } from 'lucide-react';
 import { universitiesByCountry } from '../../data/universities';
 import { University } from '../../types';
@@ -9,6 +10,7 @@ interface UniversitySidebarProps {
   onUniversitySelect: (university: University) => void;
   onUniversityHover?: (university: University | null) => void;
   hoveredUniversity?: University | null;
+  containerRef?: React.RefObject<HTMLDivElement>;
 }
 
 const getCountryFlag = (countryCode: string): string => {
@@ -114,7 +116,8 @@ const UniversitySidebar = ({
   onClose, 
   onUniversitySelect, 
   onUniversityHover,
-  hoveredUniversity 
+  hoveredUniversity,
+  containerRef
 }: UniversitySidebarProps) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -137,8 +140,31 @@ const UniversitySidebar = ({
     }
   };
 
+  // Calcola la posizione della sidebar basata sul container padre
+  const getPosition = () => {
+    if (!containerRef?.current) {
+      return { top: '6rem', right: '0', height: 'calc(100vh - 12rem)' };
+    }
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    return {
+      top: `${rect.top}px`,
+      right: '0',
+      height: `${rect.height}px`
+    };
+  };
+
+  const position = getPosition();
+
   return (
-    <div className="fixed top-16 right-0 h-[500px] w-full sm:w-80 md:w-96 bg-white/70 backdrop-blur-xl text-gray-800 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-hidden">
+    <div 
+      className="fixed w-full sm:w-80 md:w-96 bg-white/70 backdrop-blur-xl text-gray-800 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-hidden"
+      style={{
+        top: position.top,
+        right: position.right,
+        height: position.height
+      }}
+    >
       {/* Header fisso */}
       <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center">
         <h3 className="text-2xl sm:text-3xl font-bold text-gray-800">
