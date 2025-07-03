@@ -1,4 +1,3 @@
-
 import { Heart } from 'lucide-react';
 import { universitiesByCountry } from '../../data/universities';
 import { University } from '../../types';
@@ -69,7 +68,7 @@ const getUniversityDescription = (universityId: string): string => {
     'yonsei': '🎓 Prestigiosa università privata, noto polo per business e economia con ampie collaborazioni internazionali.',
     'nus': '🌏 Università leader in Asia, forte in economia, finanza e management, con programmi molto internazionali e collegamenti con il mondo business globale.',
     'cityu': '🌆 Università dinamica e internazionale, programmi in economia e business con forte impronta asiatica.',
-    'bocconi': '🎓 Leader italiana in economia, finanza e management, con forte orientamento internazionale e buone collaborazioni aziendali.',
+    'bocconi': '🎓 Leader italiano in economia, finanza e management, con forte orientamento internazionale e buone collaborazioni aziendali.',
     'padova': '🏛 Storica università pubblica con programmi solidi in economia e scienze politiche, ambiente di studio tradizionale ma stimolante.',
     'cafoscari': '🌍 Nota per economia internazionale, commercio e studi europei, posizione unica in città storica e turistica.',
     'sapienza': '🎓 Grande università pubblica con programmi in economia, diritto e relazioni internazionali, forte presenza storica e culturale.',
@@ -140,30 +139,9 @@ const UniversitySidebar = ({
     }
   };
 
-  // Calcola la posizione della sidebar basata sul container padre
-  const getPosition = () => {
-    if (!containerRef?.current) {
-      return { top: '6rem', right: '0', height: 'calc(100vh - 12rem)' };
-    }
-    
-    const rect = containerRef.current.getBoundingClientRect();
-    return {
-      top: `${rect.top}px`,
-      right: '0',
-      height: `${rect.height}px`
-    };
-  };
-
-  const position = getPosition();
-
   return (
     <div 
-      className="fixed w-full sm:w-80 md:w-96 bg-white/70 backdrop-blur-xl text-gray-800 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-hidden"
-      style={{
-        top: position.top,
-        right: position.right,
-        height: position.height
-      }}
+      className="absolute top-0 right-0 w-full sm:w-80 md:w-96 h-full bg-white/70 backdrop-blur-xl text-gray-800 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-hidden"
     >
       {/* Header fisso */}
       <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center">
