@@ -1,3 +1,4 @@
+
 import { Heart } from 'lucide-react';
 import { universitiesByCountry } from '../../data/universities';
 import { University } from '../../types';

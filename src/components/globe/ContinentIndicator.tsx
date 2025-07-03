@@ -1,6 +1,8 @@
 
+import { Continent } from './globeConfig';
+
 interface ContinentIndicatorProps {
-  continents: Array<{ name: string }>;
+  continents: Continent[];
   currentIndex: number;
   isTransitioning: boolean;
 }
@@ -9,22 +11,20 @@ const ContinentIndicator = ({ continents, currentIndex, isTransitioning }: Conti
   const currentContinent = continents[currentIndex];
 
   return (
-    <div className="text-center mb-6">
-      <h3 className={`text-2xl font-bold transition-all duration-300 ${
+    <div className="text-center mb-4">
+      <h3 className={`text-xl font-semibold transition-all duration-300 ${
         isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
       }`} style={{ color: '#CDA434' }}>
-        ✨ {currentContinent.name} ✨
+        {currentContinent.name}
       </h3>
-      <div className="flex justify-center space-x-3 mt-3">
+      <div className="flex justify-center space-x-2 mt-2">
         {continents.map((_, index) => (
           <div
             key={index}
-            className={`w-4 h-4 rounded-full transition-all duration-300 shadow-lg ${
-              index === currentIndex 
-                ? 'scale-125 shadow-lg' 
-                : 'hover:scale-110'
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              index === currentIndex ? 'scale-125' : ''
             }`}
-            style={{
+            style={{ 
               backgroundColor: index === currentIndex ? '#CDA434' : 'rgba(205, 164, 52, 0.3)'
             }}
           />

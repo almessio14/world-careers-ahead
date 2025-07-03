@@ -13,31 +13,31 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
             onClick={() => onTabChange('quiz')}
             className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'quiz'
-                ? 'border-primary text-primary'
+                ? 'border-[#14213d] text-[#14213d]'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            🎯 Quiz di Orientamento
+            Quiz di Orientamento
           </button>
           <button
             onClick={() => onTabChange('careers')}
             className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'careers'
-                ? 'border-primary text-primary'
+                ? 'border-[#14213d] text-[#14213d]'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            💼 Esplora Carriere
+            Esplora Carriere
           </button>
           <button
             onClick={() => onTabChange('universities')}
             className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
               activeTab === 'universities'
-                ? 'border-primary text-primary'
+                ? 'border-[#14213d] text-[#14213d]'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            🎓 Università nel Mondo
+            Università nel Mondo
           </button>
         </div>
       </div>

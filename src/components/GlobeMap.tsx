@@ -191,8 +191,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           name: hoveredUniversity.name,
           id: hoveredUniversity.id,
           color: '#FF0000', // Rosso come richiesto
-          size: 0.5,
-          altitude: 0.03
+          size: 0.6,
+          altitude: 0.05
         });
       }
     }
@@ -208,7 +208,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           color: #FF0000; 
           padding: 12px 16px; 
           border-radius: 8px; 
-          font-size: 14px;
+          font-size: 15px;
           font-weight: bold;
           max-width: 250px;
           border: 2px solid #FF0000;
@@ -271,7 +271,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           const data = await response.json();
           console.log('Dati paesi caricati:', data.features.length, 'paesi');
 
-          // Configura i colori e gli eventi per i paesi
+          // Configura i colori e gli eventi per i paesi - cambio da oro a navy
           world
             .polygonsData(data.features)
             .polygonAltitude(0.01)
@@ -279,21 +279,21 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(255, 215, 0, 0.6)' : 'rgba(255, 215, 0, 0.3)';
+                return d.hovered ? 'rgba(20, 33, 61, 0.6)' : 'rgba(20, 33, 61, 0.3)';
               }
               return 'rgba(100, 116, 139, 0.1)';
             })
             .polygonSideColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(255, 215, 0, 0.4)' : 'rgba(255, 215, 0, 0.2)';
+                return d.hovered ? 'rgba(20, 33, 61, 0.4)' : 'rgba(20, 33, 61, 0.2)';
               }
               return 'rgba(71, 85, 105, 0.05)';
             })
             .polygonStrokeColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? '#FFD700' : '#CDA434';
+                return d.hovered ? '#14213d' : '#14213d';
               }
               return 'rgba(100, 116, 139, 0.2)';
             })
@@ -303,12 +303,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
                 return `
                   <div style="
                     background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); 
-                    color: #FFD700; 
+                    color: #14213d; 
                     padding: 10px 14px; 
                     border-radius: 8px; 
                     font-size: 14px;
                     font-weight: bold;
-                    border: 2px solid #FFD700;
+                    border: 2px solid #14213d;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
                   ">
                     🎓 ${countryName}<br/>
@@ -446,7 +446,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       style={{ backgroundColor: '#0A1D3A' }}
     >
       <h2 className="text-3xl font-bold text-white mb-6 text-center">
-        🌍 Globo Interattivo delle Università
+        Globo Interattivo delle Università
       </h2>
       
       <ContinentIndicator 
@@ -465,7 +465,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               className="text-xl font-semibold animate-pulse"
               style={{ color: '#CDA434' }}
             >
-              🌍 Caricamento globo terrestre...
+              Caricamento globo terrestre...
             </div>
           </div>
         )}
@@ -498,10 +498,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       <div className="text-center mt-6 space-y-2 text-white">
         <p className="text-lg font-medium">
-          <span style={{ color: '#CDA434' }}>🎯 Usa le frecce per cambiare continente</span>
+          <span style={{ color: '#CDA434' }}>Usa le frecce per cambiare continente</span>
         </p>
         <p className="text-sm opacity-80">
-          Clicca sui paesi evidenziati in oro per vedere le università disponibili.
+          Clicca sui paesi evidenziati in navy per vedere le università disponibili.
         </p>
       </div>
 
@@ -514,7 +514,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             className="text-xl font-semibold animate-pulse"
             style={{ color: '#CDA434' }}
           >
-            ✨ Esplorando {continents[currentContinentIndex].name}... ✨
+            Esplorando {continents[currentContinentIndex].name}...
           </div>
         </div>
       )}
