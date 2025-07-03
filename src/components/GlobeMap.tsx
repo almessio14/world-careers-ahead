@@ -175,32 +175,27 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     'ucd': { lat: 53.3067, lng: -6.2297 }
   };
 
-  // Crea tutti i pin delle università per il continente corrente
+  // Crea pin solo per l'università in hover
   const createUniversityPins = () => {
     if (!worldRef.current) return;
 
-    const currentContinent = continents[currentContinentIndex];
     const universityPins: any[] = [];
 
-    // Aggiungi pin per ogni paese del continente corrente
-    currentContinent.countries?.forEach(country => {
-      const countryCode = country.code;
-      const universities = universitiesByCountry[countryCode] || [];
-      universities.forEach(university => {
-        const coords = universityCoordinates[university.id];
-        if (coords) {
-          universityPins.push({
-            lat: coords.lat,
-            lng: coords.lng,
-            name: university.name,
-            id: university.id,
-            color: hoveredUniversity?.id === university.id ? '#FFD700' : '#FF6B35',
-            size: hoveredUniversity?.id === university.id ? 0.3 : 0.2,
-            altitude: 0.01
-          });
-        }
-      });
-    });
+    // Aggiungi pin solo se c'è un'università in hover
+    if (hoveredUniversity) {
+      const coords = universityCoordinates[hoveredUniversity.id];
+      if (coords) {
+        universityPins.push({
+          lat: coords.lat,
+          lng: coords.lng,
+          name: hoveredUniversity.name,
+          id: hoveredUniversity.id,
+          color: '#FFD700',
+          size: 0.4,
+          altitude: 0.02
+        });
+      }
+    }
 
     worldRef.current
       .pointsData(universityPins)
@@ -209,15 +204,16 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .pointRadius('size')
       .pointLabel((d: any) => `
         <div style="
-          background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); 
+          background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.8)); 
           color: #FFD700; 
-          padding: 8px 12px; 
-          border-radius: 6px; 
-          font-size: 12px;
+          padding: 12px 16px; 
+          border-radius: 8px; 
+          font-size: 14px;
           font-weight: bold;
-          max-width: 200px;
-          border: 1px solid #FFD700;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          max-width: 250px;
+          border: 2px solid #FFD700;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+          z-index: 9999;
         ">
           📍 ${d.name}
         </div>
@@ -226,7 +222,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
   const handleUniversityHover = (university: University | null) => {
     setHoveredUniversity(university);
-    createUniversityPins(); // Riaggiorna i pin quando si cambia hover
   };
 
   useEffect(() => {
