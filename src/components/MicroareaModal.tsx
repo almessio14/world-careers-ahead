@@ -88,7 +88,7 @@ export default function MicroareaModal({ microarea, onClose }: MicroareaModalPro
                   <h4 className="font-semibold text-green-900 text-xs md:text-sm mb-1">
                     Compenso Medio
                   </h4>
-                  <p className="text-green-800 font-bold text-base md:text-lg">
+                  <p className="text-green-800 font-bold text-xs md:text-sm">
                     {microarea.salary}
                   </p>
                 </div>
