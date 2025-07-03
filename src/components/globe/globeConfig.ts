@@ -1,4 +1,3 @@
-
 // Coordinate geografiche dei continenti con stile Google Maps
 export const continents = [
   {
@@ -47,6 +46,8 @@ export const continents = [
     ]
   }
 ];
+
+export type Continent = typeof continents[0];
 
 // Configurazione Globe.gl con stile Google Maps
 export const globeConfig = {
