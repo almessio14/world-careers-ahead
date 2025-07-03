@@ -1,4 +1,5 @@
 
+
 import { useState } from 'react';
 import { 
   level1Questions, 
@@ -171,8 +172,11 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     : level1Questions;
   const currentQuestionData = questions[currentQuestion];
   const totalQuestions = isLevel2 ? 3 : level1Questions.length;
-  const currentQuestionNumber = isLevel2 ? 7 + currentQuestion + 1 : currentQuestion + 1;
-  const progress = (currentQuestionNumber / 10) * 100; // Barra di progresso su 10 domande totali
+  
+  // Calcola il numero di domande completate (non quella attuale)
+  const completedQuestions = isLevel2 ? 7 + level2Answers.length : level1Answers.length;
+  const currentQuestionNumber = completedQuestions + 1;
+  const progress = (completedQuestions / 10) * 100; // Barra di progresso basata sulle domande completate
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -245,3 +249,4 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
 };
 
 export default NewOrientationQuiz;
+
