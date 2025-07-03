@@ -1,4 +1,5 @@
 
+
 import { useState } from 'react';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
@@ -21,7 +22,7 @@ export default function Index() {
   const [selectedMicroarea, setSelectedMicroarea] = useState<Microarea | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 font-sans">
       <Header onFavoritesClick={() => setShowFavorites(true)} />
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
@@ -32,16 +33,16 @@ export default function Index() {
             <div className="text-center mb-16">
               <div className="bg-gradient-to-r from-[#0A1D3A] via-[#14213d] to-[#0A1D3A] text-white p-12 rounded-3xl shadow-2xl mb-12 backdrop-blur-xl border border-white/10">
                 <div className="max-w-4xl mx-auto">
-                  <h2 className="text-5xl font-light mb-6 tracking-tight">
+                  <h2 className="text-5xl font-light mb-6 tracking-tight font-sans">
                     Scopri il Tuo 
-                    <span className="block text-[#fbbf24] font-medium mt-2">Futuro Professionale</span>
+                    <span className="block text-[#fbbf24] font-medium mt-2 font-sans">Futuro Professionale</span>
                   </h2>
-                  <p className="text-xl mb-8 text-blue-100 font-light leading-relaxed max-w-2xl mx-auto">
+                  <p className="text-xl mb-8 text-blue-100 font-light leading-relaxed max-w-2xl mx-auto font-sans">
                     Un percorso personalizzato per esplorare le opportunità che meglio si adattano alle tue aspirazioni
                   </p>
                   <button
                     onClick={() => setShowOrientationQuiz(true)}
-                    className="bg-white text-[#14213d] px-10 py-4 rounded-full font-medium text-lg hover:bg-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-xl transform"
+                    className="bg-white text-[#14213d] px-10 py-4 rounded-full font-medium text-lg hover:bg-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-xl transform font-sans"
                   >
                     Inizia il Percorso
                   </button>
@@ -55,11 +56,11 @@ export default function Index() {
             <div className="text-center mb-12">
               <div className="bg-gradient-to-r from-[#0A1D3A] via-[#14213d] to-[#0A1D3A] text-white p-12 rounded-3xl shadow-2xl mb-12 backdrop-blur-xl border border-white/10">
                 <div className="max-w-5xl mx-auto">
-                  <h1 className="text-6xl font-light text-white mb-4 tracking-tight">
+                  <h1 className="text-6xl font-light text-white mb-4 tracking-tight font-sans">
                     Esplora le 
-                    <span className="block text-[#fbbf24] font-medium mt-2">Carriere del Futuro</span>
+                    <span className="block text-[#fbbf24] font-medium mt-2 font-sans">Carriere del Futuro</span>
                   </h1>
-                  <p className="text-xl text-blue-100 font-light leading-relaxed max-w-3xl mx-auto mb-8">
+                  <p className="text-xl text-blue-100 font-light leading-relaxed max-w-3xl mx-auto mb-8 font-sans">
                     Scopri opportunità professionali innovative che stanno ridefinendo il mondo del lavoro
                   </p>
                 </div>
@@ -69,7 +70,7 @@ export default function Index() {
             {/* Disclaimer elegante con spaziatura ridotta */}
             <div className="mb-10">
               <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-2xl border border-blue-100">
-                <p className="text-sm text-blue-800 text-center font-medium">
+                <p className="text-sm text-blue-800 text-center font-medium font-sans">
                   I dati salariali sono indicativi per posizioni entry-level (2-3 anni) in Europa Occidentale e Nord America
                 </p>
               </div>
@@ -128,3 +129,4 @@ export default function Index() {
     </div>
   );
 };
+
