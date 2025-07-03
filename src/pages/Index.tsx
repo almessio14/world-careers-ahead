@@ -49,8 +49,8 @@ export default function Index() {
               
               {/* Testo informativo sotto il blocco navy */}
               <div className="max-w-4xl mx-auto mb-8">
-                <p className="text-lg mb-6 text-gray-700 font-light leading-relaxed font-sans">
-                  Se ti interessano economia, finanza, relazioni internazionali o imprenditoria, ma non sai ancora quale strada intraprendere, questo quiz ti aiuterà a fare chiarezza con domande mirate.
+                <p className="text-base mb-6 text-gray-700 font-light leading-relaxed font-sans">
+                  Se ti interessano economia, finanza, relazioni internazionali o imprenditoria, ma non sai ancora quale strada intraprendere, questo quiz può aiutarti a fare chiarezza. Attraverso poche domande mirate, ti suggeriremo carriere in linea con i tuoi interessi, il tuo modo di pensare e il contesto lavorativo in cui potresti esprimerti al meglio.
                 </p>
                 <p className="text-base text-gray-600 font-light leading-relaxed font-sans">
                   Le carriere in questi ambiti sono altamente competitive. Frequentare una buona università è una base solida, ma non è sufficiente. Ciò che fa davvero la differenza è l'esperienza: stage, progetti, network, capacità di mettersi in gioco.
