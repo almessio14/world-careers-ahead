@@ -21,79 +21,108 @@ const Index = () => {
   const [selectedMicroarea, setSelectedMicroarea] = useState<Microarea | null>(null);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <Header onFavoritesClick={() => setShowFavorites(true)} />
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-12 max-w-7xl">
         {activeTab === 'quiz' ? (
-          <div>
-            {/* Hero section solo per il quiz */}
-            <div className="text-center mb-12">
-              <div className="bg-[#14213d] text-white p-8 rounded-xl shadow-lg mb-8">
-                <h2 className="text-3xl font-bold mb-4">Scopri il Tuo Futuro Professionale</h2>
-                <p className="text-xl mb-6 text-blue-100">
-                  Rispondi al nostro quiz personalizzato per scoprire la carriera perfetta per te
-                </p>
-                <button
-                  onClick={() => setShowOrientationQuiz(true)}
-                  className="bg-white text-[#14213d] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors animate-bounce-light"
-                >
-                  🎯 Inizia il Quiz di Orientamento
-                </button>
+          <div className="animate-fade-in">
+            {/* Hero section con design più pulito */}
+            <div className="text-center mb-16">
+              <div className="bg-gradient-to-r from-[#0A1D3A] via-[#14213d] to-[#0A1D3A] text-white p-12 rounded-3xl shadow-2xl mb-12 backdrop-blur-xl border border-white/10">
+                <div className="max-w-4xl mx-auto">
+                  <h2 className="text-5xl font-light mb-6 tracking-tight">
+                    Scopri il Tuo 
+                    <span className="block text-[#fbbf24] font-medium mt-2">Futuro Professionale</span>
+                  </h2>
+                  <p className="text-xl mb-8 text-blue-100 font-light leading-relaxed max-w-2xl mx-auto">
+                    Un percorso personalizzato per esplorare le opportunità che meglio si adattano alle tue aspirazioni
+                  </p>
+                  <button
+                    onClick={() => setShowOrientationQuiz(true)}
+                    className="bg-white text-[#14213d] px-10 py-4 rounded-full font-medium text-lg hover:bg-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-xl transform"
+                  >
+                    🎯 Inizia il Percorso
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         ) : activeTab === 'careers' ? (
-          <div>
-            {/* Hero section per le carriere */}
-            <div className="text-center mb-12">
-              <div className="bg-[#14213d] text-white p-8 rounded-xl shadow-lg mb-8">
-                <h2 className="text-3xl font-bold mb-4">Esplora le Carriere Internazionali</h2>
-                <p className="text-xl mb-6 text-blue-100">
-                  Scopri opportunità professionali che cambieranno il mondo
+          <div className="animate-fade-in">
+            {/* Hero section per le carriere con stile Apple */}
+            <div className="text-center mb-20">
+              <div className="max-w-5xl mx-auto">
+                <h1 className="text-6xl font-light text-[#14213d] mb-6 tracking-tight">
+                  Esplora le 
+                  <span className="block text-[#fbbf24] font-medium mt-2">Carriere del Futuro</span>
+                </h1>
+                <p className="text-xl text-gray-600 font-light leading-relaxed max-w-3xl mx-auto mb-12">
+                  Scopri opportunità professionali innovative che stanno ridefinendo il mondo del lavoro
                 </p>
               </div>
             </div>
 
-            {/* Disclaimer sugli stipendi */}
-            <div className="mb-6">
-              <p className="text-sm text-gray-600 italic text-center">
-                *Stipendi medi indicativi in Europa Occidentale/Nord America per posizioni entry level (2-3 anni)
-              </p>
+            {/* Disclaimer elegante */}
+            <div className="mb-16">
+              <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100">
+                <p className="text-sm text-blue-800 text-center font-medium">
+                  💡 I dati salariali sono indicativi per posizioni entry-level (2-3 anni) in Europa Occidentale e Nord America
+                </p>
+              </div>
             </div>
 
-            {/* Career Exploration Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-              {careerExplorationData.map((category) => (
-                <CareerExplorationCard 
-                  key={category.id} 
-                  category={category}
-                  onMicroareaClick={setSelectedMicroarea}
-                />
+            {/* Career Grid con spaziatura Apple-like */}
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 items-start">
+              {careerExplorationData.map((category, index) => (
+                <div
+                  key={category.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <CareerExplorationCard 
+                    category={category}
+                    onMicroareaClick={setSelectedMicroarea}
+                  />
+                </div>
               ))}
             </div>
           </div>
         ) : (
-          <GlobeMap onUniversitySelect={setSelectedUniversity} />
+          <div className="animate-fade-in">
+            <GlobeMap onUniversitySelect={setSelectedUniversity} />
+          </div>
         )}
       </main>
 
-      {/* Modals */}
-      {showOrientationQuiz && <NewOrientationQuiz onClose={() => setShowOrientationQuiz(false)} />}
+      {/* Modals con backdrop premium */}
+      {showOrientationQuiz && (
+        <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/20">
+          <NewOrientationQuiz onClose={() => setShowOrientationQuiz(false)} />
+        </div>
+      )}
       {selectedUniversity && (
-        <UniversityModal
-          university={selectedUniversity}
-          onClose={() => setSelectedUniversity(null)}
-        />
+        <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/20">
+          <UniversityModal
+            university={selectedUniversity}
+            onClose={() => setSelectedUniversity(null)}
+          />
+        </div>
       )}
       {selectedMicroarea && (
-        <MicroareaModal
-          microarea={selectedMicroarea}
-          onClose={() => setSelectedMicroarea(null)}
-        />
+        <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/20">
+          <MicroareaModal
+            microarea={selectedMicroarea}
+            onClose={() => setSelectedMicroarea(null)}
+          />
+        </div>
       )}
-      {showFavorites && <FavoritesModal onClose={() => setShowFavorites(false)} />}
+      {showFavorites && (
+        <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/20">
+          <FavoritesModal onClose={() => setShowFavorites(false)} />
+        </div>
+      )}
     </div>
   );
 };
