@@ -67,98 +67,164 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     return !!(countryCode && universitiesByCountry[countryCode] && universitiesByCountry[countryCode].length > 0);
   };
 
-  // Funzione per convertire coordinate lat/lng in posizione 3D
-  const latLngToVector3 = (lat: number, lng: number, radius = 100) => {
-    const phi = (90 - lat) * (Math.PI / 180);
-    const theta = (lng + 180) * (Math.PI / 180);
+  // Coordinate complete di tutte le università
+  const universityCoordinates: Record<string, { lat: number, lng: number }> = {
+    // USA
+    'harvard': { lat: 42.3744, lng: -71.1169 },
+    'stanford': { lat: 37.4275, lng: -122.1697 },
+    'ucla': { lat: 34.0689, lng: -118.4452 },
+    'berkeley': { lat: 37.8719, lng: -122.2585 },
+    'columbia': { lat: 40.8075, lng: -73.9626 },
+    'yale': { lat: 41.3163, lng: -72.9223 },
+    'uchicago': { lat: 41.7886, lng: -87.5987 },
+    'mit': { lat: 42.3601, lng: -71.0942 },
+    'wharton': { lat: 39.9522, lng: -75.1932 },
+    'princeton': { lat: 40.3430, lng: -74.6514 },
+    'nyu': { lat: 40.7295, lng: -73.9965 },
+    'bu': { lat: 42.3505, lng: -71.1054 },
     
-    return {
-      x: -radius * Math.sin(phi) * Math.cos(theta),
-      y: radius * Math.cos(phi),
-      z: radius * Math.sin(phi) * Math.sin(theta)
-    };
+    // Canada
+    'toronto': { lat: 43.6629, lng: -79.3957 },
+    'mcgill': { lat: 45.5048, lng: -73.5772 },
+    'ubc': { lat: 49.2606, lng: -123.2460 },
+    
+    // Cina
+    'peking': { lat: 39.9042, lng: 116.4074 },
+    'tsinghua': { lat: 40.0007, lng: 116.3262 },
+    'fudan': { lat: 31.2304, lng: 121.4737 },
+    
+    // Giappone
+    'tokyo': { lat: 35.7128, lng: 139.7595 },
+    'kyoto': { lat: 35.0116, lng: 135.7681 },
+    'osaka': { lat: 34.6937, lng: 135.5023 },
+    'hitotsubashi': { lat: 35.6762, lng: 139.6503 },
+    
+    // Corea del Sud
+    'snu': { lat: 37.4601, lng: 126.9520 },
+    'yonsei': { lat: 37.5665, lng: 126.9385 },
+    
+    // Singapore
+    'nus': { lat: 1.2966, lng: 103.7764 },
+    'cityu': { lat: 22.3364, lng: 114.2654 },
+    
+    // Italia
+    'bocconi': { lat: 45.4408, lng: 9.1900 },
+    'padova': { lat: 45.4064, lng: 11.8768 },
+    'cafoscari': { lat: 45.4408, lng: 12.3155 },
+    'sapienza': { lat: 41.9028, lng: 12.4964 },
+    
+    // Portogallo
+    'nova': { lat: 38.7223, lng: -9.1393 },
+    'ulisboa': { lat: 38.7223, lng: -9.1393 },
+    
+    // Spagna
+    'esade': { lat: 41.3851, lng: 2.1734 },
+    'ie': { lat: 40.4168, lng: -3.7038 },
+    'uam': { lat: 40.5445, lng: -3.6906 },
+    
+    // Francia
+    'sciencespo': { lat: 48.8566, lng: 2.3522 },
+    'essec': { lat: 49.0370, lng: 2.0679 },
+    'hec': { lat: 48.7593, lng: 2.1672 },
+    'escp': { lat: 48.8566, lng: 2.3522 },
+    
+    // Paesi Bassi
+    'erasmus': { lat: 51.9225, lng: 4.4792 },
+    'uva': { lat: 52.3676, lng: 4.9041 },
+    'maastricht': { lat: 50.8503, lng: 5.6909 },
+    'groningen': { lat: 53.2194, lng: 6.5665 },
+    
+    // Belgio
+    'kuleuven': { lat: 50.8798, lng: 4.7005 },
+    'ghent': { lat: 51.0500, lng: 3.7303 },
+    
+    // Svizzera
+    'stgallen': { lat: 47.4245, lng: 9.3767 },
+    'uzh': { lat: 47.3769, lng: 8.5417 },
+    'iheid': { lat: 46.2044, lng: 6.1432 },
+    
+    // Germania
+    'mannheim': { lat: 49.4875, lng: 8.4660 },
+    'lmu': { lat: 48.1351, lng: 11.5820 },
+    'goethe': { lat: 50.1109, lng: 8.6821 },
+    
+    // Austria
+    'wu': { lat: 48.2082, lng: 16.3738 },
+    
+    // Danimarca
+    'cbs': { lat: 55.6761, lng: 12.5683 },
+    
+    // Svezia
+    'sse': { lat: 59.3293, lng: 18.0686 },
+    
+    // Finlandia
+    'helsinki': { lat: 60.1699, lng: 24.9384 },
+    
+    // Norvegia
+    'bi': { lat: 59.9139, lng: 10.7522 },
+    
+    // Regno Unito
+    'lse': { lat: 51.5145, lng: -0.1167 },
+    'oxford': { lat: 51.7548, lng: -1.2544 },
+    'cambridge': { lat: 52.2043, lng: 0.1218 },
+    'warwick': { lat: 52.3793, lng: -1.5616 },
+    'kcl': { lat: 51.5118, lng: -0.1162 },
+    
+    // Irlanda
+    'tcd': { lat: 53.3438, lng: -6.2546 },
+    'ucd': { lat: 53.3067, lng: -6.2297 }
   };
 
-  // Aggiungi pin per università quando hover
-  const addUniversityPin = (university: University) => {
+  // Crea tutti i pin delle università per il continente corrente
+  const createUniversityPins = () => {
     if (!worldRef.current) return;
 
-    // Coordinate approssimative delle università (potresti avere coordinate più precise)
-    const universityCoordinates: Record<string, { lat: number, lng: number }> = {
-      'harvard': { lat: 42.3744, lng: -71.1169 },
-      'stanford': { lat: 37.4275, lng: -122.1697 },
-      'ucla': { lat: 34.0689, lng: -118.4452 },
-      'berkeley': { lat: 37.8719, lng: -122.2585 },
-      'columbia': { lat: 40.8075, lng: -73.9626 },
-      'yale': { lat: 41.3163, lng: -72.9223 },
-      'uchicago': { lat: 41.7886, lng: -87.5987 },
-      'mit': { lat: 42.3601, lng: -71.0942 },
-      'wharton': { lat: 39.9522, lng: -75.1932 },
-      'princeton': { lat: 40.3430, lng: -74.6514 },
-      'nyu': { lat: 40.7295, lng: -73.9965 },
-      'bu': { lat: 42.3505, lng: -71.1054 },
-      'toronto': { lat: 43.6629, lng: -79.3957 },
-      'mcgill': { lat: 45.5048, lng: -73.5772 },
-      'ubc': { lat: 49.2606, lng: -123.2460 },
-      'bocconi': { lat: 45.4408, lng: 9.1900 },
-      'padova': { lat: 45.4064, lng: 11.8768 },
-      'cafoscari': { lat: 45.4408, lng: 12.3155 },
-      'sapienza': { lat: 41.9028, lng: 12.4964 },
-      'nova': { lat: 38.7223, lng: -9.1393 },
-      'ulisboa': { lat: 38.7223, lng: -9.1393 },
-      'lse': { lat: 51.5145, lng: -0.1167 },
-      'oxford': { lat: 51.7548, lng: -1.2544 },
-      'cambridge': { lat: 52.2043, lng: 0.1218 },
-      'warwick': { lat: 52.3793, lng: -1.5616 },
-      'kcl': { lat: 51.5118, lng: -0.1162 }
-    };
+    const currentContinent = continents[currentContinentIndex];
+    const universityPins: any[] = [];
 
-    const coords = universityCoordinates[university.id];
-    if (!coords) return;
+    // Aggiungi pin per ogni paese del continente corrente
+    currentContinent.countries?.forEach(countryCode => {
+      const universities = universitiesByCountry[countryCode] || [];
+      universities.forEach(university => {
+        const coords = universityCoordinates[university.id];
+        if (coords) {
+          universityPins.push({
+            lat: coords.lat,
+            lng: coords.lng,
+            name: university.name,
+            id: university.id,
+            color: hoveredUniversity?.id === university.id ? '#ff6b6b' : '#FFD700',
+            size: hoveredUniversity?.id === university.id ? 0.8 : 0.5
+          });
+        }
+      });
+    });
 
-    const position = latLngToVector3(coords.lat, coords.lng, 101);
-
-    // Aggiungi il pin come punto sulla mappa
     worldRef.current
-      .pointsData([{
-        lat: coords.lat,
-        lng: coords.lng,
-        name: university.name,
-        color: '#ff6b6b',
-        size: 1
-      }])
+      .pointsData(universityPins)
       .pointColor('color')
       .pointAltitude(0.02)
       .pointRadius('size')
       .pointLabel((d: any) => `
         <div style="
-          background: rgba(0, 0, 0, 0.8); 
-          color: white; 
-          padding: 8px 12px; 
-          border-radius: 6px; 
-          font-size: 12px;
+          background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); 
+          color: #FFD700; 
+          padding: 10px 14px; 
+          border-radius: 8px; 
+          font-size: 13px;
           font-weight: bold;
           max-width: 200px;
+          border: 2px solid #FFD700;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         ">
-          📍 ${d.name}
+          🎓 ${d.name}
         </div>
       `);
   };
 
-  // Rimuovi pin università
-  const removeUniversityPin = () => {
-    if (!worldRef.current) return;
-    worldRef.current.pointsData([]);
-  };
-
   const handleUniversityHover = (university: University | null) => {
     setHoveredUniversity(university);
-    
-    if (university) {
-      addUniversityPin(university);
-    } else {
-      removeUniversityPin();
-    }
+    createUniversityPins(); // Riaggiorna i pin quando si cambia hover
   };
 
   useEffect(() => {
@@ -175,11 +241,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .width(globeRef.current!.clientWidth)
         .height(400)
         .backgroundColor('#0A1D3A')
-        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
-        .bumpImageUrl(null)
+        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+        .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
         .showAtmosphere(true)
-        .atmosphereColor('#8B4513')
-        .atmosphereAltitude(0.12)
+        .atmosphereColor('#4A90E2')
+        .atmosphereAltitude(0.15)
         .enablePointerInteraction(true);
 
       const controls = world.controls();
@@ -216,39 +282,40 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               
               if (hasUniversities(countryName)) {
-                return d.hovered ? '#FFFF00' : '#FFD700'; // Giallo brillante quando hover, oro quando normale
+                return d.hovered ? 'rgba(255, 215, 0, 0.8)' : 'rgba(255, 215, 0, 0.3)';
               }
-              return 'rgba(100, 116, 139, 0.2)'; // Grigio per paesi senza università
+              return 'rgba(100, 116, 139, 0.1)';
             })
             .polygonSideColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? '#FFFF00' : '#FFD700';
+                return d.hovered ? 'rgba(255, 215, 0, 0.6)' : 'rgba(255, 215, 0, 0.2)';
               }
-              return 'rgba(71, 85, 105, 0.1)';
+              return 'rgba(71, 85, 105, 0.05)';
             })
             .polygonStrokeColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? '#FFFFFF' : '#fbbf24';
+                return d.hovered ? '#FFFF00' : '#FFD700';
               }
-              return 'rgba(100, 116, 139, 0.3)';
+              return 'rgba(100, 116, 139, 0.2)';
             })
             .polygonLabel((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
                 return `
                   <div style="
-                    background: rgba(0, 0, 0, 0.8); 
+                    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); 
                     color: #FFD700; 
-                    padding: 8px 12px; 
-                    border-radius: 6px; 
+                    padding: 10px 14px; 
+                    border-radius: 8px; 
                     font-size: 14px;
                     font-weight: bold;
                     border: 2px solid #FFD700;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
                   ">
                     🎓 ${countryName}<br/>
-                    <span style="font-size: 12px;">Click per università</span>
+                    <span style="font-size: 12px; opacity: 0.9;">Click per università</span>
                   </div>
                 `;
               }
@@ -300,6 +367,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               world.polygonsData(world.polygonsData());
             });
 
+          // Crea i pin delle università iniziali
+          createUniversityPins();
+
           setIsLoading(false);
           console.log('Setup completato');
           
@@ -340,7 +410,17 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       altitude: 2
     }, 1000);
 
+    // Riaggiorna i pin per il nuovo continente
+    setTimeout(() => {
+      createUniversityPins();
+    }, 500);
+
   }, [currentContinentIndex]);
+
+  // Riaggiorna i pin quando cambia l'università in hover
+  useEffect(() => {
+    createUniversityPins();
+  }, [hoveredUniversity]);
 
   const handleContinentChange = (direction: 'prev' | 'next') => {
     if (isTransitioning || isLoading) return;
