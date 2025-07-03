@@ -304,12 +304,12 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
                 return `
                   <div style="
                     background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); 
-                    color: #CDA434; 
+                    color: #FFFFFF; 
                     padding: 10px 14px; 
                     border-radius: 8px; 
                     font-size: 14px;
                     font-weight: bold;
-                    border: 2px solid #CDA434;
+                    border: 2px solid #FFFFFF;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
                   ">
                     ${countryName}<br/>

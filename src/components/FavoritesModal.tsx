@@ -1,5 +1,4 @@
-
-import { Heart, X, MapPin, Globe, DollarSign, Trophy, GraduationCap } from 'lucide-react';
+import { Heart, X, MapPin, Globe, DollarSign, GraduationCap } from 'lucide-react';
 import { useFavorites } from '../hooks/useFavorites';
 import { Career, University } from '../types';
 import { Microarea } from '../data/careerExploration';
@@ -194,7 +193,7 @@ const FavoritesModal = ({ onClose }: FavoritesModalProps) => {
                   <span className="w-3 h-4 md:h-6 bg-[#fbbf24] rounded-full mr-3"></span>
                   Università Salvate ({universityFavorites.length})
                 </h3>
-                <div className="grid gap-4 md:gap-6">
+                <div className="grid gap-4 md:gap-6 md:grid-cols-2">
                   {universityFavorites.map((fav) => {
                     const university = fav.data as University;
                     return (
@@ -212,7 +211,7 @@ const FavoritesModal = ({ onClose }: FavoritesModalProps) => {
                               </div>
                             </div>
                             
-                            <p className="text-xs md:text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2">
+                            <p className="text-xs md:text-sm text-gray-600 leading-relaxed mb-4 line-clamp-3">
                               {getUniversityDescription(university.id)}
                             </p>
                           </div>
@@ -224,33 +223,23 @@ const FavoritesModal = ({ onClose }: FavoritesModalProps) => {
                           </button>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          <div className="bg-gradient-to-r from-purple-50 to-purple-100 px-3 py-2 rounded-lg border border-purple-200">
+                        <div className="space-y-2 md:space-y-3">
+                          <div className="bg-gradient-to-r from-green-50 to-green-100 px-3 md:px-4 py-2 rounded-lg border border-green-200">
                             <div className="flex items-center space-x-2">
-                              <Trophy className="h-4 w-4 text-purple-600 flex-shrink-0" />
+                              <div className="w-1 md:w-1.5 h-2 md:h-3 bg-green-500 rounded-full flex-shrink-0"></div>
                               <div className="min-w-0">
-                                <p className="text-xs font-medium text-purple-900">Ranking</p>
-                                <p className="text-sm font-bold text-purple-800">#{university.ranking}</p>
+                                <p className="text-xs font-medium text-green-900 mb-1">Costo</p>
+                                <p className="text-sm text-green-800 font-bold">{university.tuitionFee}</p>
                               </div>
                             </div>
                           </div>
                           
-                          <div className="bg-gradient-to-r from-green-50 to-green-100 px-3 py-2 rounded-lg border border-green-200">
+                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-3 md:px-4 py-2 rounded-lg border border-blue-200">
                             <div className="flex items-center space-x-2">
-                              <DollarSign className="h-4 w-4 text-green-600 flex-shrink-0" />
+                              <div className="w-1 md:w-1.5 h-2 md:h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
                               <div className="min-w-0">
-                                <p className="text-xs font-medium text-green-900">Costo</p>
-                                <p className="text-xs font-bold text-green-800 truncate">{university.tuitionFee}</p>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-3 py-2 rounded-lg border border-blue-200">
-                            <div className="flex items-center space-x-2">
-                              <GraduationCap className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                              <div className="min-w-0">
-                                <p className="text-xs font-medium text-blue-900">Lingua</p>
-                                <p className="text-xs font-bold text-blue-800">{university.language}</p>
+                                <p className="text-xs font-medium text-blue-900 mb-1">Lingua</p>
+                                <p className="text-sm text-blue-800 font-bold">{university.language}</p>
                               </div>
                             </div>
                           </div>
