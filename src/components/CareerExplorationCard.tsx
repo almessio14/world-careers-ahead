@@ -16,14 +16,15 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
 
   useEffect(() => {
     if (isExpanded && cardRef.current) {
-      // Smooth scroll con offset per centrare meglio la card
       const cardRect = cardRef.current.getBoundingClientRect();
-      const offset = window.innerHeight * 0.1; // 10% dello schermo come offset
+      const offset = window.innerHeight * 0.1;
       
-      window.scrollTo({
-        top: window.scrollY + cardRect.top - offset,
-        behavior: 'smooth'
-      });
+      setTimeout(() => {
+        window.scrollTo({
+          top: window.scrollY + cardRect.top - offset,
+          behavior: 'smooth'
+        });
+      }, 100);
     }
   }, [isExpanded]);
 
@@ -45,10 +46,10 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
         {/* Header sempre visibile */}
         <div className="flex items-start justify-between mb-4 md:mb-6">
           <div className="flex-1 min-w-0">
-            <h3 className="text-xl md:text-2xl font-light text-[#14213d] mb-2 md:mb-3 tracking-tight group-hover:text-[#fbbf24] transition-colors duration-300 line-clamp-2">
+            <h3 className="text-xl md:text-2xl font-light text-[#14213d] mb-2 md:mb-3 tracking-tight group-hover:text-[#fbbf24] transition-colors duration-300">
               {category.name}
             </h3>
-            <p className="text-sm md:text-base text-gray-600 leading-relaxed font-light line-clamp-3">
+            <p className="text-sm md:text-base text-gray-600 leading-relaxed font-light">
               {category.description}
             </p>
           </div>
@@ -63,8 +64,8 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
 
         {/* Sezioni espandibili con animazione fluida */}
         <div className={cn(
-          "overflow-hidden transition-all duration-500 ease-out",
-          isExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          "overflow-hidden transition-all duration-700 ease-out",
+          isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
         )}>
           <div className="pt-4 md:pt-6 border-t border-gray-100">
             <div className="mb-3 md:mb-4">
@@ -73,7 +74,7 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
               </h4>
             </div>
             
-            <div className="space-y-2 md:space-y-3 max-h-80 overflow-y-auto custom-scrollbar">
+            <div className="space-y-2 md:space-y-3">
               {category.microareas.map((microarea, index) => (
                 <button
                   key={microarea.id}
@@ -89,7 +90,7 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm md:text-base font-medium text-[#14213d] group-hover/item:text-[#fbbf24] transition-colors duration-200 truncate pr-2">
+                    <span className="text-sm md:text-base font-medium text-[#14213d] group-hover/item:text-[#fbbf24] transition-colors duration-200 pr-2">
                       {microarea.name}
                     </span>
                     <ArrowUpRight 
