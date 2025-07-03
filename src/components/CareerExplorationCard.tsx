@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Macrocategory, Microarea } from '../data/careerExploration';
 import { cn } from '../lib/utils';
@@ -12,15 +12,31 @@ interface CareerExplorationCardProps {
 
 export default function CareerExplorationCard({ category, onMicroareaClick }: CareerExplorationCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isExpanded && cardRef.current) {
+      cardRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+      });
+    }
+  }, [isExpanded]);
+
+  const handleToggle = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   return (
     <Card 
+      ref={cardRef}
       className={cn(
         "group cursor-pointer transition-all duration-500 ease-out bg-white/80 backdrop-blur-sm border border-gray-200/50 hover:border-[#fbbf24]/30 shadow-sm hover:shadow-2xl hover:shadow-[#fbbf24]/10",
         "transform hover:-translate-y-2 hover:scale-[1.02]",
         isExpanded ? "ring-2 ring-[#fbbf24]/20 shadow-2xl" : ""
       )}
-      onClick={() => setIsExpanded(!isExpanded)}
+      onClick={handleToggle}
     >
       <CardContent className="p-8">
         {/* Header sempre visibile */}

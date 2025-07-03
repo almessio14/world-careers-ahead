@@ -63,28 +63,36 @@ export default function MicroareaModal({ microarea, onClose }: MicroareaModalPro
             </p>
           </div>
           
-          {/* Layout a due colonne per ottimizzare lo spazio */}
-          <div className="grid md:grid-cols-2 gap-4">
-            {/* Aziende note compatte */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
-              <h4 className="font-semibold text-blue-900 mb-3 flex items-center text-sm">
-                <span className="w-2 h-4 bg-blue-500 rounded-full mr-2"></span>
-                Aziende Leader
-              </h4>
-              <p className="text-blue-800 font-medium text-sm leading-relaxed">
-                {microarea.companies}
-              </p>
+          {/* Layout verticale per aziende e compenso - strisce sottili */}
+          <div className="space-y-3">
+            {/* Aziende leader - striscia sottile */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 rounded-xl border border-blue-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-2 h-4 bg-blue-500 rounded-full flex-shrink-0"></div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-blue-900 text-sm mb-1">
+                    Aziende Leader
+                  </h4>
+                  <p className="text-blue-800 font-medium text-sm truncate">
+                    {microarea.companies}
+                  </p>
+                </div>
+              </div>
             </div>
             
-            {/* Stipendio compatto */}
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-100">
-              <h4 className="font-semibold text-green-900 mb-3 flex items-center text-sm">
-                <span className="w-2 h-4 bg-green-500 rounded-full mr-2"></span>
-                Compenso Medio
-              </h4>
-              <p className="text-green-800 font-bold text-lg">
-                {microarea.salary}
-              </p>
+            {/* Compenso medio - striscia sottile */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3 rounded-xl border border-green-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-2 h-4 bg-green-500 rounded-full flex-shrink-0"></div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-green-900 text-sm mb-1">
+                    Compenso Medio
+                  </h4>
+                  <p className="text-green-800 font-bold text-lg">
+                    {microarea.salary}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           
