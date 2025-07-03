@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
 import { continents, globeConfig } from './globe/globeConfig';
@@ -18,10 +19,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [allCountries, setAllCountries] = useState<any[]>([]);
 
-  // Funzione migliorata per il mapping dei paesi
+  // Funzione per il mapping dei paesi
   const getCountryCode = (countryName: string): string | null => {
     if (!countryName) return null;
     
@@ -58,35 +57,19 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       'Ireland': 'Ireland'
     };
 
-    // Exact match first
-    if (countryMappings[countryName]) {
-      return countryMappings[countryName];
-    }
-
-    // Partial match
-    const lowerCountryName = countryName.toLowerCase();
-    for (const [key, value] of Object.entries(countryMappings)) {
-      if (lowerCountryName.includes(key.toLowerCase()) || 
-          key.toLowerCase().includes(lowerCountryName)) {
-        return value;
-      }
-    }
-
-    return null;
+    return countryMappings[countryName] || null;
   };
 
   // Funzione per verificare se un paese ha università
   const hasUniversities = (countryName: string): boolean => {
     const countryCode = getCountryCode(countryName);
-    const result = countryCode && universitiesByCountry[countryCode] && universitiesByCountry[countryCode].length > 0;
-    return !!result;
+    return !!(countryCode && universitiesByCountry[countryCode] && universitiesByCountry[countryCode].length > 0);
   };
 
   useEffect(() => {
     if (!globeRef.current) return;
 
     setIsLoading(true);
-    setHasError(false);
 
     try {
       if (globeRef.current) {
@@ -102,87 +85,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         .showAtmosphere(true)
         .atmosphereColor('#8B4513')
         .atmosphereAltitude(0.12)
-        .enablePointerInteraction(true)
-        .pointsData([])
-        .polygonsData([])
-        .polygonAltitude(0.01)
-        .polygonCapColor((d: any) => {
-          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
-          
-          if (hasUniversities(countryName)) {
-            return d.hovered ? '#FFD700' : '#CDA434';
-          }
-          return 'rgba(100, 116, 139, 0.2)';
-        })
-        .polygonSideColor((d: any) => {
-          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
-          if (hasUniversities(countryName)) {
-            return d.hovered ? '#FFD700' : '#CDA434';
-          }
-          return 'rgba(71, 85, 105, 0.1)';
-        })
-        .polygonStrokeColor((d: any) => {
-          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
-          if (hasUniversities(countryName)) {
-            return d.hovered ? '#FFFF00' : '#fbbf24';
-          }
-          return 'rgba(100, 116, 139, 0.3)';
-        })
-        .polygonLabel((d: any) => {
-          const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
-          if (hasUniversities(countryName)) {
-            return `
-              <div style="
-                background: rgba(44, 24, 16, 0.95); 
-                color: #CDA434; 
-                padding: 12px 16px; 
-                border-radius: 8px; 
-                font-size: 14px;
-                font-family: system-ui, -apple-system, sans-serif;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                border: 1px solid rgba(205, 164, 52, 0.8);
-                font-weight: 500;
-              ">
-                🎓 <strong style="color: #fbbf24;">${countryName}</strong><br/>
-                <span style="color: #CDA434; font-size: 12px;">Clicca per le università</span>
-              </div>
-            `;
-          }
-          return '';
-        })
-        .onPolygonClick((polygon: any) => {
-          const countryName = polygon.properties?.NAME || polygon.properties?.name || polygon.properties?.NAME_EN;
-          const countryCode = getCountryCode(countryName);
-          
-          if (countryCode && universitiesByCountry[countryCode]) {
-            setSelectedCountry(countryCode);
-          }
-        })
-        .onPolygonHover((polygon: any, prevPolygon: any) => {
-          if (prevPolygon) {
-            prevPolygon.hovered = false;
-          }
-          
-          if (polygon) {
-            const countryName = polygon.properties?.NAME || polygon.properties?.name || polygon.properties?.NAME_EN;
-            
-            if (hasUniversities(countryName)) {
-              polygon.hovered = true;
-              if (globeRef.current) {
-                globeRef.current.style.cursor = 'pointer';
-              }
-            } else {
-              polygon.hovered = false;
-              if (globeRef.current) {
-                globeRef.current.style.cursor = 'grab';
-              }
-            }
-          } else {
-            if (globeRef.current) {
-              globeRef.current.style.cursor = 'grab';
-            }
-          }
-        });
+        .enablePointerInteraction(true);
 
       const controls = world.controls();
       if (controls) {
@@ -197,24 +100,116 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       worldRef.current = world;
 
-      // Carica i dati dei paesi con fallback
+      // Carica i dati dei paesi
       const loadCountriesData = async () => {
         try {
+          console.log('Caricamento dati paesi...');
           const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
-          if (!response.ok) throw new Error('Failed to load countries data');
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
           const data = await response.json();
-          setAllCountries(data.features);
+          console.log('Dati paesi caricati:', data.features.length, 'paesi');
+
+          // Configura i colori e gli eventi per i paesi
+          world
+            .polygonsData(data.features)
+            .polygonAltitude(0.01)
+            .polygonCapColor((d: any) => {
+              const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+              
+              if (hasUniversities(countryName)) {
+                return d.hovered ? '#FFFF00' : '#FFD700'; // Giallo brillante quando hover, oro quando normale
+              }
+              return 'rgba(100, 116, 139, 0.2)'; // Grigio per paesi senza università
+            })
+            .polygonSideColor((d: any) => {
+              const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+              if (hasUniversities(countryName)) {
+                return d.hovered ? '#FFFF00' : '#FFD700';
+              }
+              return 'rgba(71, 85, 105, 0.1)';
+            })
+            .polygonStrokeColor((d: any) => {
+              const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+              if (hasUniversities(countryName)) {
+                return d.hovered ? '#FFFFFF' : '#fbbf24';
+              }
+              return 'rgba(100, 116, 139, 0.3)';
+            })
+            .polygonLabel((d: any) => {
+              const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
+              if (hasUniversities(countryName)) {
+                return `
+                  <div style="
+                    background: rgba(0, 0, 0, 0.8); 
+                    color: #FFD700; 
+                    padding: 8px 12px; 
+                    border-radius: 6px; 
+                    font-size: 14px;
+                    font-weight: bold;
+                    border: 2px solid #FFD700;
+                  ">
+                    🎓 ${countryName}<br/>
+                    <span style="font-size: 12px;">Click per università</span>
+                  </div>
+                `;
+              }
+              return '';
+            })
+            .onPolygonClick((polygon: any) => {
+              console.log('Click su paese:', polygon);
+              const countryName = polygon.properties?.NAME || polygon.properties?.name || polygon.properties?.NAME_EN;
+              console.log('Nome paese:', countryName);
+              const countryCode = getCountryCode(countryName);
+              console.log('Codice paese:', countryCode);
+              
+              if (countryCode && universitiesByCountry[countryCode]) {
+                console.log('Università trovate per', countryCode, ':', universitiesByCountry[countryCode].length);
+                setSelectedCountry(countryCode);
+              } else {
+                console.log('Nessuna università trovata per', countryName);
+              }
+            })
+            .onPolygonHover((polygon: any, prevPolygon: any) => {
+              // Reset previous polygon
+              if (prevPolygon) {
+                prevPolygon.hovered = false;
+              }
+              
+              // Set current polygon
+              if (polygon) {
+                const countryName = polygon.properties?.NAME || polygon.properties?.name || polygon.properties?.NAME_EN;
+                
+                if (hasUniversities(countryName)) {
+                  polygon.hovered = true;
+                  if (globeRef.current) {
+                    globeRef.current.style.cursor = 'pointer';
+                  }
+                  console.log('Hover su paese con università:', countryName);
+                } else {
+                  polygon.hovered = false;
+                  if (globeRef.current) {
+                    globeRef.current.style.cursor = 'grab';
+                  }
+                }
+              } else {
+                if (globeRef.current) {
+                  globeRef.current.style.cursor = 'grab';
+                }
+              }
+
+              // Force re-render dei colori
+              world.polygonsData(world.polygonsData());
+            });
+
           setIsLoading(false);
+          console.log('Setup completato');
+          
         } catch (error) {
-          console.error('Error loading countries:', error);
-          // Fallback: crea dati semplificati per i paesi principali
-          const fallbackCountries = continents.flatMap(continent => 
-            continent.countries.map(country => ({
-              properties: { NAME: country.name, name: country.name },
-              geometry: { type: 'Point', coordinates: [country.lng, country.lat] }
-            }))
-          );
-          setAllCountries(fallbackCountries);
+          console.error('Errore nel caricamento dati paesi:', error);
           setIsLoading(false);
         }
       };
@@ -222,8 +217,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       loadCountriesData();
 
     } catch (error) {
-      console.error('Globe initialization error:', error);
-      setHasError(true);
+      console.error('Errore inizializzazione Globe:', error);
       setIsLoading(false);
     }
 
@@ -232,30 +226,18 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         try {
           worldRef.current._destructor?.();
         } catch (e) {
-          console.log('Globe cleanup completed');
+          console.log('Globe cleanup completato');
         }
         worldRef.current = null;
       }
     };
   }, []);
 
-  // Effetto per aggiornare i paesi quando cambia il continente
+  // Effetto per cambiare continente
   useEffect(() => {
-    if (!worldRef.current || !allCountries.length) return;
+    if (!worldRef.current) return;
 
     const currentContinent = continents[currentContinentIndex];
-    const continentCountries = allCountries.filter((d: any) => {
-      const countryName = d.properties?.NAME;
-      if (!countryName) return false;
-      
-      return currentContinent.countries.some(c => 
-        countryName.toLowerCase().includes(c.name.toLowerCase()) ||
-        c.name.toLowerCase().includes(countryName.toLowerCase()) ||
-        getCountryCode(countryName) === c.code
-      );
-    });
-
-    worldRef.current.polygonsData(continentCountries);
     
     worldRef.current.pointOfView({
       lat: currentContinent.lat,
@@ -263,7 +245,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       altitude: 2
     }, 1000);
 
-  }, [currentContinentIndex, allCountries]);
+  }, [currentContinentIndex]);
 
   const handleContinentChange = (direction: 'prev' | 'next') => {
     if (isTransitioning || isLoading) return;
@@ -285,30 +267,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       setIsTransitioning(false);
     }, 1000);
   };
-
-  // Se c'è un errore, mostra la mappa alternativa
-  if (hasError) {
-    return (
-      <div 
-        className="rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-600"
-        style={{ backgroundColor: '#0A1D3A' }}
-      >
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">
-          🌍 Mappa Interattiva delle Università
-        </h2>
-        
-        <div className="text-center py-20">
-          <div className="text-6xl mb-4">🗺️</div>
-          <h3 className="text-xl font-semibold mb-2" style={{ color: '#CDA434' }}>
-            Caricamento globo in corso...
-          </h3>
-          <p className="text-gray-400">
-            Se il problema persiste, prova a ricaricare la pagina.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div 
@@ -349,7 +307,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           }}
         />
 
-        {!isLoading && !hasError && (
+        {!isLoading && (
           <GlobeControls
             onPrevious={() => handleContinentChange('prev')}
             onNext={() => handleContinentChange('next')}
