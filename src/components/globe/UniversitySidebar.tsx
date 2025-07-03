@@ -1,4 +1,3 @@
-
 import { Heart } from 'lucide-react';
 import { universitiesByCountry } from '../../data/universities';
 import { University } from '../../types';
@@ -8,6 +7,8 @@ interface UniversitySidebarProps {
   selectedCountry: string | null;
   onClose: () => void;
   onUniversitySelect: (university: University) => void;
+  onUniversityHover?: (university: University | null) => void;
+  hoveredUniversity?: University | null;
 }
 
 const getCountryFlag = (countryCode: string): string => {
@@ -108,7 +109,13 @@ const getUniversityDescription = (universityId: string): string => {
   return descriptions[universityId] || '';
 };
 
-const UniversitySidebar = ({ selectedCountry, onClose, onUniversitySelect }: UniversitySidebarProps) => {
+const UniversitySidebar = ({ 
+  selectedCountry, 
+  onClose, 
+  onUniversitySelect, 
+  onUniversityHover,
+  hoveredUniversity 
+}: UniversitySidebarProps) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   if (!selectedCountry || !universitiesByCountry[selectedCountry]) {
@@ -122,6 +129,12 @@ const UniversitySidebar = ({ selectedCountry, onClose, onUniversitySelect }: Uni
       type: 'university',
       data: university
     });
+  };
+
+  const handleUniversityHover = (university: University | null) => {
+    if (onUniversityHover) {
+      onUniversityHover(university);
+    }
   };
 
   return (
@@ -139,54 +152,62 @@ const UniversitySidebar = ({ selectedCountry, onClose, onUniversitySelect }: Uni
       </div>
       
       <div className="space-y-4 max-h-[calc(100%-100px)] overflow-y-auto custom-scrollbar">
-        {universitiesByCountry[selectedCountry].map((university) => (
-          <div
-            key={university.id}
-            className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm"
-          >
-            <div className="flex justify-between items-start mb-3">
-              <h4 className="font-semibold text-sm text-gray-800 leading-tight pr-2">{university.name}</h4>
-              <button
-                onClick={(e) => handleFavoriteClick(university, e)}
-                className={`p-1 rounded-full transition-all duration-200 ${
-                  isFavorite(university.id) 
-                    ? 'text-yellow-500 hover:text-yellow-600' 
-                    : 'text-gray-400 hover:text-yellow-500'
-                }`}
-              >
-                <Heart 
-                  size={18} 
-                  fill={isFavorite(university.id) ? 'currentColor' : 'none'}
-                />
-              </button>
-            </div>
-            
-            <div className="text-xs space-y-2 text-gray-600">
-              <div className="flex items-center">
-                <span className="mr-2">📍</span>
-                <span>{university.city}</span>
-              </div>
-              <div className="flex items-center">
-                <span className="mr-2">💰</span>
-                <span className="font-medium text-blue-600">{university.tuitionFee}</span>
-              </div>
-              <div className="text-xs text-gray-700 leading-relaxed">
-                {getUniversityDescription(university.id)}
-              </div>
-              <div className="flex items-center">
-                <span className="mr-2">🔗</span>
-                <a 
-                  href={university.website} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:text-blue-700 underline text-xs"
+        {universitiesByCountry[selectedCountry].map((university) => {
+          const isHovered = hoveredUniversity?.id === university.id;
+          
+          return (
+            <div
+              key={university.id}
+              className={`bg-white p-4 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 ${
+                isHovered ? 'bg-yellow-50 border-yellow-300 shadow-md scale-105' : 'hover:bg-gray-50'
+              }`}
+              onMouseEnter={() => handleUniversityHover(university)}
+              onMouseLeave={() => handleUniversityHover(null)}
+            >
+              <div className="flex justify-between items-start mb-3">
+                <h4 className="font-semibold text-sm text-gray-800 leading-tight pr-2">{university.name}</h4>
+                <button
+                  onClick={(e) => handleFavoriteClick(university, e)}
+                  className={`p-1 rounded-full transition-all duration-200 ${
+                    isFavorite(university.id) 
+                      ? 'text-yellow-500 hover:text-yellow-600' 
+                      : 'text-gray-400 hover:text-yellow-500'
+                  }`}
                 >
-                  {university.website.replace('https://', '')}
-                </a>
+                  <Heart 
+                    size={18} 
+                    fill={isFavorite(university.id) ? 'currentColor' : 'none'}
+                  />
+                </button>
+              </div>
+              
+              <div className="text-xs space-y-2 text-gray-600">
+                <div className="flex items-center">
+                  <span className="mr-2">📍</span>
+                  <span>{university.city}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-2">💰</span>
+                  <span className="font-medium text-blue-600">{university.tuitionFee}</span>
+                </div>
+                <div className="text-xs text-gray-700 leading-relaxed">
+                  {getUniversityDescription(university.id)}
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-2">🔗</span>
+                  <a 
+                    href={university.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-700 underline text-xs"
+                  >
+                    {university.website.replace('https://', '')}
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

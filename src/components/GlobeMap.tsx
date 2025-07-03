@@ -19,6 +19,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hoveredUniversity, setHoveredUniversity] = useState<University | null>(null);
 
   // Funzione per il mapping dei paesi
   const getCountryCode = (countryName: string): string | null => {
@@ -64,6 +65,100 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const hasUniversities = (countryName: string): boolean => {
     const countryCode = getCountryCode(countryName);
     return !!(countryCode && universitiesByCountry[countryCode] && universitiesByCountry[countryCode].length > 0);
+  };
+
+  // Funzione per convertire coordinate lat/lng in posizione 3D
+  const latLngToVector3 = (lat: number, lng: number, radius = 100) => {
+    const phi = (90 - lat) * (Math.PI / 180);
+    const theta = (lng + 180) * (Math.PI / 180);
+    
+    return {
+      x: -radius * Math.sin(phi) * Math.cos(theta),
+      y: radius * Math.cos(phi),
+      z: radius * Math.sin(phi) * Math.sin(theta)
+    };
+  };
+
+  // Aggiungi pin per università quando hover
+  const addUniversityPin = (university: University) => {
+    if (!worldRef.current) return;
+
+    // Coordinate approssimative delle università (potresti avere coordinate più precise)
+    const universityCoordinates: Record<string, { lat: number, lng: number }> = {
+      'harvard': { lat: 42.3744, lng: -71.1169 },
+      'stanford': { lat: 37.4275, lng: -122.1697 },
+      'ucla': { lat: 34.0689, lng: -118.4452 },
+      'berkeley': { lat: 37.8719, lng: -122.2585 },
+      'columbia': { lat: 40.8075, lng: -73.9626 },
+      'yale': { lat: 41.3163, lng: -72.9223 },
+      'uchicago': { lat: 41.7886, lng: -87.5987 },
+      'mit': { lat: 42.3601, lng: -71.0942 },
+      'wharton': { lat: 39.9522, lng: -75.1932 },
+      'princeton': { lat: 40.3430, lng: -74.6514 },
+      'nyu': { lat: 40.7295, lng: -73.9965 },
+      'bu': { lat: 42.3505, lng: -71.1054 },
+      'toronto': { lat: 43.6629, lng: -79.3957 },
+      'mcgill': { lat: 45.5048, lng: -73.5772 },
+      'ubc': { lat: 49.2606, lng: -123.2460 },
+      'bocconi': { lat: 45.4408, lng: 9.1900 },
+      'padova': { lat: 45.4064, lng: 11.8768 },
+      'cafoscari': { lat: 45.4408, lng: 12.3155 },
+      'sapienza': { lat: 41.9028, lng: 12.4964 },
+      'nova': { lat: 38.7223, lng: -9.1393 },
+      'ulisboa': { lat: 38.7223, lng: -9.1393 },
+      'lse': { lat: 51.5145, lng: -0.1167 },
+      'oxford': { lat: 51.7548, lng: -1.2544 },
+      'cambridge': { lat: 52.2043, lng: 0.1218 },
+      'warwick': { lat: 52.3793, lng: -1.5616 },
+      'kcl': { lat: 51.5118, lng: -0.1162 }
+    };
+
+    const coords = universityCoordinates[university.id];
+    if (!coords) return;
+
+    const position = latLngToVector3(coords.lat, coords.lng, 101);
+
+    // Aggiungi il pin come punto sulla mappa
+    worldRef.current
+      .pointsData([{
+        lat: coords.lat,
+        lng: coords.lng,
+        name: university.name,
+        color: '#ff6b6b',
+        size: 1
+      }])
+      .pointColor('color')
+      .pointAltitude(0.02)
+      .pointRadius('size')
+      .pointLabel((d: any) => `
+        <div style="
+          background: rgba(0, 0, 0, 0.8); 
+          color: white; 
+          padding: 8px 12px; 
+          border-radius: 6px; 
+          font-size: 12px;
+          font-weight: bold;
+          max-width: 200px;
+        ">
+          📍 ${d.name}
+        </div>
+      `);
+  };
+
+  // Rimuovi pin università
+  const removeUniversityPin = () => {
+    if (!worldRef.current) return;
+    worldRef.current.pointsData([]);
+  };
+
+  const handleUniversityHover = (university: University | null) => {
+    setHoveredUniversity(university);
+    
+    if (university) {
+      addUniversityPin(university);
+    } else {
+      removeUniversityPin();
+    }
   };
 
   useEffect(() => {
@@ -320,6 +415,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         selectedCountry={selectedCountry}
         onClose={() => setSelectedCountry(null)}
         onUniversitySelect={onUniversitySelect}
+        onUniversityHover={handleUniversityHover}
+        hoveredUniversity={hoveredUniversity}
       />
 
       <div className="text-center mt-6 space-y-2 text-white">
