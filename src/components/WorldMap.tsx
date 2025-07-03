@@ -29,7 +29,7 @@ const continents = [
   {
     key: 'europa',
     name: 'Europa',
-    rotationY: -Math.PI * 0.15, // Europa al centro-sinistra
+    rotationY: -Math.PI * 0.15,
     cameraDistance: 2.2,
     countries: [
       { name: 'UK', code: 'UK', lat: 55.3781, lon: -3.4360 },
@@ -42,7 +42,7 @@ const continents = [
   {
     key: 'nordamerica',
     name: 'Nord America',
-    rotationY: Math.PI * 0.5, // Nord America al centro
+    rotationY: Math.PI * 0.5,
     cameraDistance: 2.2,
     countries: [
       { name: 'USA', code: 'USA', lat: 37.0902, lon: -95.7129 }
@@ -51,7 +51,7 @@ const continents = [
   {
     key: 'asia',
     name: 'Asia',
-    rotationY: -Math.PI * 0.6, // Asia verso est
+    rotationY: -Math.PI * 0.6,
     cameraDistance: 2.5,
     countries: []
   }
@@ -93,10 +93,10 @@ const CountryMarker = ({
       >
         <sphereGeometry args={[0.02, 16, 16]} />
         <meshPhongMaterial 
-          color={hovered ? "#fbbf24" : "#dc2626"} 
+          color={hovered ? "#4285f4" : "#ea4335"} 
           transparent 
           opacity={0.9}
-          emissive={hovered ? "#f59e0b" : "#b91c1c"}
+          emissive={hovered ? "#1a73e8" : "#d33b2c"}
           emissiveIntensity={0.3}
         />
       </mesh>
@@ -104,25 +104,25 @@ const CountryMarker = ({
         <Text
           position={[0, 0.08, 0]}
           fontSize={0.03}
-          color="#ffffff"
+          color="#2d3748"
           anchorX="center"
           anchorY="middle"
-          outlineWidth={0.005}
-          outlineColor="#000000"
+          outlineWidth={0.002}
+          outlineColor="#ffffff"
         >
           {name}
         </Text>
       )}
       <mesh position={[0, -0.01, 0]}>
         <coneGeometry args={[0.01, 0.04, 8]} />
-        <meshPhongMaterial color={hovered ? "#fbbf24" : "#dc2626"} />
+        <meshPhongMaterial color={hovered ? "#4285f4" : "#ea4335"} />
       </mesh>
     </group>
   );
 };
 
-// Componente principale del globo con rotazione orizzontale e inclinazione
-const RealisticGlobe = ({ 
+// Componente principale del globo con stile Google Maps
+const GoogleMapsStyleGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
   targetContinent
@@ -134,34 +134,36 @@ const RealisticGlobe = ({
   const globeRef = useRef<THREE.Group>(null);
   const targetRotationY = useRef(0);
   
-  // Carica la texture della Terra
-  const earthTexture = useLoader(TextureLoader, 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthmap1k.jpg');
+  // Texture personalizzata in stile Google Maps
+  const earthTexture = useLoader(TextureLoader, 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
   
   useFrame((state, delta) => {
-    // Imposta la rotazione target basata sul continente selezionato
     if (targetContinent) {
       targetRotationY.current = targetContinent.rotationY;
     }
     
-    // Animazione smooth solo sull'asse Y (rotazione orizzontale)
     if (globeRef.current) {
       globeRef.current.rotation.y = THREE.MathUtils.lerp(
         globeRef.current.rotation.y,
         targetRotationY.current,
-        delta * 3 // Velocità di rotazione aumentata
+        delta * 3
       );
       
-      // Inclina leggermente il globo per mostrare meglio l'emisfero nord
-      globeRef.current.rotation.x = -Math.PI * 0.1; // Inclinazione fissa verso il nord
+      globeRef.current.rotation.x = -Math.PI * 0.1;
     }
   });
 
   return (
     <group ref={globeRef}>
-      {/* Globo principale con texture della Terra */}
+      {/* Globo con colori stile Google Maps */}
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshPhongMaterial map={earthTexture} />
+        <meshPhongMaterial 
+          color="#e8f4fd"
+          map={earthTexture}
+          transparent
+          opacity={0.8}
+        />
       </mesh>
 
       {/* Marker dei paesi per il continente corrente */}
@@ -176,13 +178,13 @@ const RealisticGlobe = ({
         />
       ))}
 
-      {/* Atmosfera con effetto glow */}
+      {/* Atmosfera Google Maps style */}
       <mesh scale={[1.02, 1.02, 1.02]}>
         <sphereGeometry args={[1, 32, 32]} />
         <meshBasicMaterial 
-          color="#87ceeb" 
+          color="#a8dadc" 
           transparent 
-          opacity={0.15}
+          opacity={0.1}
           side={THREE.BackSide}
         />
       </mesh>
@@ -220,14 +222,14 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
   const currentContinent = continents[currentContinentIndex];
 
   return (
-    <div className="bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[700px] relative overflow-hidden">
-      <h2 className="text-3xl font-bold text-white mb-6 text-center">
+    <div className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 rounded-xl p-6 min-h-[700px] relative overflow-hidden shadow-lg border border-gray-200">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
         🌍 Esplora le Università nel Mondo
       </h2>
       
       {/* Indicatore continente corrente */}
       <div className="text-center mb-4">
-        <h3 className={`text-xl font-semibold text-white transition-all duration-300 ${
+        <h3 className={`text-xl font-semibold text-gray-700 transition-all duration-300 ${
           isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
         }`}>
           {currentContinent.name}
@@ -237,72 +239,73 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             <div
               key={index}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentContinentIndex ? 'bg-yellow-400 scale-125' : 'bg-white/30'
+                index === currentContinentIndex ? 'bg-blue-500 scale-125' : 'bg-gray-300'
               }`}
             />
           ))}
         </div>
       </div>
 
-      {/* Canvas 3D con globo fisso inclinato per emisfero nord */}
+      {/* Canvas 3D con stile Google Maps */}
       <div className="h-96 w-full relative">
         <Canvas 
           camera={{ 
-            position: [0, 0.5, 3], // Camera leggermente più alta per vedere meglio il nord
+            position: [0, 0.5, 3],
             fov: 45,
             near: 0.1,
             far: 1000
           }}
+          style={{ background: 'linear-gradient(to bottom, #e8f4fd, #f0f9ff)' }}
         >
           <OrbitControls
             enableZoom={true}
             enablePan={false}
-            enableRotate={false} // Disabilita rotazione manuale
+            enableRotate={false}
             autoRotate={false}
             zoomSpeed={0.5}
             minDistance={1.8}
             maxDistance={4}
           />
-          <RealisticGlobe 
+          <GoogleMapsStyleGlobe 
             currentContinentIndex={currentContinentIndex}
             onCountryClick={handleCountryClick}
             targetContinent={currentContinent}
           />
           
-          {/* Illuminazione migliorata */}
-          <ambientLight intensity={0.4} />
-          <directionalLight position={[5, 3, 5]} intensity={0.8} />
-          <pointLight position={[-5, -3, -5]} intensity={0.3} />
+          {/* Illuminazione stile Google Maps */}
+          <ambientLight intensity={0.6} color="#ffffff" />
+          <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
+          <pointLight position={[-5, -3, -5]} intensity={0.2} color="#a8dadc" />
         </Canvas>
 
-        {/* Frecce di navigazione */}
+        {/* Frecce di navigazione stile Google Maps */}
         <button
           onClick={() => handleContinentChange('prev')}
           disabled={isTransitioning}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-gray-200"
         >
-          <ChevronLeft size={28} />
+          <ChevronLeft size={24} />
         </button>
 
         <button
           onClick={() => handleContinentChange('next')}
           disabled={isTransitioning}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-gray-200"
         >
-          <ChevronRight size={32} />
+          <ChevronRight size={24} />
         </button>
       </div>
 
-      {/* Pannello laterale per le università */}
+      {/* Pannello laterale per le università con stile Google Maps */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
-        <div className="absolute top-0 right-0 h-full w-80 bg-black/70 backdrop-blur-xl text-white p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-white/20">
+        <div className="absolute top-0 right-0 h-full w-80 bg-white/95 backdrop-blur-xl text-gray-800 p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-gray-200 shadow-xl">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold">
+            <h3 className="text-xl font-bold text-gray-800">
               🎓 {selectedCountry}
             </h3>
             <button
               onClick={() => setSelectedCountry(null)}
-              className="text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition-all duration-200"
+              className="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-full transition-all duration-200"
             >
               <X size={20} />
             </button>
@@ -313,19 +316,19 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
               <div
                 key={university.id}
                 onClick={() => onUniversitySelect(university)}
-                className="bg-white/10 hover:bg-white/20 p-4 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 border border-white/20 hover:border-white/40"
+                className="bg-white hover:bg-blue-50 p-4 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 border border-gray-200 hover:border-blue-300 shadow-sm hover:shadow-md"
                 style={{
                   animationDelay: `${index * 100}ms`
                 }}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-semibold text-sm leading-tight">{university.name}</h4>
-                  <span className="text-xs bg-blue-500/80 text-white px-2 py-1 rounded-full ml-2 flex-shrink-0">
+                  <h4 className="font-semibold text-sm leading-tight text-gray-800">{university.name}</h4>
+                  <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full ml-2 flex-shrink-0">
                     #{university.ranking}
                   </span>
                 </div>
                 
-                <div className="text-xs text-white/80 space-y-1">
+                <div className="text-xs text-gray-600 space-y-1">
                   <div>📍 {university.city}</div>
                   <div>🗣️ {university.language}</div>
                   <div>💰 {university.tuitionFee}</div>
@@ -337,15 +340,15 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
       )}
 
       {/* Istruzioni */}
-      <div className="text-center text-white/80 mt-6">
+      <div className="text-center text-gray-600 mt-6">
         <p className="text-lg mb-2">🎯 Usa le frecce per esplorare i continenti</p>
-        <p className="text-sm">Vista emisfero nord! Zoom e clicca sui marker rossi per le università.</p>
+        <p className="text-sm">Clicca sui marker rossi per vedere le università disponibili.</p>
       </div>
 
       {/* Loading overlay */}
       {isTransitioning && (
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
-          <div className="text-white text-lg font-semibold animate-pulse">
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-10">
+          <div className="text-gray-700 text-lg font-semibold animate-pulse">
             Esplorando {continents[currentContinentIndex].name}...
           </div>
         </div>

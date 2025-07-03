@@ -1,5 +1,5 @@
 
-// Coordinate geografiche dei continenti
+// Coordinate geografiche dei continenti con stile Google Maps
 export const continents = [
   {
     key: 'nordamerica',
@@ -48,16 +48,19 @@ export const continents = [
   }
 ];
 
-// Configurazione Globe.gl
+// Configurazione Globe.gl con stile Google Maps
 export const globeConfig = {
   width: 800,
   height: 400,
+  // Usa una texture più chiara e pulita
   globeImageUrl: 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
   bumpImageUrl: 'https://unpkg.com/three-globe/example/img/earth-topology.png',
-  backgroundColor: '#001122',
+  // Sfondo chiaro stile Google Maps
+  backgroundColor: '#f8fafc',
   showAtmosphere: true,
-  atmosphereColor: '#69b7d3',
-  atmosphereAltitude: 0.15,
+  // Colore atmosfera più tenue
+  atmosphereColor: '#e0f2fe',
+  atmosphereAltitude: 0.12,
   enablePointerInteraction: true,
   pointAltitude: 0.0,
   pointRadius: { normal: 0, hover: 0 },
@@ -67,7 +70,8 @@ export const globeConfig = {
     altitude: 1.8
   },
   polygonAltitude: 0.01,
-  polygonCapColor: (d: any) => d.hovered ? '#fbbf24' : 'rgba(255, 255, 255, 0.1)',
-  polygonSideColor: (d: any) => d.hovered ? '#f59e0b' : 'rgba(255, 255, 255, 0.05)',
-  polygonStrokeColor: (d: any) => d.hovered ? '#fbbf24' : 'rgba(255, 255, 255, 0.2)'
+  // Colori stile Google Maps
+  polygonCapColor: (d: any) => d.hovered ? '#1a73e8' : 'rgba(156, 163, 175, 0.3)',
+  polygonSideColor: (d: any) => d.hovered ? '#4285f4' : 'rgba(156, 163, 175, 0.2)',
+  polygonStrokeColor: (d: any) => d.hovered ? '#1a73e8' : 'rgba(107, 114, 128, 0.4)'
 };

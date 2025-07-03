@@ -8,7 +8,7 @@ interface StarlinkMapProps {
   onUniversitySelect: (university: University) => void;
 }
 
-// Coordinate dei continenti per la vista piatta
+// Coordinate dei continenti per la vista piatta con stile Google Maps
 const continents = [
   {
     key: 'europa',
@@ -38,7 +38,7 @@ const continents = [
   }
 ];
 
-// Componente per i punti delle università
+// Componente per i punti delle università con stile Google Maps
 const UniversityPoint = ({ 
   x, 
   y, 
@@ -66,39 +66,42 @@ const UniversityPoint = ({
 
   return (
     <g className={`transition-all duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Pulse effect */}
+      {/* Pulse effect stile Google Maps */}
       <circle
         cx={x}
         cy={y}
         r="20"
         fill="none"
-        stroke="rgba(59, 130, 246, 0.3)"
-        strokeWidth="1"
+        stroke="rgba(66, 133, 244, 0.3)"
+        strokeWidth="2"
         className={`animate-ping ${isActive ? 'opacity-75' : 'opacity-0'}`}
       />
       
-      {/* Main point */}
+      {/* Main point stile Google Maps */}
       <circle
         cx={x}
         cy={y}
-        r="6"
-        fill={isHovered ? "#fbbf24" : "#3b82f6"}
-        stroke="rgba(255, 255, 255, 0.8)"
-        strokeWidth="2"
-        className="cursor-pointer transition-all duration-200 hover:scale-110"
+        r="8"
+        fill={isHovered ? "#1a73e8" : "#4285f4"}
+        stroke="#ffffff"
+        strokeWidth="3"
+        className="cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-lg"
         onClick={onClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       />
       
-      {/* Label */}
+      {/* Label stile Google Maps */}
       {isHovered && (
         <text
           x={x}
-          y={y - 15}
+          y={y - 20}
           textAnchor="middle"
-          className="fill-white text-sm font-medium pointer-events-none"
-          style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8))' }}
+          className="fill-gray-700 text-sm font-medium pointer-events-none"
+          style={{ 
+            filter: 'drop-shadow(0 2px 4px rgba(255, 255, 255, 0.8))',
+            fontFamily: 'system-ui, -apple-system, sans-serif'
+          }}
         >
           {name}
         </text>
@@ -107,7 +110,7 @@ const UniversityPoint = ({
   );
 };
 
-// Componente per le connessioni tra punti
+// Componente per le connessioni tra punti con stile Google Maps
 const ConnectionLine = ({ 
   from, 
   to, 
@@ -133,16 +136,16 @@ const ConnectionLine = ({
         y1={from.y}
         x2={to.x}
         y2={to.y}
-        stroke="rgba(59, 130, 246, 0.4)"
-        strokeWidth="1"
-        strokeDasharray="5,5"
-        className={`transition-all duration-500 ${isActive ? 'opacity-100' : 'opacity-30'}`}
+        stroke="rgba(66, 133, 244, 0.4)"
+        strokeWidth="2"
+        strokeDasharray="6,4"
+        className={`transition-all duration-500 ${isActive ? 'opacity-100' : 'opacity-40'}`}
       >
         {isActive && (
           <animate
             attributeName="stroke-dashoffset"
             values="0;-10"
-            dur="1s"
+            dur="1.5s"
             repeatCount="indefinite"
           />
         )}
@@ -183,14 +186,14 @@ const StarlinkMap = ({ onUniversitySelect }: StarlinkMapProps) => {
   const currentCountries = currentContinent.countries;
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-xl p-6 min-h-[700px] relative overflow-hidden">
-      <h2 className="text-3xl font-bold text-white mb-6 text-center">
+    <div className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 rounded-xl p-6 min-h-[700px] relative overflow-hidden shadow-lg border border-gray-200">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
         🌍 Global University Network
       </h2>
       
       {/* Indicatore continente corrente */}
       <div className="text-center mb-4">
-        <h3 className={`text-xl font-semibold text-white transition-all duration-300 ${
+        <h3 className={`text-xl font-semibold text-gray-700 transition-all duration-300 ${
           isTransitioning ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
         }`}>
           {currentContinent.name}
@@ -200,28 +203,31 @@ const StarlinkMap = ({ onUniversitySelect }: StarlinkMapProps) => {
             <div
               key={index}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentContinentIndex ? 'bg-yellow-400 scale-125' : 'bg-white/30'
+                index === currentContinentIndex ? 'bg-blue-500 scale-125' : 'bg-gray-300'
               }`}
             />
           ))}
         </div>
       </div>
 
-      {/* Mappa SVG in stile Starlink */}
-      <div className="h-96 w-full relative bg-black/20 rounded-lg backdrop-blur-sm border border-white/10">
+      {/* Mappa SVG in stile Google Maps */}
+      <div className="h-96 w-full relative bg-white rounded-lg shadow-inner border border-gray-200">
         <svg
           ref={mapRef}
           viewBox="0 0 900 400"
           className="w-full h-full"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%)' }}
+          style={{ background: 'linear-gradient(to bottom, #e8f4fd, #f8fafc)' }}
         >
-          {/* Grid pattern */}
+          {/* Grid pattern stile Google Maps */}
           <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
+            <pattern id="googleMapsGrid" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(156, 163, 175, 0.2)" strokeWidth="1"/>
             </pattern>
+            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="2" dy="2" stdDeviation="2" floodColor="rgba(0,0,0,0.1)"/>
+            </filter>
           </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
+          <rect width="100%" height="100%" fill="url(#googleMapsGrid)" />
           
           {/* Linee di connessione tra i paesi */}
           {currentCountries.map((country, index) => (
@@ -247,15 +253,16 @@ const StarlinkMap = ({ onUniversitySelect }: StarlinkMapProps) => {
             />
           ))}
           
-          {/* Centro del continente */}
+          {/* Centro del continente stile Google Maps */}
           <circle
             cx={currentContinent.center.x}
             cy={currentContinent.center.y}
-            r="8"
-            fill="#fbbf24"
-            stroke="rgba(255, 255, 255, 0.8)"
-            strokeWidth="2"
-            className="animate-pulse"
+            r="10"
+            fill="#4285f4"
+            stroke="#ffffff"
+            strokeWidth="3"
+            className="animate-pulse drop-shadow-lg"
+            filter="url(#shadow)"
           />
           
           {/* Punti delle università */}
@@ -273,11 +280,11 @@ const StarlinkMap = ({ onUniversitySelect }: StarlinkMapProps) => {
           ))}
         </svg>
 
-        {/* Frecce di navigazione */}
+        {/* Frecce di navigazione stile Google Maps */}
         <button
           onClick={() => handleContinentChange('prev')}
           disabled={isTransitioning}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-white/20"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-gray-200"
         >
           <ChevronLeft size={24} />
         </button>
@@ -285,22 +292,22 @@ const StarlinkMap = ({ onUniversitySelect }: StarlinkMapProps) => {
         <button
           onClick={() => handleContinentChange('next')}
           disabled={isTransitioning}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-white/20"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border border-gray-200"
         >
           <ChevronRight size={24} />
         </button>
       </div>
 
-      {/* Panel laterale per le università */}
+      {/* Panel laterale per le università con stile Google Maps */}
       {selectedCountry && universitiesByCountry[selectedCountry] && (
-        <div className="absolute top-0 right-0 h-full w-80 bg-black/80 backdrop-blur-xl text-white p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-white/20">
+        <div className="absolute top-0 right-0 h-full w-80 bg-white/95 backdrop-blur-xl text-gray-800 p-6 transform transition-all duration-500 ease-out animate-slide-in-right border-l border-gray-200 shadow-xl">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold">
+            <h3 className="text-xl font-bold text-gray-800">
               🎓 {selectedCountry}
             </h3>
             <button
               onClick={() => setSelectedCountry(null)}
-              className="text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition-all duration-200"
+              className="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-full transition-all duration-200"
             >
               <X size={20} />
             </button>
@@ -311,19 +318,19 @@ const StarlinkMap = ({ onUniversitySelect }: StarlinkMapProps) => {
               <div
                 key={university.id}
                 onClick={() => onUniversitySelect(university)}
-                className="bg-white/10 hover:bg-white/20 p-4 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 border border-white/20 hover:border-white/40"
+                className="bg-white hover:bg-blue-50 p-4 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 border border-gray-200 hover:border-blue-300 shadow-sm hover:shadow-md"
                 style={{
                   animationDelay: `${index * 100}ms`
                 }}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-semibold text-sm leading-tight">{university.name}</h4>
-                  <span className="text-xs bg-blue-500/80 text-white px-2 py-1 rounded-full ml-2 flex-shrink-0">
+                  <h4 className="font-semibold text-sm leading-tight text-gray-800">{university.name}</h4>
+                  <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full ml-2 flex-shrink-0">
                     #{university.ranking}
                   </span>
                 </div>
                 
-                <div className="text-xs text-white/80 space-y-1">
+                <div className="text-xs text-gray-600 space-y-1">
                   <div>📍 {university.city}</div>
                   <div>🗣️ {university.language}</div>
                   <div>💰 {university.tuitionFee}</div>
@@ -335,15 +342,15 @@ const StarlinkMap = ({ onUniversitySelect }: StarlinkMapProps) => {
       )}
 
       {/* Istruzioni */}
-      <div className="text-center text-white/80 mt-6">
+      <div className="text-center text-gray-600 mt-6">
         <p className="text-lg mb-2">🎯 Esplora la rete globale delle università</p>
         <p className="text-sm">Usa le frecce per navigare tra i continenti e clicca sui punti per vedere le connessioni.</p>
       </div>
 
       {/* Loading overlay */}
       {isTransitioning && (
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
-          <div className="text-white text-lg font-semibold animate-pulse">
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-10">
+          <div className="text-gray-700 text-lg font-semibold animate-pulse">
             Caricamento {continents[currentContinentIndex].name}...
           </div>
         </div>
