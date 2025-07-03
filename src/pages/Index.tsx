@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
@@ -70,7 +69,7 @@ export default function Index() {
                     <span className="block text-[#fbbf24] font-medium mt-2 font-sans">Carriere</span>
                   </h1>
                   <p className="text-xl text-blue-100 font-light leading-relaxed max-w-3xl mx-auto mb-8 font-sans">
-                    Scopri tutte le opportunità professionali
+                    Scopri tutte le opportunità professionali e trova il percorso che fa per te
                   </p>
                 </div>
               </div>
