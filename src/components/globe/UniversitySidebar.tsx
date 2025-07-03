@@ -144,7 +144,7 @@ const UniversitySidebar = ({
       className="absolute top-0 right-0 w-full sm:w-80 md:w-96 h-full bg-white/70 backdrop-blur-xl text-gray-800 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-hidden"
     >
       {/* Header fisso */}
-      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center">
+      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
         <h3 className="text-2xl sm:text-3xl font-bold text-gray-800">
           {getCountryFlag(selectedCountry)} {selectedCountry}
         </h3>
@@ -156,9 +156,9 @@ const UniversitySidebar = ({
         </button>
       </div>
       
-      {/* Contenuto scrollabile */}
-      <div className="h-full overflow-y-auto p-4 sm:p-6 pb-20">
-        <div className="space-y-3 sm:space-y-4">
+      {/* Contenuto scrollabile - altezza fissa per garantire scroll corretto */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6" style={{ height: 'calc(100% - 88px)' }}>
+        <div className="space-y-3 sm:space-y-4 pb-4">
           {universitiesByCountry[selectedCountry].map((university) => {
             const isHovered = hoveredUniversity?.id === university.id;
             
