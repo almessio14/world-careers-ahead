@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import { Progress } from './ui/progress';
 import { 
   level1Questions, 
   level2Questions, 
@@ -201,7 +200,17 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
                </span>
                <span>Domanda {currentQuestionNumber} di 10</span>
             </div>
-            <Progress value={progress} className="w-full" />
+            
+            {/* Barra di progresso personalizzata che si colora di navy */}
+            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div 
+                className="h-full transition-all duration-500 ease-out rounded-full"
+                style={{ 
+                  width: `${progress}%`,
+                  background: 'linear-gradient(90deg, #0A1D3A 0%, #14213d 50%, #0A1D3A 100%)'
+                }}
+              ></div>
+            </div>
           </div>
         </div>
 

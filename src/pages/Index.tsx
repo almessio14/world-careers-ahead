@@ -29,11 +29,11 @@ export default function Index() {
           <div className="animate-fade-in">
             {/* Hero section con design più pulito */}
             <div className="text-center mb-16">
-              <div className="bg-gradient-to-r from-[#0A1D3A] via-[#14213d] to-[#0A1D3A] text-white p-12 rounded-3xl shadow-2xl mb-12 backdrop-blur-xl border border-white/10">
+              <div className="bg-gradient-to-r from-[#0A1D3A] via-[#14213d] to-[#0A1D3A] text-white p-12 rounded-3xl shadow-2xl mb-12 backdrop-blur-xl border border-white/10 w-full">
                 <div className="max-w-5xl mx-auto">
                   <h1 className="text-6xl font-light text-white mb-4 tracking-tight font-sans">
                     Scopri il Tuo 
-                    <span className="block text-[#fbbf24] font-medium mt-2 font-sans">Futuro Professionale</span>
+                    <span className="block text-[#fbbf24] font-medium mt-2 font-sans">Futuro Lavorativo</span>
                   </h1>
                   <p className="text-xl text-blue-100 font-light leading-relaxed max-w-3xl mx-auto mb-8 font-sans">
                     Trova la carriera perfetta per te attraverso il nostro quiz personalizzato
