@@ -175,7 +175,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     'ucd': { lat: 53.3067, lng: -6.2297 }
   };
 
-  // Crea pin solo per l'università in hover - rimuovendo l'altitudine 3D
+  // Crea pin solo per l'università in hover
   const createUniversityPins = () => {
     if (!worldRef.current) return;
 
@@ -190,9 +190,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           lng: coords.lng,
           name: hoveredUniversity.name,
           id: hoveredUniversity.id,
-          color: '#FF0000', // Rosso come richiesto
+          color: '#FF0000',
           size: 0.6,
-          altitude: 0.0 // Rimosso l'effetto 3D
+          altitude: 0.0
         });
       }
     }
@@ -271,22 +271,22 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           const data = await response.json();
           console.log('Dati paesi caricati:', data.features.length, 'paesi');
 
-          // Configura i colori e gli eventi per i paesi - colore blu uniforme
+          // Configura i colori e gli eventi per i paesi - con altitudine aumentata
           world
             .polygonsData(data.features)
-            .polygonAltitude(0.0) // Rimosso l'effetto 3D
+            .polygonAltitude(0.02) // Aumentata l'altitudine per coprire meglio i paesi
             .polygonCapColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)'; // Colore uniforme
+                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)';
               }
               return 'rgba(100, 116, 139, 0.1)';
             })
             .polygonSideColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)'; // Colore uniforme anche sui lati
+                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)';
               }
               return 'rgba(71, 85, 105, 0.05)';
             })
@@ -395,7 +395,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     };
   }, []);
 
-  // Effetto per cambiare continente
   useEffect(() => {
     if (!worldRef.current) return;
 
