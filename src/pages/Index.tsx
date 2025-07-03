@@ -78,9 +78,9 @@ export default function Index() {
 
             {/* Disclaimer elegante con spaziatura ridotta */}
             <div className="mb-6">
-              <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-2xl border border-blue-100">
-                <p className="text-sm text-blue-800 text-center font-medium font-sans">
-                  I dati salariali sono indicativi per posizioni entry-level (2-3 anni) in Europa Occidentale e Nord America
+              <div className="max-w-4xl mx-auto">
+                <p className="text-sm text-gray-600 text-center font-sans italic">
+                  * I dati salariali sono indicativi per posizioni entry-level (2-3 anni) in Europa Occidentale e Nord America
                 </p>
               </div>
             </div>

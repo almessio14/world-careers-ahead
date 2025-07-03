@@ -1,3 +1,4 @@
+
 export interface Microarea {
   id: string;
   name: string;
@@ -120,7 +121,7 @@ export const careerExplorationData: Macrocategory[] = [
       {
         id: 'big-tech',
         name: 'Big Tech',
-        description: 'Lavorare in Big Tech significa essere al centro dell\'innovazione che cambia il mondo: AI, piattaforme digitali, social network, e-commerce, cloud computing. Puoi occuparti di marketing, product management, data analysis, HR, vendite o operazioni. È un ambiente veloce, meritocratico, pieno di talenti internazionali. Le opportunità di crescita sono enormi, così come l\'esposizione a progetti che toccano milioni (o miliardi) di persone.',
+        description: 'Lavorare in Big Tech significa essere al centro dell\'innovazione che cambia il mondo: AI, piattaforme digitali, social network, e-commerce, cloud computing. È un ambiente veloce, meritocratico, pieno di talenti internazionali. Le opportunità di crescita sono enormi, così come l\'esposizione a progetti che toccano milioni (o miliardi) di persone.',
         companies: 'Google, Amazon, Meta, Microsoft',
         salary: '60–110k € + bonus'
       },
