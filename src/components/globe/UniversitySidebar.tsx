@@ -1,3 +1,4 @@
+
 import { Heart } from 'lucide-react';
 import { universitiesByCountry } from '../../data/universities';
 import { University } from '../../types';
@@ -165,12 +166,11 @@ const UniversitySidebar = ({
             return (
               <div
                 key={university.id}
-                className={`bg-white/90 p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 cursor-pointer ${
+                className={`bg-white/90 p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 ${
                   isHovered ? 'bg-yellow-50/90 border-yellow-400 shadow-lg scale-[1.02] ring-2 ring-yellow-300/50' : 'hover:bg-gray-50/90'
                 }`}
                 onMouseEnter={() => handleUniversityHover(university)}
                 onMouseLeave={() => handleUniversityHover(null)}
-                onClick={() => onUniversitySelect(university)}
               >
                 <div className="flex justify-between items-start mb-2 sm:mb-3">
                   <h4 className="font-semibold text-sm sm:text-base text-gray-800 leading-tight pr-2 flex-1">{university.name}</h4>
