@@ -120,8 +120,8 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo con texture Google Maps reale
-const GoogleMapsStyleGlobe = ({ 
+// Componente principale del globo con texture Google Earth
+const GoogleEarthStyleGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
   targetContinent
@@ -133,144 +133,261 @@ const GoogleMapsStyleGlobe = ({
   const globeRef = useRef<THREE.Group>(null);
   const targetRotationY = useRef(0);
   
-  // Crea una texture davvero come Google Maps
-  const createRealGoogleMapsTexture = () => {
+  // Crea una texture stile Google Earth più chiara e dettagliata
+  const createGoogleEarthTexture = () => {
     const canvas = document.createElement('canvas');
-    canvas.width = 2048;
-    canvas.height = 1024;
+    canvas.width = 4096; // Risoluzione più alta per dettagli migliori
+    canvas.height = 2048;
     const ctx = canvas.getContext('2d');
     
     if (!ctx) return null;
 
-    // Sfondo oceano Google Maps (#A8D5FF)
-    ctx.fillStyle = '#A8D5FF';
+    // Sfondo oceano molto chiaro stile Google Earth (#E3F2FD - azzurro molto tenue)
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#E8F4FD'); // Azzurro ghiaccio molto chiaro
+    gradient.addColorStop(0.5, '#E3F2FD'); // Azzurro tenue
+    gradient.addColorStop(1, '#D1E7DD'); // Verde acqua tenue
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Terre emerse Google Maps (#9FC164)
-    ctx.fillStyle = '#9FC164';
+    // Terre emerse con colori Google Earth più naturali
+    const landColor = '#F5F3E7'; // Beige molto chiaro
+    const mountainColor = '#E8E2D5'; // Beige più scuro per rilievi
+    const forestColor = '#EAF4EA'; // Verde molto tenue
     
-    // Nord America (più dettagliato)
+    ctx.shadowColor = 'rgba(0,0,0,0.1)';
+    ctx.shadowBlur = 3;
+
+    // Nord America con dettagli migliorati
+    ctx.fillStyle = landColor;
     ctx.beginPath();
-    ctx.ellipse(300, 300, 200, 150, -0.2, 0, 2 * Math.PI);
+    // USA principale
+    ctx.ellipse(600, 650, 320, 200, -0.1, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Alaska
+    // Canada
     ctx.beginPath();
-    ctx.ellipse(150, 200, 40, 30, 0, 0, 2 * Math.PI);
+    ctx.ellipse(550, 450, 400, 120, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Alaska più dettagliata
+    ctx.beginPath();
+    ctx.ellipse(300, 400, 60, 50, 0.2, 0, 2 * Math.PI);
     ctx.fill();
     
     // Groenlandia
+    ctx.fillStyle = '#F8F8F8'; // Ghiaccio
     ctx.beginPath();
-    ctx.ellipse(400, 150, 50, 80, 0, 0, 2 * Math.PI);
+    ctx.ellipse(800, 300, 70, 120, 0.1, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Sud America
+    // Sud America più dettagliato
+    ctx.fillStyle = landColor;
     ctx.beginPath();
-    ctx.ellipse(350, 600, 80, 200, 0.1, 0, 2 * Math.PI);
+    ctx.ellipse(700, 1200, 120, 350, 0.1, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Europa (più dettagliata)
+    // Brasile (parte più larga)
     ctx.beginPath();
-    ctx.ellipse(1024, 280, 120, 80, 0, 0, 2 * Math.PI);
+    ctx.ellipse(750, 1100, 140, 200, 0, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Europa molto dettagliata
+    ctx.fillStyle = landColor;
+    
+    // Europa occidentale
+    ctx.beginPath();
+    ctx.ellipse(2048, 550, 150, 120, 0, 0, 2 * Math.PI);
     ctx.fill();
     
     // Scandinavia
     ctx.beginPath();
-    ctx.ellipse(1050, 200, 60, 40, 0, 0, 2 * Math.PI);
+    ctx.ellipse(2100, 400, 80, 60, 0.2, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Penisola iberica
+    ctx.beginPath();
+    ctx.ellipse(1950, 650, 60, 80, 0, 0, 2 * Math.PI);
     ctx.fill();
     
     // Italia
     ctx.beginPath();
-    ctx.ellipse(1040, 350, 20, 60, 0.3, 0, 2 * Math.PI);
+    ctx.ellipse(2080, 700, 25, 90, 0.3, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Gran Bretagna
+    // Gran Bretagna e Irlanda
     ctx.beginPath();
-    ctx.ellipse(980, 260, 25, 50, 0, 0, 2 * Math.PI);
+    ctx.ellipse(1960, 520, 35, 70, 0, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Africa (più dettagliata)
-    ctx.fillStyle = '#D4B896'; // Colore desertico per il nord Africa
     ctx.beginPath();
-    ctx.ellipse(1050, 400, 100, 80, 0, 0, 2 * Math.PI);
+    ctx.ellipse(1920, 540, 20, 40, 0, 0, 2 * Math.PI);
     ctx.fill();
-    
-    ctx.fillStyle = '#9FC164'; // Verde per il resto dell'Africa
+
+    // Africa più dettagliata
+    // Nord Africa (Sahara)
+    ctx.fillStyle = '#F0E6D2'; // Colore desertico
     ctx.beginPath();
-    ctx.ellipse(1070, 500, 90, 150, 0, 0, 2 * Math.PI);
+    ctx.ellipse(2100, 800, 140, 120, 0, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Asia (più dettagliata)
-    ctx.fillStyle = '#9FC164';
+    // Africa subsahariana
+    ctx.fillStyle = forestColor;
+    ctx.beginPath();
+    ctx.ellipse(2140, 1000, 130, 200, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Africa orientale
+    ctx.fillStyle = landColor;
+    ctx.beginPath();
+    ctx.ellipse(2200, 950, 80, 180, 0, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Asia molto dettagliata
+    ctx.fillStyle = landColor;
     
     // Russia/Siberia
     ctx.beginPath();
-    ctx.ellipse(1400, 250, 300, 100, 0, 0, 2 * Math.PI);
+    ctx.ellipse(2800, 500, 500, 150, 0, 0, 2 * Math.PI);
     ctx.fill();
     
     // Cina
     ctx.beginPath();
-    ctx.ellipse(1500, 350, 150, 100, 0, 0, 2 * Math.PI);
+    ctx.ellipse(3000, 700, 200, 150, 0, 0, 2 * Math.PI);
     ctx.fill();
     
     // India
     ctx.beginPath();
-    ctx.ellipse(1350, 400, 80, 100, 0, 0, 2 * Math.PI);
+    ctx.ellipse(2700, 800, 100, 140, 0, 0, 2 * Math.PI);
     ctx.fill();
     
     // Giappone
     ctx.beginPath();
-    ctx.ellipse(1700, 350, 30, 80, 0.2, 0, 2 * Math.PI);
+    ctx.ellipse(3400, 700, 40, 120, 0.2, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Australia
+    // Penisola arabica
+    ctx.fillStyle = '#F0E6D2';
     ctx.beginPath();
-    ctx.ellipse(1600, 700, 120, 80, 0, 0, 2 * Math.PI);
+    ctx.ellipse(2400, 750, 80, 100, 0, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Australia e Oceania
+    ctx.fillStyle = landColor;
+    ctx.beginPath();
+    ctx.ellipse(3200, 1400, 180, 120, 0, 0, 2 * Math.PI);
     ctx.fill();
     
     // Nuova Zelanda
     ctx.beginPath();
-    ctx.ellipse(1750, 750, 25, 40, 0, 0, 2 * Math.PI);
+    ctx.ellipse(3500, 1500, 30, 60, 0, 0, 2 * Math.PI);
     ctx.fill();
 
-    // Aggiungi confini nazionali sottili
-    ctx.strokeStyle = '#7A7A7A';
-    ctx.lineWidth = 1;
+    // Confini nazionali molto sottili e chiari
+    ctx.strokeStyle = 'rgba(180, 180, 180, 0.6)';
+    ctx.lineWidth = 2;
     
-    // Confini Europa
+    // Europa
     ctx.beginPath();
-    ctx.moveTo(950, 250);
-    ctx.lineTo(1150, 250);
-    ctx.lineTo(1150, 350);
-    ctx.lineTo(950, 350);
+    ctx.moveTo(1900, 500);
+    ctx.lineTo(2200, 500);
+    ctx.lineTo(2200, 650);
+    ctx.lineTo(1900, 650);
     ctx.closePath();
+    ctx.stroke();
+    
+    // Divisioni interne Europa
+    ctx.beginPath();
+    ctx.moveTo(2000, 500);
+    ctx.lineTo(2000, 650);
+    ctx.moveTo(2100, 500);
+    ctx.lineTo(2100, 650);
     ctx.stroke();
     
     // Altri confini principali
     ctx.beginPath();
-    ctx.moveTo(1024, 200);
-    ctx.lineTo(1024, 400);
+    // USA-Canada
+    ctx.moveTo(400, 550);
+    ctx.lineTo(900, 550);
+    // Confini asiatici
+    ctx.moveTo(2500, 600);
+    ctx.lineTo(3200, 600);
     ctx.stroke();
-    
-    // Nomi dei continenti (più grandi e leggibili)
-    ctx.fillStyle = '#333333';
-    ctx.font = 'bold 24px Arial';
+
+    // Nomi dei paesi/continenti con font più leggibile
+    ctx.fillStyle = 'rgba(80, 80, 80, 0.8)'; // Grigio scuro ma non troppo
+    ctx.font = 'bold 32px Arial';
     ctx.textAlign = 'center';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.lineWidth = 3;
     
-    ctx.fillText('NORTH AMERICA', 300, 320);
-    ctx.fillText('SOUTH AMERICA', 350, 620);
-    ctx.fillText('EUROPE', 1024, 300);
-    ctx.fillText('AFRICA', 1070, 480);
-    ctx.fillText('ASIA', 1450, 320);
-    ctx.fillText('AUSTRALIA', 1600, 720);
+    // Continenti
+    ctx.strokeText('NORTH AMERICA', 600, 680);
+    ctx.fillText('NORTH AMERICA', 600, 680);
+    
+    ctx.strokeText('SOUTH AMERICA', 700, 1240);
+    ctx.fillText('SOUTH AMERICA', 700, 1240);
+    
+    ctx.strokeText('EUROPE', 2048, 580);
+    ctx.fillText('EUROPE', 2048, 580);
+    
+    ctx.strokeText('AFRICA', 2140, 1020);
+    ctx.fillText('AFRICA', 2140, 1020);
+    
+    ctx.strokeText('ASIA', 2900, 650);
+    ctx.fillText('ASIA', 2900, 650);
+    
+    ctx.strokeText('AUSTRALIA', 3200, 1420);
+    ctx.fillText('AUSTRALIA', 3200, 1420);
+
+    // Paesi principali con font più piccolo
+    ctx.font = 'bold 24px Arial';
+    ctx.fillStyle = 'rgba(100, 100, 100, 0.9)';
+    
+    ctx.strokeText('USA', 600, 720);
+    ctx.fillText('USA', 600, 720);
+    
+    ctx.strokeText('CANADA', 550, 480);
+    ctx.fillText('CANADA', 550, 480);
+    
+    ctx.strokeText('BRAZIL', 750, 1140);
+    ctx.fillText('BRAZIL', 750, 1140);
+    
+    ctx.strokeText('RUSSIA', 2800, 530);
+    ctx.fillText('RUSSIA', 2800, 530);
+    
+    ctx.strokeText('CHINA', 3000, 730);
+    ctx.fillText('CHINA', 3000, 730);
+    
+    ctx.strokeText('INDIA', 2700, 830);
+    ctx.fillText('INDIA', 2700, 830);
+
+    // Paesi europei
+    ctx.font = 'bold 18px Arial';
+    ctx.strokeText('UK', 1960, 540);
+    ctx.fillText('UK', 1960, 540);
+    
+    ctx.strokeText('FRANCE', 2000, 600);
+    ctx.fillText('FRANCE', 2000, 600);
+    
+    ctx.strokeText('GERMANY', 2080, 560);
+    ctx.fillText('GERMANY', 2080, 560);
+    
+    ctx.strokeText('ITALY', 2080, 720);
+    ctx.fillText('ITALY', 2080, 720);
+    
+    ctx.strokeText('SPAIN', 1970, 670);
+    ctx.fillText('SPAIN', 1970, 670);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
     return texture;
   };
 
-  const googleMapsTexture = createRealGoogleMapsTexture();
+  const googleEarthTexture = createGoogleEarthTexture();
   
   useFrame((state, delta) => {
     if (targetContinent) {
@@ -290,13 +407,14 @@ const GoogleMapsStyleGlobe = ({
 
   return (
     <group ref={globeRef}>
-      {/* Globo con texture Google Maps realistica */}
+      {/* Globo con texture Google Earth realistica */}
       <mesh>
-        <sphereGeometry args={[1, 64, 64]} />
+        <sphereGeometry args={[1, 128, 128]} />
         <meshPhongMaterial 
-          map={googleMapsTexture}
+          map={googleEarthTexture}
           transparent
           opacity={1}
+          shininess={30}
         />
       </mesh>
 
@@ -312,13 +430,13 @@ const GoogleMapsStyleGlobe = ({
         />
       ))}
 
-      {/* Atmosfera leggera */}
-      <mesh scale={[1.02, 1.02, 1.02]}>
-        <sphereGeometry args={[1, 32, 32]} />
+      {/* Atmosfera molto leggera stile Google Earth */}
+      <mesh scale={[1.01, 1.01, 1.01]}>
+        <sphereGeometry args={[1, 64, 64]} />
         <meshBasicMaterial 
-          color="#ffffff" 
+          color="#E3F2FD" 
           transparent 
-          opacity={0.05}
+          opacity={0.03}
           side={THREE.BackSide}
         />
       </mesh>
@@ -409,16 +527,16 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             minDistance={1.8}
             maxDistance={4}
           />
-          <GoogleMapsStyleGlobe 
+          <GoogleEarthStyleGlobe 
             currentContinentIndex={currentContinentIndex}
             onCountryClick={handleCountryClick}
             targetContinent={currentContinent}
           />
           
-          {/* Illuminazione */}
-          <ambientLight intensity={0.6} color="#ffffff" />
-          <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
-          <pointLight position={[-5, -3, -5]} intensity={0.3} color="#ffffff" />
+          {/* Illuminazione più morbida per Google Earth */}
+          <ambientLight intensity={0.8} color="#ffffff" />
+          <directionalLight position={[3, 3, 3]} intensity={0.6} color="#ffffff" />
+          <pointLight position={[-3, -2, -3]} intensity={0.2} color="#ffffff" />
         </Canvas>
 
         {/* Frecce di navigazione dorate */}
