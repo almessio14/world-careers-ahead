@@ -136,8 +136,8 @@ const GoogleEarthStyleGlobe = ({
   // Crea una texture stile Google Earth più chiara e dettagliata
   const createGoogleEarthTexture = () => {
     const canvas = document.createElement('canvas');
-    canvas.width = 4096; // Risoluzione più alta per dettagli migliori
-    canvas.height = 2048;
+    canvas.width = 2048; // Riduco la risoluzione per migliorare le performance
+    canvas.height = 1024;
     const ctx = canvas.getContext('2d');
     
     if (!ctx) return null;
