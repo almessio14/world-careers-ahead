@@ -389,6 +389,17 @@ const GoogleEarthStyleGlobe = ({
 
   const googleEarthTexture = createGoogleEarthTexture();
   
+  // Forza l'aggiornamento della texture
+  useFrame(() => {
+    if (globeRef.current && googleEarthTexture) {
+      const mesh = globeRef.current.children[0] as THREE.Mesh;
+      if (mesh && mesh.material) {
+        (mesh.material as THREE.MeshPhongMaterial).map = googleEarthTexture;
+        (mesh.material as THREE.MeshPhongMaterial).needsUpdate = true;
+      }
+    }
+  });
+  
   useFrame((state, delta) => {
     if (targetContinent) {
       targetRotationY.current = targetContinent.rotationY;
