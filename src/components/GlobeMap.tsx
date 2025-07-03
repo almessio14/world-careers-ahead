@@ -280,21 +280,21 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)';
+                return d.hovered ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.2)';
               }
               return 'rgba(100, 116, 139, 0.1)';
             })
             .polygonSideColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)';
+                return d.hovered ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.2)';
               }
               return 'rgba(71, 85, 105, 0.05)';
             })
             .polygonStrokeColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? '#061428' : '#061428';
+                return d.hovered ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)';
               }
               return 'rgba(100, 116, 139, 0.2)';
             })
@@ -503,7 +503,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           <span style={{ color: '#CDA434' }}>Usa le frecce per cambiare continente</span>
         </p>
         <p className="text-sm opacity-80">
-          Clicca sui paesi evidenziati in blu per vedere le università disponibili.
+          Clicca sui paesi evidenziati in bianco per vedere le università disponibili.
         </p>
       </div>
 
