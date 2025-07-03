@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
@@ -13,7 +12,7 @@ import { careers } from '../data/careers';
 import { careerExplorationData, Microarea } from '../data/careerExploration';
 import { University } from '../types';
 
-const Index = () => {
+export default function Index() {
   const [activeTab, setActiveTab] = useState<'quiz' | 'careers' | 'universities'>('quiz');
   const [showOrientationQuiz, setShowOrientationQuiz] = useState(false);
   const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
@@ -51,30 +50,30 @@ const Index = () => {
           </div>
         ) : activeTab === 'careers' ? (
           <div className="animate-fade-in">
-            {/* Hero section per le carriere con stile Apple */}
-            <div className="text-center mb-20">
+            {/* Hero section ottimizzato con spaziature ridotte */}
+            <div className="text-center mb-12">
               <div className="max-w-5xl mx-auto">
-                <h1 className="text-6xl font-light text-[#14213d] mb-6 tracking-tight">
+                <h1 className="text-6xl font-light text-[#14213d] mb-4 tracking-tight">
                   Esplora le 
                   <span className="block text-[#fbbf24] font-medium mt-2">Carriere del Futuro</span>
                 </h1>
-                <p className="text-xl text-gray-600 font-light leading-relaxed max-w-3xl mx-auto mb-12">
+                <p className="text-xl text-gray-600 font-light leading-relaxed max-w-3xl mx-auto mb-8">
                   Scopri opportunità professionali innovative che stanno ridefinendo il mondo del lavoro
                 </p>
               </div>
             </div>
 
-            {/* Disclaimer elegante */}
-            <div className="mb-16">
-              <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100">
+            {/* Disclaimer elegante con spaziatura ridotta */}
+            <div className="mb-10">
+              <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-2xl border border-blue-100">
                 <p className="text-sm text-blue-800 text-center font-medium">
                   💡 I dati salariali sono indicativi per posizioni entry-level (2-3 anni) in Europa Occidentale e Nord America
                 </p>
               </div>
             </div>
 
-            {/* Career Grid con spaziatura Apple-like */}
-            <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 items-start">
+            {/* Career Grid con spaziatura ottimizzata */}
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-6 items-start">
               {careerExplorationData.map((category, index) => (
                 <div
                   key={category.id}
@@ -126,5 +125,3 @@ const Index = () => {
     </div>
   );
 };
-
-export default Index;
