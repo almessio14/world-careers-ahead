@@ -28,8 +28,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     const countryMappings: Record<string, string> = {
       'United States of America': 'USA',
       'United States': 'USA',
+      'USA': 'USA',
+      'US': 'USA',
       'Canada': 'Canada',
       'China': 'China',
+      'People\'s Republic of China': 'China',
       'Japan': 'Japan',
       'South Korea': 'South Korea',
       'Republic of Korea': 'South Korea',
@@ -49,16 +52,22 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       'Finland': 'Finland',
       'Norway': 'Norway',
       'United Kingdom': 'UK',
+      'UK': 'UK',
+      'Great Britain': 'UK',
+      'England': 'UK',
       'Ireland': 'Ireland'
     };
 
+    // Exact match first
     if (countryMappings[countryName]) {
       return countryMappings[countryName];
     }
 
+    // Partial match
+    const lowerCountryName = countryName.toLowerCase();
     for (const [key, value] of Object.entries(countryMappings)) {
-      if (countryName.toLowerCase().includes(key.toLowerCase()) || 
-          key.toLowerCase().includes(countryName.toLowerCase())) {
+      if (lowerCountryName.includes(key.toLowerCase()) || 
+          key.toLowerCase().includes(lowerCountryName)) {
         return value;
       }
     }
@@ -101,23 +110,23 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
           
           if (hasUniversities(countryName)) {
-            return d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.7)';
+            return d.hovered ? '#FFD700' : '#CDA434';
           }
-          return 'rgba(100, 116, 139, 0.3)';
+          return 'rgba(100, 116, 139, 0.2)';
         })
         .polygonSideColor((d: any) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
           if (hasUniversities(countryName)) {
-            return d.hovered ? '#CDA434' : 'rgba(205, 164, 52, 0.5)';
+            return d.hovered ? '#FFD700' : '#CDA434';
           }
-          return 'rgba(71, 85, 105, 0.2)';
+          return 'rgba(71, 85, 105, 0.1)';
         })
         .polygonStrokeColor((d: any) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
           if (hasUniversities(countryName)) {
-            return d.hovered ? '#fbbf24' : 'rgba(205, 164, 52, 0.8)';
+            return d.hovered ? '#FFFF00' : '#fbbf24';
           }
-          return 'rgba(100, 116, 139, 0.4)';
+          return 'rgba(100, 116, 139, 0.3)';
         })
         .polygonLabel((d: any) => {
           const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
