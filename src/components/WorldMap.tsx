@@ -133,261 +133,84 @@ const GoogleEarthStyleGlobe = ({
   const globeRef = useRef<THREE.Group>(null);
   const targetRotationY = useRef(0);
   
-  // Crea una texture stile Google Earth più chiara e dettagliata
-  const createGoogleEarthTexture = () => {
+  // Crea una texture semplice stile Google Earth
+  const createSimpleEarthTexture = () => {
     const canvas = document.createElement('canvas');
-    canvas.width = 2048; // Riduco la risoluzione per migliorare le performance
-    canvas.height = 1024;
+    canvas.width = 1024;
+    canvas.height = 512;
     const ctx = canvas.getContext('2d');
     
     if (!ctx) return null;
 
-    // Sfondo oceano molto chiaro stile Google Earth (#E3F2FD - azzurro molto tenue)
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#E8F4FD'); // Azzurro ghiaccio molto chiaro
-    gradient.addColorStop(0.5, '#E3F2FD'); // Azzurro tenue
-    gradient.addColorStop(1, '#D1E7DD'); // Verde acqua tenue
-    ctx.fillStyle = gradient;
+    // Sfondo oceano molto chiaro
+    ctx.fillStyle = '#F0F8FF'; // Alice blue molto chiaro
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Terre emerse con colori Google Earth più naturali
-    const landColor = '#F5F3E7'; // Beige molto chiaro
-    const mountainColor = '#E8E2D5'; // Beige più scuro per rilievi
-    const forestColor = '#EAF4EA'; // Verde molto tenue
+    // Terre emerse con colore beige molto chiaro
+    ctx.fillStyle = '#F5F5DC'; // Beige
     
-    ctx.shadowColor = 'rgba(0,0,0,0.1)';
-    ctx.shadowBlur = 3;
-
-    // Nord America con dettagli migliorati
-    ctx.fillStyle = landColor;
-    ctx.beginPath();
-    // USA principale
-    ctx.ellipse(600, 650, 320, 200, -0.1, 0, 2 * Math.PI);
-    ctx.fill();
+    // Nord America
+    ctx.fillRect(150, 120, 200, 150);
+    ctx.fillRect(120, 100, 100, 80); // Canada
     
-    // Canada
-    ctx.beginPath();
-    ctx.ellipse(550, 450, 400, 120, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Alaska più dettagliata
-    ctx.beginPath();
-    ctx.ellipse(300, 400, 60, 50, 0.2, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Groenlandia
-    ctx.fillStyle = '#F8F8F8'; // Ghiaccio
-    ctx.beginPath();
-    ctx.ellipse(800, 300, 70, 120, 0.1, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Sud America più dettagliato
-    ctx.fillStyle = landColor;
-    ctx.beginPath();
-    ctx.ellipse(700, 1200, 120, 350, 0.1, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Brasile (parte più larga)
-    ctx.beginPath();
-    ctx.ellipse(750, 1100, 140, 200, 0, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Europa molto dettagliata
-    ctx.fillStyle = landColor;
-    
-    // Europa occidentale
-    ctx.beginPath();
-    ctx.ellipse(2048, 550, 150, 120, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Scandinavia
-    ctx.beginPath();
-    ctx.ellipse(2100, 400, 80, 60, 0.2, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Penisola iberica
-    ctx.beginPath();
-    ctx.ellipse(1950, 650, 60, 80, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Italia
-    ctx.beginPath();
-    ctx.ellipse(2080, 700, 25, 90, 0.3, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Gran Bretagna e Irlanda
-    ctx.beginPath();
-    ctx.ellipse(1960, 520, 35, 70, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    ctx.beginPath();
-    ctx.ellipse(1920, 540, 20, 40, 0, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Africa più dettagliata
-    // Nord Africa (Sahara)
-    ctx.fillStyle = '#F0E6D2'; // Colore desertico
-    ctx.beginPath();
-    ctx.ellipse(2100, 800, 140, 120, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Africa subsahariana
-    ctx.fillStyle = forestColor;
-    ctx.beginPath();
-    ctx.ellipse(2140, 1000, 130, 200, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Africa orientale
-    ctx.fillStyle = landColor;
-    ctx.beginPath();
-    ctx.ellipse(2200, 950, 80, 180, 0, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Asia molto dettagliata
-    ctx.fillStyle = landColor;
-    
-    // Russia/Siberia
-    ctx.beginPath();
-    ctx.ellipse(2800, 500, 500, 150, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Cina
-    ctx.beginPath();
-    ctx.ellipse(3000, 700, 200, 150, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // India
-    ctx.beginPath();
-    ctx.ellipse(2700, 800, 100, 140, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Giappone
-    ctx.beginPath();
-    ctx.ellipse(3400, 700, 40, 120, 0.2, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Penisola arabica
-    ctx.fillStyle = '#F0E6D2';
-    ctx.beginPath();
-    ctx.ellipse(2400, 750, 80, 100, 0, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Australia e Oceania
-    ctx.fillStyle = landColor;
-    ctx.beginPath();
-    ctx.ellipse(3200, 1400, 180, 120, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // Nuova Zelanda
-    ctx.beginPath();
-    ctx.ellipse(3500, 1500, 30, 60, 0, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Confini nazionali molto sottili e chiari
-    ctx.strokeStyle = 'rgba(180, 180, 180, 0.6)';
-    ctx.lineWidth = 2;
+    // Sud America
+    ctx.fillRect(200, 280, 80, 200);
     
     // Europa
-    ctx.beginPath();
-    ctx.moveTo(1900, 500);
-    ctx.lineTo(2200, 500);
-    ctx.lineTo(2200, 650);
-    ctx.lineTo(1900, 650);
-    ctx.closePath();
-    ctx.stroke();
+    ctx.fillRect(450, 110, 120, 100);
     
-    // Divisioni interne Europa
-    ctx.beginPath();
-    ctx.moveTo(2000, 500);
-    ctx.lineTo(2000, 650);
-    ctx.moveTo(2100, 500);
-    ctx.lineTo(2100, 650);
-    ctx.stroke();
+    // Africa
+    ctx.fillRect(480, 200, 100, 180);
     
-    // Altri confini principali
-    ctx.beginPath();
-    // USA-Canada
-    ctx.moveTo(400, 550);
-    ctx.lineTo(900, 550);
-    // Confini asiatici
-    ctx.moveTo(2500, 600);
-    ctx.lineTo(3200, 600);
-    ctx.stroke();
+    // Asia
+    ctx.fillRect(550, 80, 300, 200);
+    
+    // Australia
+    ctx.fillRect(650, 350, 120, 80);
 
-    // Nomi dei paesi/continenti con font più leggibile
-    ctx.fillStyle = 'rgba(80, 80, 80, 0.8)'; // Grigio scuro ma non troppo
-    ctx.font = 'bold 32px Arial';
+    // Confini molto sottili
+    ctx.strokeStyle = '#D3D3D3';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 2]);
+    
+    // Confini Nord America
+    ctx.strokeRect(150, 120, 200, 150);
+    ctx.strokeRect(120, 100, 100, 80);
+    
+    // Confini Sud America
+    ctx.strokeRect(200, 280, 80, 200);
+    
+    // Confini Europa
+    ctx.strokeRect(450, 110, 120, 100);
+    
+    // Confini Africa
+    ctx.strokeRect(480, 200, 100, 180);
+    
+    // Confini Asia
+    ctx.strokeRect(550, 80, 300, 200);
+    
+    // Confini Australia
+    ctx.strokeRect(650, 350, 120, 80);
+
+    // Nomi dei continenti
+    ctx.fillStyle = '#666666';
+    ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.lineWidth = 3;
     
-    // Continenti
-    ctx.strokeText('NORTH AMERICA', 600, 680);
-    ctx.fillText('NORTH AMERICA', 600, 680);
-    
-    ctx.strokeText('SOUTH AMERICA', 700, 1240);
-    ctx.fillText('SOUTH AMERICA', 700, 1240);
-    
-    ctx.strokeText('EUROPE', 2048, 580);
-    ctx.fillText('EUROPE', 2048, 580);
-    
-    ctx.strokeText('AFRICA', 2140, 1020);
-    ctx.fillText('AFRICA', 2140, 1020);
-    
-    ctx.strokeText('ASIA', 2900, 650);
-    ctx.fillText('ASIA', 2900, 650);
-    
-    ctx.strokeText('AUSTRALIA', 3200, 1420);
-    ctx.fillText('AUSTRALIA', 3200, 1420);
-
-    // Paesi principali con font più piccolo
-    ctx.font = 'bold 24px Arial';
-    ctx.fillStyle = 'rgba(100, 100, 100, 0.9)';
-    
-    ctx.strokeText('USA', 600, 720);
-    ctx.fillText('USA', 600, 720);
-    
-    ctx.strokeText('CANADA', 550, 480);
-    ctx.fillText('CANADA', 550, 480);
-    
-    ctx.strokeText('BRAZIL', 750, 1140);
-    ctx.fillText('BRAZIL', 750, 1140);
-    
-    ctx.strokeText('RUSSIA', 2800, 530);
-    ctx.fillText('RUSSIA', 2800, 530);
-    
-    ctx.strokeText('CHINA', 3000, 730);
-    ctx.fillText('CHINA', 3000, 730);
-    
-    ctx.strokeText('INDIA', 2700, 830);
-    ctx.fillText('INDIA', 2700, 830);
-
-    // Paesi europei
-    ctx.font = 'bold 18px Arial';
-    ctx.strokeText('UK', 1960, 540);
-    ctx.fillText('UK', 1960, 540);
-    
-    ctx.strokeText('FRANCE', 2000, 600);
-    ctx.fillText('FRANCE', 2000, 600);
-    
-    ctx.strokeText('GERMANY', 2080, 560);
-    ctx.fillText('GERMANY', 2080, 560);
-    
-    ctx.strokeText('ITALY', 2080, 720);
-    ctx.fillText('ITALY', 2080, 720);
-    
-    ctx.strokeText('SPAIN', 1970, 670);
-    ctx.fillText('SPAIN', 1970, 670);
+    ctx.fillText('NORTH AMERICA', 250, 200);
+    ctx.fillText('SOUTH AMERICA', 240, 380);
+    ctx.fillText('EUROPE', 510, 160);
+    ctx.fillText('AFRICA', 530, 290);
+    ctx.fillText('ASIA', 700, 180);
+    ctx.fillText('AUSTRALIA', 710, 390);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
     return texture;
   };
 
-  const googleEarthTexture = createGoogleEarthTexture();
+  const googleEarthTexture = createSimpleEarthTexture();
   
   // Forza l'aggiornamento della texture
   useFrame(() => {
