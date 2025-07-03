@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
 import { continents, globeConfig } from './globe/globeConfig';
@@ -87,11 +88,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       const world = new Globe(globeRef.current!)
         .width(globeRef.current!.clientWidth)
         .height(400)
-        .backgroundColor('#0A1D3A')
+        .backgroundColor('#2C1810')
         .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
         .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
         .showAtmosphere(true)
-        .atmosphereColor('#CDA434')
+        .atmosphereColor('#8B4513')
         .atmosphereAltitude(0.12)
         .enablePointerInteraction(true)
         .pointsData([])
@@ -124,7 +125,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           if (hasUniversities(countryName)) {
             return `
               <div style="
-                background: rgba(10, 29, 58, 0.95); 
+                background: rgba(44, 24, 16, 0.95); 
                 color: #CDA434; 
                 padding: 12px 16px; 
                 border-radius: 8px; 
@@ -282,7 +283,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     return (
       <div 
         className="rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-600"
-        style={{ backgroundColor: '#0A1D3A' }}
+        style={{ backgroundColor: '#2C1810' }}
       >
         <h2 className="text-3xl font-bold text-white mb-6 text-center">
           🌍 Mappa Interattiva delle Università
@@ -304,7 +305,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   return (
     <div 
       className="rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-600"
-      style={{ backgroundColor: '#0A1D3A' }}
+      style={{ backgroundColor: '#2C1810' }}
     >
       <h2 className="text-3xl font-bold text-white mb-6 text-center">
         🌍 Globo Interattivo delle Università
@@ -320,7 +321,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         {isLoading && (
           <div 
             className="absolute inset-0 flex items-center justify-center z-20"
-            style={{ backgroundColor: 'rgba(10, 29, 58, 0.8)' }}
+            style={{ backgroundColor: 'rgba(44, 24, 16, 0.8)' }}
           >
             <div 
               className="text-xl font-semibold animate-pulse"
@@ -398,7 +399,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         </div>
       )}
 
-      <div className="text-center mt-6 space-y-2" style={{ color: '#CDA434' }}>
+      <div className="text-center mt-6 space-y-2 text-white">
         <p className="text-lg font-medium">
           🎯 Usa le frecce per cambiare continente
         </p>
@@ -410,7 +411,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       {isTransitioning && (
         <div 
           className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-40 rounded-xl"
-          style={{ backgroundColor: 'rgba(10, 29, 58, 0.8)' }}
+          style={{ backgroundColor: 'rgba(44, 24, 16, 0.8)' }}
         >
           <div 
             className="text-xl font-semibold animate-pulse"

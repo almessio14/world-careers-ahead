@@ -6,7 +6,6 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { universitiesByCountry } from '../data/universities';
 import { University } from '../types';
 import * as THREE from 'three';
-import { TextureLoader } from 'three';
 
 interface WorldMapProps {
   onUniversitySelect: (university: University) => void;
@@ -93,10 +92,10 @@ const CountryMarker = ({
       >
         <sphereGeometry args={[0.02, 16, 16]} />
         <meshPhongMaterial 
-          color={hovered ? "#4285f4" : "#ea4335"} 
+          color={hovered ? "#CDA434" : "#CDA434"} 
           transparent 
           opacity={0.9}
-          emissive={hovered ? "#1a73e8" : "#d33b2c"}
+          emissive={hovered ? "#fbbf24" : "#CDA434"}
           emissiveIntensity={0.3}
         />
       </mesh>
@@ -104,24 +103,24 @@ const CountryMarker = ({
         <Text
           position={[0, 0.08, 0]}
           fontSize={0.03}
-          color="#2d3748"
+          color="#ffffff"
           anchorX="center"
           anchorY="middle"
           outlineWidth={0.002}
-          outlineColor="#ffffff"
+          outlineColor="#000000"
         >
           {name}
         </Text>
       )}
       <mesh position={[0, -0.01, 0]}>
         <coneGeometry args={[0.01, 0.04, 8]} />
-        <meshPhongMaterial color={hovered ? "#4285f4" : "#ea4335"} />
+        <meshPhongMaterial color={hovered ? "#fbbf24" : "#CDA434"} />
       </mesh>
     </group>
   );
 };
 
-// Componente principale del globo con texture Google Maps
+// Componente principale del globo con texture Google Maps reale
 const GoogleMapsStyleGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
@@ -134,51 +133,136 @@ const GoogleMapsStyleGlobe = ({
   const globeRef = useRef<THREE.Group>(null);
   const targetRotationY = useRef(0);
   
-  // Crea una texture personalizzata stile Google Maps
-  const createGoogleMapsTexture = () => {
+  // Crea una texture davvero come Google Maps
+  const createRealGoogleMapsTexture = () => {
     const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 512;
+    canvas.width = 2048;
+    canvas.height = 1024;
     const ctx = canvas.getContext('2d');
     
     if (!ctx) return null;
 
-    // Sfondo oceano (azzurro Google Maps)
-    ctx.fillStyle = '#a8d5ff';
+    // Sfondo oceano Google Maps (#A8D5FF)
+    ctx.fillStyle = '#A8D5FF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Simuliamo masse terrestri con forme semplici (verde Google Maps)
-    ctx.fillStyle = '#9fc164';
+    // Terre emerse Google Maps (#9FC164)
+    ctx.fillStyle = '#9FC164';
     
-    // Nord America
+    // Nord America (più dettagliato)
     ctx.beginPath();
-    ctx.ellipse(200, 200, 120, 80, 0, 0, 2 * Math.PI);
+    ctx.ellipse(300, 300, 200, 150, -0.2, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Alaska
+    ctx.beginPath();
+    ctx.ellipse(150, 200, 40, 30, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Groenlandia
+    ctx.beginPath();
+    ctx.ellipse(400, 150, 50, 80, 0, 0, 2 * Math.PI);
     ctx.fill();
     
     // Sud America
     ctx.beginPath();
-    ctx.ellipse(250, 350, 60, 100, 0, 0, 2 * Math.PI);
+    ctx.ellipse(350, 600, 80, 200, 0.1, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Europa
+    // Europa (più dettagliata)
     ctx.beginPath();
-    ctx.ellipse(512, 180, 80, 60, 0, 0, 2 * Math.PI);
+    ctx.ellipse(1024, 280, 120, 80, 0, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Africa
+    // Scandinavia
     ctx.beginPath();
-    ctx.ellipse(520, 300, 70, 120, 0, 0, 2 * Math.PI);
+    ctx.ellipse(1050, 200, 60, 40, 0, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Asia
+    // Italia
     ctx.beginPath();
-    ctx.ellipse(700, 200, 150, 100, 0, 0, 2 * Math.PI);
+    ctx.ellipse(1040, 350, 20, 60, 0.3, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Gran Bretagna
+    ctx.beginPath();
+    ctx.ellipse(980, 260, 25, 50, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Africa (più dettagliata)
+    ctx.fillStyle = '#D4B896'; // Colore desertico per il nord Africa
+    ctx.beginPath();
+    ctx.ellipse(1050, 400, 100, 80, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    ctx.fillStyle = '#9FC164'; // Verde per il resto dell'Africa
+    ctx.beginPath();
+    ctx.ellipse(1070, 500, 90, 150, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Asia (più dettagliata)
+    ctx.fillStyle = '#9FC164';
+    
+    // Russia/Siberia
+    ctx.beginPath();
+    ctx.ellipse(1400, 250, 300, 100, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Cina
+    ctx.beginPath();
+    ctx.ellipse(1500, 350, 150, 100, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // India
+    ctx.beginPath();
+    ctx.ellipse(1350, 400, 80, 100, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Giappone
+    ctx.beginPath();
+    ctx.ellipse(1700, 350, 30, 80, 0.2, 0, 2 * Math.PI);
     ctx.fill();
     
     // Australia
     ctx.beginPath();
-    ctx.ellipse(800, 380, 80, 40, 0, 0, 2 * Math.PI);
+    ctx.ellipse(1600, 700, 120, 80, 0, 0, 2 * Math.PI);
     ctx.fill();
+    
+    // Nuova Zelanda
+    ctx.beginPath();
+    ctx.ellipse(1750, 750, 25, 40, 0, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Aggiungi confini nazionali sottili
+    ctx.strokeStyle = '#7A7A7A';
+    ctx.lineWidth = 1;
+    
+    // Confini Europa
+    ctx.beginPath();
+    ctx.moveTo(950, 250);
+    ctx.lineTo(1150, 250);
+    ctx.lineTo(1150, 350);
+    ctx.lineTo(950, 350);
+    ctx.closePath();
+    ctx.stroke();
+    
+    // Altri confini principali
+    ctx.beginPath();
+    ctx.moveTo(1024, 200);
+    ctx.lineTo(1024, 400);
+    ctx.stroke();
+    
+    // Nomi dei continenti (più grandi e leggibili)
+    ctx.fillStyle = '#333333';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    
+    ctx.fillText('NORTH AMERICA', 300, 320);
+    ctx.fillText('SOUTH AMERICA', 350, 620);
+    ctx.fillText('EUROPE', 1024, 300);
+    ctx.fillText('AFRICA', 1070, 480);
+    ctx.fillText('ASIA', 1450, 320);
+    ctx.fillText('AUSTRALIA', 1600, 720);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
@@ -186,7 +270,7 @@ const GoogleMapsStyleGlobe = ({
     return texture;
   };
 
-  const googleMapsTexture = createGoogleMapsTexture();
+  const googleMapsTexture = createRealGoogleMapsTexture();
   
   useFrame((state, delta) => {
     if (targetContinent) {
@@ -206,13 +290,13 @@ const GoogleMapsStyleGlobe = ({
 
   return (
     <group ref={globeRef}>
-      {/* Globo con texture Google Maps personalizzata */}
+      {/* Globo con texture Google Maps realistica */}
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhongMaterial 
           map={googleMapsTexture}
           transparent
-          opacity={0.95}
+          opacity={1}
         />
       </mesh>
 
@@ -234,7 +318,7 @@ const GoogleMapsStyleGlobe = ({
         <meshBasicMaterial 
           color="#ffffff" 
           transparent 
-          opacity={0.1}
+          opacity={0.05}
           side={THREE.BackSide}
         />
       </mesh>
@@ -274,7 +358,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
   return (
     <div 
       className="rounded-xl p-6 min-h-[700px] relative overflow-hidden shadow-lg border border-gray-200"
-      style={{ backgroundColor: '#0A1D3A' }}
+      style={{ backgroundColor: '#2C1810' }}
     >
       <h2 className="text-3xl font-bold text-white mb-6 text-center">
         🌍 Esplora le Università nel Mondo
@@ -312,7 +396,7 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             far: 1000
           }}
           style={{ 
-            backgroundColor: '#0A1D3A',
+            backgroundColor: '#2C1810',
             borderRadius: '8px'
           }}
         >
@@ -343,9 +427,9 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
           disabled={isTransitioning}
           className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border"
           style={{ 
-            backgroundColor: 'rgba(205, 164, 52, 0.8)',
+            backgroundColor: '#CDA434',
             borderColor: '#CDA434',
-            color: '#0A1D3A'
+            color: '#2C1810'
           }}
         >
           <ChevronLeft size={24} />
@@ -356,9 +440,9 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
           disabled={isTransitioning}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 disabled:opacity-50 border"
           style={{ 
-            backgroundColor: 'rgba(205, 164, 52, 0.8)',
+            backgroundColor: '#CDA434',
             borderColor: '#CDA434',
-            color: '#0A1D3A'
+            color: '#2C1810'
           }}
         >
           <ChevronRight size={24} />
@@ -408,17 +492,17 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       )}
 
-      {/* Istruzioni in oro */}
-      <div className="text-center mt-6" style={{ color: '#CDA434' }}>
+      {/* Istruzioni in bianco */}
+      <div className="text-center mt-6 text-white">
         <p className="text-lg mb-2">🎯 Usa le frecce per esplorare i continenti</p>
-        <p className="text-sm">Clicca sui marker rossi per vedere le università disponibili.</p>
+        <p className="text-sm">Clicca sui marker dorati per vedere le università disponibili.</p>
       </div>
 
       {/* Loading overlay */}
       {isTransitioning && (
         <div 
           className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-10"
-          style={{ backgroundColor: 'rgba(10, 29, 58, 0.8)' }}
+          style={{ backgroundColor: 'rgba(44, 24, 16, 0.8)' }}
         >
           <div 
             className="text-lg font-semibold animate-pulse"
