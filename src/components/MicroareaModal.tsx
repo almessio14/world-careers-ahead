@@ -63,13 +63,13 @@ export default function MicroareaModal({ microarea, onClose }: MicroareaModalPro
             </p>
           </div>
           
-          {/* Layout verticale compatto per aziende e compenso */}
+          {/* Layout verticale con blocchi della stessa dimensione */}
           <div className="space-y-3">
-            {/* Aziende leader - striscia sottile */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border border-blue-100">
-              <div className="flex items-center space-x-2 md:space-x-3">
+            {/* Aziende leader */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-3 md:px-4 py-3 md:py-4 rounded-lg md:rounded-xl border border-blue-100 min-h-[72px] md:min-h-[80px]">
+              <div className="flex items-center space-x-2 md:space-x-3 h-full">
                 <div className="w-1.5 h-3 md:w-2 md:h-4 bg-blue-500 rounded-full flex-shrink-0"></div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <h4 className="font-semibold text-blue-900 text-xs md:text-sm mb-1">
                     Aziende Leader
                   </h4>
@@ -80,11 +80,11 @@ export default function MicroareaModal({ microarea, onClose }: MicroareaModalPro
               </div>
             </div>
             
-            {/* Compenso medio - striscia sottile */}
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-3 md:px-4 py-2 md:py-3 rounded-lg md:rounded-xl border border-green-100">
-              <div className="flex items-center space-x-2 md:space-x-3">
+            {/* Compenso medio - stessa dimensione */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-3 md:px-4 py-3 md:py-4 rounded-lg md:rounded-xl border border-green-100 min-h-[72px] md:min-h-[80px]">
+              <div className="flex items-center space-x-2 md:space-x-3 h-full">
                 <div className="w-1.5 h-3 md:w-2 md:h-4 bg-green-500 rounded-full flex-shrink-0"></div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <h4 className="font-semibold text-green-900 text-xs md:text-sm mb-1">
                     Compenso Medio
                   </h4>
