@@ -19,6 +19,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const [allCountries, setAllCountries] = useState<any[]>([]);
 
   // Funzione migliorata per il mapping dei paesi
@@ -77,6 +78,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     if (!globeRef.current) return;
 
     setIsLoading(true);
+    setHasError(false);
 
     try {
       if (globeRef.current) {
@@ -85,14 +87,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       const world = new Globe(globeRef.current!)
         .width(globeRef.current!.clientWidth)
-        .height(globeConfig.height)
-        .backgroundColor(globeConfig.backgroundColor)
-        // Usa una texture più chiara per il globo
-        .globeImageUrl('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/img/earth-blue-marble.jpg')
-        .bumpImageUrl('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/img/earth-topology.png')
+        .height(400)
+        .backgroundColor('#f8fafc')
+        .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+        .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
         .showAtmosphere(true)
-        .atmosphereColor(globeConfig.atmosphereColor)
-        .atmosphereAltitude(globeConfig.atmosphereAltitude)
+        .atmosphereColor('#e0f2fe')
+        .atmosphereAltitude(0.12)
         .enablePointerInteraction(true)
         .pointsData([])
         .polygonsData([])
@@ -188,20 +189,33 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
 
       worldRef.current = world;
 
-      // Carica i dati dei paesi
-      fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
-        .then(res => res.json())
-        .then(countries => {
-          setAllCountries(countries.features);
+      // Carica i dati dei paesi con fallback
+      const loadCountriesData = async () => {
+        try {
+          const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+          if (!response.ok) throw new Error('Failed to load countries data');
+          const data = await response.json();
+          setAllCountries(data.features);
           setIsLoading(false);
-        })
-        .catch(error => {
+        } catch (error) {
           console.error('Error loading countries:', error);
+          // Fallback: crea dati semplificati per i paesi principali
+          const fallbackCountries = continents.flatMap(continent => 
+            continent.countries.map(country => ({
+              properties: { NAME: country.name, name: country.name },
+              geometry: { type: 'Point', coordinates: [country.lng, country.lat] }
+            }))
+          );
+          setAllCountries(fallbackCountries);
           setIsLoading(false);
-        });
+        }
+      };
+
+      loadCountriesData();
 
     } catch (error) {
       console.error('Globe initialization error:', error);
+      setHasError(true);
       setIsLoading(false);
     }
 
@@ -264,6 +278,27 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     }, 1000);
   };
 
+  // Se c'è un errore, mostra la mappa alternativa
+  if (hasError) {
+    return (
+      <div className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-200">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          🌍 Mappa Interattiva delle Università
+        </h2>
+        
+        <div className="text-center py-20">
+          <div className="text-6xl mb-4">🗺️</div>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            Caricamento globo in corso...
+          </h3>
+          <p className="text-gray-600">
+            Se il problema persiste, prova a ricaricare la pagina.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gradient-to-br from-blue-50 via-green-50 to-blue-100 rounded-xl p-6 min-h-[600px] relative overflow-hidden shadow-lg border border-gray-200">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
@@ -294,7 +329,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           }}
         />
 
-        {!isLoading && (
+        {!isLoading && !hasError && (
           <GlobeControls
             onPrevious={() => handleContinentChange('prev')}
             onNext={() => handleContinentChange('next')}
@@ -322,7 +357,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             {universitiesByCountry[selectedCountry].map((university) => (
               <div
                 key={university.id}
-                className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
+                onClick={() => onUniversitySelect(university)}
               >
                 <div className="flex justify-between items-start mb-3">
                   <h4 className="font-semibold text-sm text-gray-800 leading-tight pr-2">{university.name}</h4>
@@ -343,17 +379,6 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
                   <div className="flex items-center">
                     <span className="mr-2">💰</span>
                     <span className="font-medium text-blue-600">{university.tuitionFee}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-2">📚</span>
-                    <span>{university.programs.join(', ')}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-2">🌐</span>
-                    <a href={university.website} target="_blank" rel="noopener noreferrer" 
-                       className="text-blue-600 hover:text-blue-800 underline text-xs">
-                      {university.website.replace('https://', '')}
-                    </a>
                   </div>
                 </div>
               </div>

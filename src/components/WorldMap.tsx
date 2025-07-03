@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
@@ -121,7 +120,7 @@ const CountryMarker = ({
   );
 };
 
-// Componente principale del globo con stile Google Maps
+// Componente principale del globo con stile Google Maps migliorato
 const GoogleMapsStyleGlobe = ({ 
   currentContinentIndex,
   onCountryClick,
@@ -134,8 +133,14 @@ const GoogleMapsStyleGlobe = ({
   const globeRef = useRef<THREE.Group>(null);
   const targetRotationY = useRef(0);
   
-  // Texture personalizzata in stile Google Maps
-  const earthTexture = useLoader(TextureLoader, 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
+  // Prova a caricare la texture, con fallback
+  let earthTexture;
+  try {
+    earthTexture = useLoader(TextureLoader, 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
+  } catch (error) {
+    console.log('Texture loading failed, using solid color');
+    earthTexture = null;
+  }
   
   useFrame((state, delta) => {
     if (targetContinent) {
@@ -159,10 +164,10 @@ const GoogleMapsStyleGlobe = ({
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
         <meshPhongMaterial 
-          color="#e8f4fd"
+          color="#4a90e2"
           map={earthTexture}
           transparent
-          opacity={0.8}
+          opacity={0.9}
         />
       </mesh>
 
@@ -182,9 +187,9 @@ const GoogleMapsStyleGlobe = ({
       <mesh scale={[1.02, 1.02, 1.02]}>
         <sphereGeometry args={[1, 32, 32]} />
         <meshBasicMaterial 
-          color="#a8dadc" 
+          color="#e0f2fe" 
           transparent 
-          opacity={0.1}
+          opacity={0.15}
           side={THREE.BackSide}
         />
       </mesh>
@@ -246,8 +251,8 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
         </div>
       </div>
 
-      {/* Canvas 3D con stile Google Maps */}
-      <div className="h-96 w-full relative">
+      {/* Canvas 3D con stile Google Maps - ora più visibile */}
+      <div className="h-96 w-full relative bg-white rounded-lg shadow-inner border border-gray-200">
         <Canvas 
           camera={{ 
             position: [0, 0.5, 3],
@@ -255,12 +260,15 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             near: 0.1,
             far: 1000
           }}
-          style={{ background: 'linear-gradient(to bottom, #e8f4fd, #f0f9ff)' }}
+          style={{ 
+            background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%)',
+            borderRadius: '8px'
+          }}
         >
           <OrbitControls
             enableZoom={true}
             enablePan={false}
-            enableRotate={false}
+            enableRotate={true}
             autoRotate={false}
             zoomSpeed={0.5}
             minDistance={1.8}
@@ -272,10 +280,10 @@ const WorldMap = ({ onUniversitySelect }: WorldMapProps) => {
             targetContinent={currentContinent}
           />
           
-          {/* Illuminazione stile Google Maps */}
-          <ambientLight intensity={0.6} color="#ffffff" />
-          <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
-          <pointLight position={[-5, -3, -5]} intensity={0.2} color="#a8dadc" />
+          {/* Illuminazione migliorata */}
+          <ambientLight intensity={0.7} color="#ffffff" />
+          <directionalLight position={[5, 5, 5]} intensity={1} color="#ffffff" />
+          <pointLight position={[-5, -3, -5]} intensity={0.3} color="#e3f2fd" />
         </Canvas>
 
         {/* Frecce di navigazione stile Google Maps */}
