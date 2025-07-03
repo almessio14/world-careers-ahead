@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -19,11 +18,6 @@ export default {
 			}
 		},
 		extend: {
-			fontFamily: {
-				'hando': ['Inter', 'sans-serif'], // Using Inter as fallback for Hando Extra Bold
-				'vayu': ['Inter', 'sans-serif'], // Using Inter as fallback for Vayu Sans Extra Bold
-				'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

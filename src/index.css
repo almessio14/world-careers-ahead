@@ -1,5 +1,4 @@
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -94,19 +93,8 @@
   }
 
   body {
-    @apply bg-background text-foreground font-hando;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-weight: 800;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-hando;
-    font-weight: 800;
-  }
-
-  p, span, div, button {
-    @apply font-vayu;
-    font-weight: 800;
+    @apply bg-background text-foreground font-sans;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   .gradient-bg {
@@ -122,7 +110,7 @@
 
 @layer components {
   .career-card {
-    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-200 font-vayu;
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-200;
   }
 
   .career-card:hover {
@@ -130,7 +118,7 @@
   }
 
   .quiz-option {
-    @apply p-4 rounded-lg border-2 border-gray-200 cursor-pointer transition-all duration-200 hover:border-accent hover:bg-accent/5 font-vayu;
+    @apply p-4 rounded-lg border-2 border-gray-200 cursor-pointer transition-all duration-200 hover:border-accent hover:bg-accent/5;
   }
 
   .quiz-option.selected {
