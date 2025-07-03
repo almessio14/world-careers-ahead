@@ -140,9 +140,9 @@ const UniversitySidebar = ({
 
   return (
     <div className="fixed top-0 right-0 h-full w-full sm:w-80 md:w-96 bg-white/70 backdrop-blur-xl text-gray-800 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-hidden">
-      {/* Header fisso */}
-      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center">
-        <h3 className="text-lg sm:text-xl font-bold text-gray-800">
+      {/* Header fisso con posizione abbassata */}
+      <div className="bg-white/80 backdrop-blur-sm p-6 sm:p-8 border-b border-gray-200 flex justify-between items-center">
+        <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
           {getCountryFlag(selectedCountry)} {selectedCountry}
         </h3>
         <button
