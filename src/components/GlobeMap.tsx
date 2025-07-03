@@ -183,7 +183,8 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     const universityPins: any[] = [];
 
     // Aggiungi pin per ogni paese del continente corrente
-    currentContinent.countries?.forEach(countryCode => {
+    currentContinent.countries?.forEach(country => {
+      const countryCode = country.code;
       const universities = universitiesByCountry[countryCode] || [];
       universities.forEach(university => {
         const coords = universityCoordinates[university.id];
@@ -193,8 +194,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
             lng: coords.lng,
             name: university.name,
             id: university.id,
-            color: hoveredUniversity?.id === university.id ? '#ff6b6b' : '#FFD700',
-            size: hoveredUniversity?.id === university.id ? 0.8 : 0.5
+            color: hoveredUniversity?.id === university.id ? '#FFD700' : '#FF6B35',
+            size: hoveredUniversity?.id === university.id ? 0.3 : 0.2,
+            altitude: 0.01
           });
         }
       });
@@ -203,21 +205,21 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
     worldRef.current
       .pointsData(universityPins)
       .pointColor('color')
-      .pointAltitude(0.02)
+      .pointAltitude('altitude')
       .pointRadius('size')
       .pointLabel((d: any) => `
         <div style="
           background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); 
           color: #FFD700; 
-          padding: 10px 14px; 
-          border-radius: 8px; 
-          font-size: 13px;
+          padding: 8px 12px; 
+          border-radius: 6px; 
+          font-size: 12px;
           font-weight: bold;
           max-width: 200px;
-          border: 2px solid #FFD700;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          border: 1px solid #FFD700;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         ">
-          🎓 ${d.name}
+          📍 ${d.name}
         </div>
       `);
   };
@@ -282,21 +284,21 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(255, 215, 0, 0.8)' : 'rgba(255, 215, 0, 0.3)';
+                return d.hovered ? 'rgba(255, 215, 0, 0.6)' : 'rgba(255, 215, 0, 0.3)';
               }
               return 'rgba(100, 116, 139, 0.1)';
             })
             .polygonSideColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(255, 215, 0, 0.6)' : 'rgba(255, 215, 0, 0.2)';
+                return d.hovered ? 'rgba(255, 215, 0, 0.4)' : 'rgba(255, 215, 0, 0.2)';
               }
               return 'rgba(71, 85, 105, 0.05)';
             })
             .polygonStrokeColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? '#FFFF00' : '#FFD700';
+                return d.hovered ? '#FFD700' : '#CDA434';
               }
               return 'rgba(100, 116, 139, 0.2)';
             })
