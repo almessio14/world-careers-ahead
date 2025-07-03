@@ -1,13 +1,10 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Progress } from './ui/progress';
+import { fetchInitialQuestions, fetchSecondaryQuestions } from '../services/quizService';
 import { 
-  level1Questions, 
-  level2Questions, 
   macroCategories, 
   subcategoryResults,
-  type NewQuizQuestion,
-  type SpecificQuestion,
   type MacroCategory,
   type SubcategoryResult
 } from '../data/newOrientationQuiz';
@@ -16,75 +13,136 @@ interface NewOrientationQuizProps {
   onClose: () => void;
 }
 
+interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  weights: Record<string, any>;
+}
+
 const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
-  const [phase, setPhase] = useState<'level1' | 'level2' | 'result'>('level1');
+  const [phase, setPhase] = useState<'level1' | 'level2' | 'result' | 'loading'>('loading');
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [level1Answers, setLevel1Answers] = useState<number[]>([]);
-  const [level2Answers, setLevel2Answers] = useState<number[]>([]);
+  const [level1Questions, setLevel1Questions] = useState<QuizQuestion[]>([]);
+  const [level2Questions, setLevel2Questions] = useState<QuizQuestion[]>([]);
+  const [level1Answers, setLevel1Answers] = useState<string[]>([]);
+  const [level2Answers, setLevel2Answers] = useState<string[]>([]);
   const [topMacroCategory, setTopMacroCategory] = useState<MacroCategory | null>(null);
   const [finalResult, setFinalResult] = useState<SubcategoryResult | null>(null);
 
-  const handleLevel1Answer = (optionIndex: number) => {
-    const newAnswers = [...level1Answers, optionIndex];
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        const questions = await fetchInitialQuestions();
+        setLevel1Questions(questions);
+        setPhase('level1');
+      } catch (error) {
+        console.error('Error loading questions:', error);
+      }
+    };
+    loadQuestions();
+  }, []);
+
+  const handleLevel1Answer = async (optionIndex: number) => {
+    const selectedOption = String.fromCharCode(65 + optionIndex); // A, B, C, D
+    const newAnswers = [...level1Answers, selectedOption];
     setLevel1Answers(newAnswers);
 
     if (currentQuestion < level1Questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       // Calcola il punteggio per ogni macro categoria
-      const scores = [0, 0, 0, 0, 0, 0]; // Finance, Consulting, Policy, Business, Entrepreneurship, Academic
+      const scores = {
+        finance: 0,
+        consulting: 0,
+        policy: 0,
+        business: 0,
+        entrepreneurship: 0,
+        academic: 0
+      };
 
       level1Questions.forEach((question, qIndex) => {
-        const answerIndex = newAnswers[qIndex];
-        const weights = question.weights[answerIndex];
-        weights.forEach((weight, categoryIndex) => {
-          scores[categoryIndex] += weight;
-        });
+        const selectedAnswer = newAnswers[qIndex];
+        const weights = question.weights[selectedAnswer];
+        if (weights) {
+          scores.finance += weights.finance || 0;
+          scores.consulting += weights.consulting || 0;
+          scores.policy += weights.policy || 0;
+          scores.business += weights.business || 0;
+          scores.entrepreneurship += weights.entrepreneurship || 0;
+          scores.academic += weights.academic || 0;
+        }
       });
 
       console.log('Level 1 scores:', scores);
 
       // Trova la categoria con il punteggio più alto
-      const maxScoreIndex = scores.indexOf(Math.max(...scores));
-      const topCategory = macroCategories[maxScoreIndex];
-
-      setTopMacroCategory(topCategory);
-      setPhase('level2');
-      setCurrentQuestion(0);
+      const maxCategory = Object.keys(scores).reduce((a, b) => 
+        scores[a as keyof typeof scores] > scores[b as keyof typeof scores] ? a : b
+      );
+      
+      const topCategory = macroCategories.find(cat => cat.id === maxCategory);
+      
+      if (topCategory) {
+        setTopMacroCategory(topCategory);
+        
+        // Carica le domande secondarie
+        try {
+          const secondaryQuestions = await fetchSecondaryQuestions(maxCategory);
+          setLevel2Questions(secondaryQuestions);
+          setPhase('level2');
+          setCurrentQuestion(0);
+        } catch (error) {
+          console.error('Error loading secondary questions:', error);
+        }
+      }
     }
   };
 
   const handleLevel2Answer = (optionIndex: number) => {
-    const newAnswers = [...level2Answers, optionIndex];
+    const selectedOption = String.fromCharCode(65 + optionIndex);
+    const newAnswers = [...level2Answers, selectedOption];
     setLevel2Answers(newAnswers);
 
-    if (currentQuestion < 2) { // 3 domande (0, 1, 2)
+    if (currentQuestion < level2Questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       // Calcola il punteggio per le sottocategorie
       if (!topMacroCategory) return;
 
-      const questions = level2Questions[topMacroCategory.id];
       const subcategoryNames = topMacroCategory.subcategories;
-      const scores: number[] = new Array(subcategoryNames.length).fill(0);
+      const scores: Record<string, number> = {};
+      
+      // Inizializza tutti i punteggi
+      subcategoryNames.forEach(subcat => {
+        scores[subcat] = 0;
+      });
 
-      questions.forEach((question, qIndex) => {
-        const answerIndex = newAnswers[qIndex];
-        const weights = question.weights[answerIndex];
-        weights.forEach((weight, subcatIndex) => {
-          scores[subcatIndex] += weight;
-        });
+      level2Questions.forEach((question, qIndex) => {
+        const selectedAnswer = newAnswers[qIndex];
+        const weights = question.weights[selectedAnswer];
+        if (weights) {
+          Object.keys(weights).forEach(key => {
+            if (scores.hasOwnProperty(key)) {
+              scores[key] += weights[key] || 0;
+            }
+          });
+        }
       });
 
       console.log('Level 2 scores:', scores);
 
       // Trova la sottocategoria con il punteggio più alto
-      const maxScoreIndex = scores.indexOf(Math.max(...scores));
-      const topSubcategoryId = subcategoryNames[maxScoreIndex];
-      const topSubcategory = subcategoryResults[topSubcategoryId];
-
-      setFinalResult(topSubcategory);
-      setPhase('result');
+      const maxSubcategory = Object.keys(scores).reduce((a, b) => 
+        scores[a] > scores[b] ? a : b
+      );
+      
+      const topSubcategory = subcategoryResults[maxSubcategory];
+      
+      if (topSubcategory) {
+        setFinalResult(topSubcategory);
+        setPhase('result');
+      }
     }
   };
 
@@ -110,6 +168,18 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     setTopMacroCategory(null);
     setFinalResult(null);
   };
+
+  if (phase === 'loading') {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-xl p-6 max-w-lg w-full text-center">
+          <div className="text-4xl mb-4">📚</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Caricamento Quiz...</h2>
+          <p className="text-gray-600">Stiamo preparando le domande per te</p>
+        </div>
+      </div>
+    );
+  }
 
   if (phase === 'result' && finalResult && topMacroCategory) {
     return (
@@ -167,13 +237,32 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
   }
 
   const isLevel2 = phase === 'level2';
-  const questions: (NewQuizQuestion | SpecificQuestion)[] = isLevel2 
-    ? level2Questions[topMacroCategory!.id] 
-    : level1Questions;
+  const questions = isLevel2 ? level2Questions : level1Questions;
+  
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-xl p-6 max-w-lg w-full text-center">
+          <div className="text-4xl mb-4">⚠️</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Errore caricamento</h2>
+          <p className="text-gray-600 mb-4">Non è stato possibile caricare le domande</p>
+          <button
+            onClick={onClose}
+            className="bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Chiudi
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const currentQuestionData = questions[currentQuestion];
-  const totalQuestions = isLevel2 ? 3 : level1Questions.length;
-  const currentQuestionNumber = isLevel2 ? 7 + currentQuestion + 1 : currentQuestion + 1;
-  const progress = (currentQuestionNumber / 10) * 100; // Barra di progresso su 10 domande totali
+  const totalQuestions = isLevel2 ? level2Questions.length : level1Questions.length;
+  const completedLevel1 = level1Questions.length;
+  const currentQuestionNumber = isLevel2 ? completedLevel1 + currentQuestion + 1 : currentQuestion + 1;
+  const totalAllQuestions = level1Questions.length + (isLevel2 ? level2Questions.length : 3);
+  const progress = (currentQuestionNumber / totalAllQuestions) * 100;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -199,7 +288,7 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
                    : 'Livello 1: Orientamento generale'
                  }
                </span>
-               <span>Domanda {currentQuestionNumber} di 10</span>
+               <span>Domanda {currentQuestionNumber} di {totalAllQuestions}</span>
             </div>
             <Progress value={progress} className="w-full" />
           </div>
