@@ -1,4 +1,3 @@
-
 import { Heart, Globe } from 'lucide-react';
 import { useFavorites } from '../hooks/useFavorites';
 
@@ -10,7 +9,7 @@ const Header = ({ onFavoritesClick }: HeaderProps) => {
   const { favorites } = useFavorites();
   
   return (
-    <header className="bg-[#14213d] text-white shadow-lg">
+    <header className="text-white shadow-lg" style={{ backgroundColor: '#0A1D3A' }}>
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
