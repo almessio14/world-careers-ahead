@@ -1,9 +1,9 @@
-
 import { useEffect, useRef, useState } from 'react';
 import Globe from 'globe.gl';
 import { continents, globeConfig } from './globe/globeConfig';
 import GlobeControls from './globe/GlobeControls';
 import ContinentIndicator from './globe/ContinentIndicator';
+import UniversitySidebar from './globe/UniversitySidebar';
 import { universitiesByCountry } from '../data/universities';
 import { University } from '../types';
 import { X } from 'lucide-react';
@@ -316,54 +316,11 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
         )}
       </div>
 
-      {/* Sidebar */}
-      {selectedCountry && universitiesByCountry[selectedCountry] && (
-        <div className="absolute top-0 right-0 h-full w-96 bg-white/95 backdrop-blur-xl text-gray-800 p-6 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-gray-800">
-              🎓 Università in {selectedCountry}
-            </h3>
-            <button
-              onClick={() => setSelectedCountry(null)}
-              className="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-full transition-all duration-200"
-            >
-              <X size={20} />
-            </button>
-          </div>
-          
-          <div className="space-y-4 max-h-[calc(100%-100px)] overflow-y-auto custom-scrollbar">
-            {universitiesByCountry[selectedCountry].map((university) => (
-              <div
-                key={university.id}
-                className="bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
-                onClick={() => onUniversitySelect(university)}
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <h4 className="font-semibold text-sm text-gray-800 leading-tight pr-2">{university.name}</h4>
-                  <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full flex-shrink-0 font-medium">
-                    #{university.ranking}
-                  </span>
-                </div>
-                
-                <div className="text-xs space-y-2 text-gray-600">
-                  <div className="flex items-center">
-                    <span className="mr-2">📍</span>
-                    <span>{university.city}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-2">🗣️</span>
-                    <span>{university.language}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-2">💰</span>
-                    <span className="font-medium text-blue-600">{university.tuitionFee}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <UniversitySidebar
+        selectedCountry={selectedCountry}
+        onClose={() => setSelectedCountry(null)}
+        onUniversitySelect={onUniversitySelect}
+      />
 
       <div className="text-center mt-6 space-y-2 text-white">
         <p className="text-lg font-medium">
