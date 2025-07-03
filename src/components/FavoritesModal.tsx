@@ -46,7 +46,8 @@ const FavoritesModal = ({ onClose }: FavoritesModalProps) => {
                 </h3>
                 <div className="grid gap-4 md:gap-6 md:grid-cols-2">
                   {careerFavorites.map((fav) => {
-                    const microarea = fav.data as Microarea;
+                    // Safely handle the data - it should be Microarea when type is 'career'
+                    const microarea = fav.data as unknown as Microarea;
                     return (
                       <div key={fav.id} className="bg-white/80 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-gray-200/50 hover:shadow-lg transition-all duration-300">
                         <div className="flex justify-between items-start mb-4">
@@ -69,7 +70,7 @@ const FavoritesModal = ({ onClose }: FavoritesModalProps) => {
                               <div className="w-1 md:w-1.5 h-2 md:h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
                               <div className="min-w-0">
                                 <p className="text-xs font-medium text-blue-900 mb-1">Aziende Leader</p>
-                                <p className="text-xs text-blue-800 font-medium truncate">{microarea.companies}</p>
+                                <p className="text-xs text-blue-800 font-medium truncate">{microarea.companies || 'N/A'}</p>
                               </div>
                             </div>
                           </div>
@@ -79,7 +80,7 @@ const FavoritesModal = ({ onClose }: FavoritesModalProps) => {
                               <div className="w-1 md:w-1.5 h-2 md:h-3 bg-green-500 rounded-full flex-shrink-0"></div>
                               <div className="min-w-0">
                                 <p className="text-xs font-medium text-green-900 mb-1">Compenso Medio</p>
-                                <p className="text-sm text-green-800 font-bold">{microarea.salary}</p>
+                                <p className="text-sm text-green-800 font-bold">{microarea.salary || 'N/A'}</p>
                               </div>
                             </div>
                           </div>
