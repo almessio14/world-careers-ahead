@@ -138,8 +138,9 @@ const UniversitySidebar = ({
   };
 
   return (
-    <div className="fixed top-0 right-0 h-full w-full sm:w-80 md:w-96 bg-white/80 backdrop-blur-xl text-gray-800 p-4 sm:p-6 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-y-auto">
-      <div className="flex justify-between items-center mb-4 sm:mb-6 sticky top-0 bg-white/90 backdrop-blur-sm p-2 -m-2 rounded-lg">
+    <div className="fixed top-0 right-0 h-full w-full sm:w-80 md:w-96 bg-white/70 backdrop-blur-xl text-gray-800 transform transition-all duration-500 ease-out border-l border-gray-200 shadow-xl z-30 overflow-hidden">
+      {/* Header fisso */}
+      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 border-b border-gray-200 flex justify-between items-center">
         <h3 className="text-lg sm:text-xl font-bold text-gray-800">
           {getCountryFlag(selectedCountry)} {selectedCountry}
         </h3>
@@ -151,65 +152,68 @@ const UniversitySidebar = ({
         </button>
       </div>
       
-      <div className="space-y-3 sm:space-y-4">
-        {universitiesByCountry[selectedCountry].map((university) => {
-          const isHovered = hoveredUniversity?.id === university.id;
-          
-          return (
-            <div
-              key={university.id}
-              className={`bg-white/90 p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 cursor-pointer ${
-                isHovered ? 'bg-yellow-50/90 border-yellow-400 shadow-lg scale-[1.02] ring-2 ring-yellow-300/50' : 'hover:bg-gray-50/90'
-              }`}
-              onMouseEnter={() => handleUniversityHover(university)}
-              onMouseLeave={() => handleUniversityHover(null)}
-              onClick={() => onUniversitySelect(university)}
-            >
-              <div className="flex justify-between items-start mb-2 sm:mb-3">
-                <h4 className="font-semibold text-sm sm:text-base text-gray-800 leading-tight pr-2 flex-1">{university.name}</h4>
-                <button
-                  onClick={(e) => handleFavoriteClick(university, e)}
-                  className={`p-1 rounded-full transition-all duration-200 flex-shrink-0 ${
-                    isFavorite(university.id) 
-                      ? 'text-yellow-500 hover:text-yellow-600' 
-                      : 'text-gray-400 hover:text-yellow-500'
-                  }`}
-                >
-                  <Heart 
-                    size={16} 
-                    fill={isFavorite(university.id) ? 'currentColor' : 'none'}
-                  />
-                </button>
-              </div>
-              
-              <div className="text-xs sm:text-sm space-y-1 sm:space-y-2 text-gray-600">
-                <div className="flex items-center">
-                  <span className="mr-2">📍</span>
-                  <span className="text-xs sm:text-sm">{university.city}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="mr-2">💰</span>
-                  <span className="font-medium text-blue-600 text-xs sm:text-sm">{university.tuitionFee}</span>
-                </div>
-                <div className="text-xs leading-relaxed text-gray-700 line-clamp-3">
-                  {getUniversityDescription(university.id)}
-                </div>
-                <div className="flex items-center">
-                  <span className="mr-2">🔗</span>
-                  <a 
-                    href={university.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700 underline text-xs truncate"
-                    onClick={(e) => e.stopPropagation()}
+      {/* Contenuto scrollabile */}
+      <div className="h-full overflow-y-auto p-4 sm:p-6 pb-20">
+        <div className="space-y-3 sm:space-y-4">
+          {universitiesByCountry[selectedCountry].map((university) => {
+            const isHovered = hoveredUniversity?.id === university.id;
+            
+            return (
+              <div
+                key={university.id}
+                className={`bg-white/90 p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 cursor-pointer ${
+                  isHovered ? 'bg-yellow-50/90 border-yellow-400 shadow-lg scale-[1.02] ring-2 ring-yellow-300/50' : 'hover:bg-gray-50/90'
+                }`}
+                onMouseEnter={() => handleUniversityHover(university)}
+                onMouseLeave={() => handleUniversityHover(null)}
+                onClick={() => onUniversitySelect(university)}
+              >
+                <div className="flex justify-between items-start mb-2 sm:mb-3">
+                  <h4 className="font-semibold text-sm sm:text-base text-gray-800 leading-tight pr-2 flex-1">{university.name}</h4>
+                  <button
+                    onClick={(e) => handleFavoriteClick(university, e)}
+                    className={`p-1 rounded-full transition-all duration-200 flex-shrink-0 ${
+                      isFavorite(university.id) 
+                        ? 'text-yellow-500 hover:text-yellow-600' 
+                        : 'text-gray-400 hover:text-yellow-500'
+                    }`}
                   >
-                    {university.website.replace('https://', '')}
-                  </a>
+                    <Heart 
+                      size={16} 
+                      fill={isFavorite(university.id) ? 'currentColor' : 'none'}
+                    />
+                  </button>
+                </div>
+                
+                <div className="text-xs sm:text-sm space-y-1 sm:space-y-2 text-gray-600">
+                  <div className="flex items-center">
+                    <span className="mr-2">📍</span>
+                    <span className="text-xs sm:text-sm">{university.city}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">💰</span>
+                    <span className="text-xs sm:text-sm text-gray-700">{university.tuitionFee}</span>
+                  </div>
+                  <div className="text-xs leading-relaxed text-gray-700 line-clamp-3">
+                    {getUniversityDescription(university.id)}
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">🔗</span>
+                    <a 
+                      href={university.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:text-blue-700 underline text-xs truncate"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {university.website.replace('https://', '')}
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

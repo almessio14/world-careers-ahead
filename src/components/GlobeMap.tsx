@@ -190,9 +190,9 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           lng: coords.lng,
           name: hoveredUniversity.name,
           id: hoveredUniversity.id,
-          color: '#FFD700',
-          size: 0.4,
-          altitude: 0.02
+          color: '#FF0000', // Rosso come richiesto
+          size: 0.5,
+          altitude: 0.03
         });
       }
     }
@@ -205,13 +205,13 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
       .pointLabel((d: any) => `
         <div style="
           background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.8)); 
-          color: #FFD700; 
+          color: #FF0000; 
           padding: 12px 16px; 
           border-radius: 8px; 
           font-size: 14px;
           font-weight: bold;
           max-width: 250px;
-          border: 2px solid #FFD700;
+          border: 2px solid #FF0000;
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
           z-index: 9999;
         ">
