@@ -271,10 +271,10 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           const data = await response.json();
           console.log('Dati paesi caricati:', data.features.length, 'paesi');
 
-          // Configura i colori e gli eventi per i paesi - colori blu ancora più scuri
+          // Configura i colori e gli eventi per i paesi - rimosso l'effetto 3D
           world
             .polygonsData(data.features)
-            .polygonAltitude(0.01)
+            .polygonAltitude(0.0) // Rimosso l'effetto 3D
             .polygonCapColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               
@@ -303,15 +303,15 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
                 return `
                   <div style="
                     background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)); 
-                    color: #061428; 
+                    color: #CDA434; 
                     padding: 10px 14px; 
                     border-radius: 8px; 
                     font-size: 14px;
                     font-weight: bold;
-                    border: 2px solid #061428;
+                    border: 2px solid #CDA434;
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
                   ">
-                    🎓 ${countryName}<br/>
+                    ${countryName}<br/>
                     <span style="font-size: 12px; opacity: 0.9;">Click per università</span>
                   </div>
                 `;
