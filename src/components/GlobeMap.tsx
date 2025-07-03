@@ -271,7 +271,7 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
           const data = await response.json();
           console.log('Dati paesi caricati:', data.features.length, 'paesi');
 
-          // Configura i colori e gli eventi per i paesi - rimosso l'effetto 3D
+          // Configura i colori e gli eventi per i paesi - colore blu uniforme
           world
             .polygonsData(data.features)
             .polygonAltitude(0.0) // Rimosso l'effetto 3D
@@ -279,14 +279,14 @@ const GlobeMap = ({ onUniversitySelect }: GlobeMapProps) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(6, 20, 40, 0.9)' : 'rgba(6, 20, 40, 0.7)';
+                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)'; // Colore uniforme
               }
               return 'rgba(100, 116, 139, 0.1)';
             })
             .polygonSideColor((d: any) => {
               const countryName = d.properties?.NAME || d.properties?.name || d.properties?.NAME_EN;
               if (hasUniversities(countryName)) {
-                return d.hovered ? 'rgba(6, 20, 40, 0.7)' : 'rgba(6, 20, 40, 0.5)';
+                return d.hovered ? 'rgba(6, 20, 40, 1.0)' : 'rgba(6, 20, 40, 0.8)'; // Colore uniforme anche sui lati
               }
               return 'rgba(71, 85, 105, 0.05)';
             })
