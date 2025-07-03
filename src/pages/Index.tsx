@@ -29,6 +29,15 @@ export default function Index() {
           <div className="animate-fade-in">
             {/* Hero section con design più pulito */}
             <div className="text-center mb-16">
+              {/* Primo testo sopra il blocco navy */}
+              <div className="max-w-5xl mx-auto mb-8">
+                <p className="text-lg text-gray-700 font-light leading-relaxed font-sans">
+                  Se ti interessano economia, finanza, relazioni internazionali o imprenditoria, ma non sai ancora quale strada intraprendere, 
+                  questo quiz può aiutarti a fare chiarezza. Attraverso poche domande mirate, ti suggeriremo carriere in linea con i tuoi interessi, 
+                  il tuo modo di pensare e il contesto lavorativo in cui potresti esprimerti al meglio.
+                </p>
+              </div>
+
               <div className="bg-gradient-to-r from-[#0A1D3A] via-[#14213d] to-[#0A1D3A] text-white p-12 rounded-3xl shadow-2xl mb-8 backdrop-blur-xl border border-white/10">
                 <div className="max-w-4xl mx-auto">
                   <h2 className="text-5xl font-light mb-6 tracking-tight font-sans">
@@ -44,12 +53,8 @@ export default function Index() {
                 </div>
               </div>
               
-              {/* Testo informativo fuori dal blocco navy */}
+              {/* Secondo testo sotto il blocco navy */}
               <div className="max-w-4xl mx-auto mb-8">
-                <p className="text-lg mb-6 text-gray-700 font-light leading-relaxed font-sans">
-                  Se ti interessano economia, finanza, relazioni internazionali o imprenditoria, ma non sai ancora quale strada intraprendere, questo quiz può aiutarti a fare chiarezza.
-                  Attraverso poche domande mirate, ti suggeriremo carriere in linea con i tuoi interessi, il tuo modo di pensare e il contesto lavorativo in cui potresti esprimerti al meglio.
-                </p>
                 <p className="text-base text-gray-600 font-light leading-relaxed font-sans">
                   Le carriere in questi ambiti sono altamente competitive.
                   Frequentare una buona università è una base solida, ma non è sufficiente.
