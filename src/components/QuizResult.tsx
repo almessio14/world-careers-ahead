@@ -42,14 +42,10 @@ const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose }: QuizRes
             
             <div className="bg-white p-4 rounded-lg">
               <h4 className="font-semibold text-gray-900 mb-2">Specializzazione consigliata:</h4>
-              <h5 className="text-lg font-medium text-primary mb-2">{finalResult.name}</h5>
-              <p className="text-sm text-gray-600 mb-2">{finalResult.description}</p>
-              <p className="text-xs text-gray-500 mb-3">{finalResult.details}</p>
+              <h5 className="text-lg font-medium text-primary mb-2">{recommendedMicroarea.name}</h5>
+              <p className="text-sm text-gray-600 mb-3">{recommendedMicroarea.description}</p>
               
               <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-medium">Microarea consigliata:</span> {recommendedMicroarea.name}
-                </p>
                 <button
                   onClick={onClose}
                   className="text-sm text-primary hover:text-primary/80 underline"
