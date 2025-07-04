@@ -85,7 +85,7 @@ const SimpleQuizResult = ({
         <div className="flex space-x-3">
           <button
             onClick={onReset}
-            className="flex-1 bg-gradient-to-r from-gray-100 to-gray-200 text-[#14213d] py-3 px-4 rounded-lg hover:from-[#14213d] hover:to-[#0A1D3A] hover:text-white transition-all duration-200 font-medium border border-gray-300 hover:border-[#14213d]"
+            className="flex-1 bg-gradient-to-r from-gray-100 to-gray-200 text-[#14213d] py-3 px-4 rounded-lg transition-all duration-200 font-medium border border-gray-300"
           >
             Rifai il quiz
           </button>
