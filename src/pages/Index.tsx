@@ -19,6 +19,11 @@ export default function Index() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [selectedMicroarea, setSelectedMicroarea] = useState<Microarea | null>(null);
 
+  const handleExploreCareer = () => {
+    setShowOrientationQuiz(false);
+    setActiveTab('careers');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 font-sans">
       <Header onFavoritesClick={() => setShowFavorites(true)} />
@@ -110,7 +115,10 @@ export default function Index() {
       {/* Modals con backdrop premium */}
       {showOrientationQuiz && (
         <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/20">
-          <NewOrientationQuiz onClose={() => setShowOrientationQuiz(false)} />
+          <NewOrientationQuiz 
+            onClose={() => setShowOrientationQuiz(false)} 
+            onExploreCareer={handleExploreCareer}
+          />
         </div>
       )}
       {selectedUniversity && (

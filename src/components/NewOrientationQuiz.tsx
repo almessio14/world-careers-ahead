@@ -5,9 +5,10 @@ import QuizResult from './QuizResult';
 
 interface NewOrientationQuizProps {
   onClose: () => void;
+  onExploreCareer: () => void;
 }
 
-const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
+const NewOrientationQuiz = ({ onClose, onExploreCareer }: NewOrientationQuizProps) => {
   const { state, handleLevel1Answer, handleLevel2Answer, resetQuiz } = useQuizLogic();
 
   if (state.phase === 'result' && state.finalResult && state.topMacroCategory) {
@@ -17,6 +18,7 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
         finalResult={state.finalResult}
         onReset={resetQuiz}
         onClose={onClose}
+        onExploreCareer={onExploreCareer}
       />
     );
   }

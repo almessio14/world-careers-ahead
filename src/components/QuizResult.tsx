@@ -7,9 +7,10 @@ interface QuizResultProps {
   finalResult: SubcategoryResult;
   onReset: () => void;
   onClose: () => void;
+  onExploreCareer: () => void;
 }
 
-const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose }: QuizResultProps) => {
+const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose, onExploreCareer }: QuizResultProps) => {
   const getRecommendedMicroarea = (categoryId: string) => {
     const category = careerExplorationData.find(cat => cat.id === categoryId);
     if (!category || category.microareas.length === 0) {
@@ -46,7 +47,7 @@ const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose }: QuizRes
               
               <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                 <button
-                  onClick={onClose}
+                  onClick={onExploreCareer}
                   className="text-sm text-primary hover:text-primary/80 underline"
                 >
                   → Vai a vedere i dettagli nella schermata scopri le carriere
@@ -67,7 +68,7 @@ const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose }: QuizRes
             onClick={onClose}
             className="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors"
           >
-            Esplora le carriere
+            Esci dal quiz
           </button>
         </div>
       </div>
