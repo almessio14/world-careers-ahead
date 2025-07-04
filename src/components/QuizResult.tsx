@@ -1,3 +1,4 @@
+
 import { MacroCategory, SubcategoryResult } from '../data/newOrientationQuiz';
 import { careerExplorationData } from '../data/careerExploration';
 
@@ -34,13 +35,12 @@ const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose, onExplore
           
           <div className="bg-gradient-to-br from-[#14213d] via-[#0A1D3A] to-[#14213d] p-6 rounded-xl mb-4 border border-[#14213d]/20">
             <div className="flex items-center justify-center mb-3">
-              <span className="text-3xl mr-3">{topMacroCategory.icon}</span>
-              <h3 className="text-xl font-semibold text-white">{topMacroCategory.name}</h3>
+              <h3 className="text-xl font-semibold text-[#fbbf24]">{topMacroCategory.name}</h3>
             </div>
             <p className="text-gray-200 mb-4">{topMacroCategory.description}</p>
             
             <h4 className="font-semibold text-white mb-2">Specializzazione consigliata:</h4>
-            <h5 className="text-lg font-medium text-[#fbbf24] mb-3">{recommendedMicroarea.name}</h5>
+            <h5 className="text-lg font-medium text-[#fbbf24] mb-3">{recommendedMicroarea.name.toUpperCase()}</h5>
             
             <button
               onClick={onExploreCareer}
