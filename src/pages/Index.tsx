@@ -1,10 +1,11 @@
+
 import { useState } from 'react';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
 import CareerCard from '../components/CareerCard';
 import CareerExplorationCard from '../components/CareerExplorationCard';
 import MicroareaModal from '../components/MicroareaModal';
-import NewOrientationQuiz from '../components/NewOrientationQuiz';
+import SimpleOrientationQuiz from '../components/SimpleOrientationQuiz';
 import GlobeMap from '../components/GlobeMap';
 import UniversityModal from '../components/UniversityModal';
 import FavoritesModal from '../components/FavoritesModal';
@@ -115,7 +116,7 @@ export default function Index() {
       {/* Modals con backdrop premium */}
       {showOrientationQuiz && (
         <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/20">
-          <NewOrientationQuiz 
+          <SimpleOrientationQuiz 
             onClose={() => setShowOrientationQuiz(false)} 
             onExploreCareer={handleExploreCareer}
           />
