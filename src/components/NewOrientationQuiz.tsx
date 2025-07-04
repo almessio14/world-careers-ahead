@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { 
   level1Questions, 
@@ -29,22 +30,23 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     if (currentQuestion < level1Questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // Calcola il punteggio per ogni macro categoria in modo più accurato
-      const scores = [0, 0, 0, 0, 0, 0]; // [Finance, Consulting, Policy, Business, Entrepreneurship, Academic]
+      // Calcola il punteggio per ogni macro categoria usando newAnswers
+      const scores = new Array(macroCategories.length).fill(0);
 
       level1Questions.forEach((question, qIndex) => {
         const answerIndex = newAnswers[qIndex];
+        if (typeof answerIndex !== 'number') return;
+
         const weights = question.weights[answerIndex];
+        if (!weights || !Array.isArray(weights)) return;
         
         console.log(`Question ${qIndex + 1}, Answer ${answerIndex}, Weights:`, weights);
         
-        if (weights && Array.isArray(weights)) {
-          weights.forEach((weight, categoryIndex) => {
-            if (categoryIndex < scores.length && typeof weight === 'number') {
-              scores[categoryIndex] += weight;
-            }
-          });
-        }
+        weights.forEach((weight, catIndex) => {
+          if (typeof weight === 'number' && catIndex < scores.length) {
+            scores[catIndex] += weight;
+          }
+        });
       });
 
       console.log('Final Level 1 scores:', scores);
@@ -70,26 +72,27 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     if (currentQuestion < 2) { // 3 domande (0, 1, 2)
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // Calcola il punteggio per le sottocategorie in modo più accurato
+      // Calcola il punteggio per le sottocategorie usando newAnswers
       if (!topMacroCategory) return;
 
       const questions = level2Questions[topMacroCategory.id];
       const subcategoryNames = topMacroCategory.subcategories;
-      const scores: number[] = new Array(subcategoryNames.length).fill(0);
+      const scores = new Array(subcategoryNames.length).fill(0);
 
       questions.forEach((question, qIndex) => {
         const answerIndex = newAnswers[qIndex];
+        if (typeof answerIndex !== 'number') return;
+
         const weights = question.weights[answerIndex];
+        if (!weights || !Array.isArray(weights)) return;
         
         console.log(`Level 2 Question ${qIndex + 1}, Answer ${answerIndex}, Weights:`, weights);
         
-        if (weights && Array.isArray(weights)) {
-          weights.forEach((weight, subcatIndex) => {
-            if (subcatIndex < scores.length && typeof weight === 'number') {
-              scores[subcatIndex] += weight;
-            }
-          });
-        }
+        weights.forEach((weight, subcatIndex) => {
+          if (typeof weight === 'number' && subcatIndex < scores.length) {
+            scores[subcatIndex] += weight;
+          }
+        });
       });
 
       console.log('Final Level 2 scores:', scores);
