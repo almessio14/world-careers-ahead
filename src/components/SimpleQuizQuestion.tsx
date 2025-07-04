@@ -23,6 +23,9 @@ const SimpleQuizQuestion = ({
     return null;
   }
 
+  // Calcola il progresso: 0% fino alla domanda 6, poi 100% alla domanda 7
+  const actualProgress = currentQuestionNumber < 7 ? 0 : 100;
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl p-6 max-w-lg w-full">
@@ -41,7 +44,7 @@ const SimpleQuizQuestion = ({
           
           <div className="mb-4">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Orientamento generale</span>
+              <span>Analisi in corso</span>
               <span>Domanda {currentQuestionNumber} di {totalQuestions}</span>
             </div>
             
@@ -49,7 +52,7 @@ const SimpleQuizQuestion = ({
               <div 
                 className="h-full transition-all duration-500 ease-out rounded-full"
                 style={{ 
-                  width: `${progress}%`,
+                  width: `${actualProgress}%`,
                   background: 'linear-gradient(90deg, #0A1D3A 0%, #14213d 50%, #0A1D3A 100%)'
                 }}
               ></div>

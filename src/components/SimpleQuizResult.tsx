@@ -5,7 +5,7 @@ interface SimpleQuizResultProps {
   categoryMapping: Record<string, string>;
   onReset: () => void;
   onClose: () => void;
-  onExploreCareer: () => void;
+  onExploreCareer: (categoryId: string) => void;
 }
 
 const SimpleQuizResult = ({ 
@@ -56,6 +56,10 @@ const SimpleQuizResult = ({
 
   const topMacroCategory = getMacroCategory(selectedCategory);
 
+  const handleExploreCareer = () => {
+    onExploreCareer(topMacroCategory.id);
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
@@ -70,10 +74,10 @@ const SimpleQuizResult = ({
             <p className="text-gray-200 mb-4">{topMacroCategory.description}</p>
             
             <button
-              onClick={onExploreCareer}
+              onClick={handleExploreCareer}
               className="text-sm text-white hover:text-[#fbbf24] underline transition-colors duration-200 font-medium"
             >
-              → Vai a vedere i dettagli nella schermata scopri le carriere
+              → Vai a vedere le specializzazioni nella schermata scopri le carriere
             </button>
           </div>
         </div>

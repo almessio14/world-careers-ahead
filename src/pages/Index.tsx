@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
@@ -20,9 +19,21 @@ export default function Index() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [selectedMicroarea, setSelectedMicroarea] = useState<Microarea | null>(null);
 
-  const handleExploreCareer = () => {
+  const handleExploreCareer = (categoryId?: string) => {
     setShowOrientationQuiz(false);
     setActiveTab('careers');
+    
+    // Se abbiamo un categoryId specifico, apriamo direttamente quel pannello
+    if (categoryId) {
+      // Trova la categoria corrispondente nei dati
+      const category = careerExplorationData.find(cat => cat.id === categoryId);
+      if (category && category.microareas.length > 0) {
+        // Apri il primo microarea della categoria (o potremmo aprire una modal di selezione)
+        setTimeout(() => {
+          setSelectedMicroarea(category.microareas[0]);
+        }, 100);
+      }
+    }
   };
 
   return (

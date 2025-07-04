@@ -5,7 +5,7 @@ import SimpleQuizResult from './SimpleQuizResult';
 
 interface SimpleOrientationQuizProps {
   onClose: () => void;
-  onExploreCareer: () => void;
+  onExploreCareer: (categoryId: string) => void;
 }
 
 const SimpleOrientationQuiz = ({ onClose, onExploreCareer }: SimpleOrientationQuizProps) => {
