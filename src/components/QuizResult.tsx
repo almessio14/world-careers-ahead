@@ -33,21 +33,21 @@ const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose, onExplore
           <div className="text-6xl mb-4">🎉</div>
           <h2 className="text-2xl font-bold text-[#14213d] mb-2">Il tuo profilo professionale!</h2>
           
-          <div className="bg-gradient-to-br from-[#14213d]/5 via-[#14213d]/10 to-[#fbbf24]/5 p-6 rounded-xl mb-4 border border-[#14213d]/20">
+          <div className="bg-gradient-to-br from-[#14213d] via-[#0A1D3A] to-[#14213d] p-6 rounded-xl mb-4 border border-[#14213d]/20">
             <div className="flex items-center justify-center mb-3">
               <span className="text-3xl mr-3">{topMacroCategory.icon}</span>
-              <h3 className="text-xl font-semibold text-[#14213d]">{topMacroCategory.name}</h3>
+              <h3 className="text-xl font-semibold text-white">{topMacroCategory.name}</h3>
             </div>
-            <p className="text-gray-700 mb-4">{topMacroCategory.description}</p>
+            <p className="text-gray-200 mb-4">{topMacroCategory.description}</p>
             
-            <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-[#fbbf24]/30">
-              <h4 className="font-semibold text-[#14213d] mb-2">Specializzazione consigliata:</h4>
+            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
+              <h4 className="font-semibold text-white mb-2">Specializzazione consigliata:</h4>
               <h5 className="text-lg font-medium text-[#fbbf24] mb-2">{recommendedMicroarea.name}</h5>
               
-              <div className="mt-3 p-3 bg-gradient-to-r from-[#fbbf24]/10 to-[#fbbf24]/5 rounded-lg border border-[#fbbf24]/40">
+              <div className="mt-3 p-3 bg-white/5 rounded-lg border border-[#fbbf24]/20">
                 <button
                   onClick={onExploreCareer}
-                  className="text-sm text-[#14213d] hover:text-[#fbbf24] underline transition-colors duration-200 font-medium"
+                  className="text-sm text-white hover:text-[#fbbf24] underline transition-colors duration-200 font-medium"
                 >
                   → Vai a vedere i dettagli nella schermata scopri le carriere
                 </button>
