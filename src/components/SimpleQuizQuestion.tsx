@@ -23,8 +23,8 @@ const SimpleQuizQuestion = ({
     return null;
   }
 
-  // Calcola il progresso: graduale da 0% a 100% attraverso le 7 domande
-  const actualProgress = (currentQuestionNumber / totalQuestions) * 100;
+  // Calcola il progresso: partendo da 0% alla domanda 1 fino a 100% alla domanda 7
+  const actualProgress = ((currentQuestionNumber - 1) / totalQuestions) * 100;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">

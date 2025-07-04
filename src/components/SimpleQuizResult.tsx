@@ -91,7 +91,7 @@ const SimpleQuizResult = ({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 bg-gradient-to-r from-gray-100 to-gray-200 text-[#14213d] py-3 px-4 rounded-lg hover:from-[#14213d] hover:to-[#0A1D3A] hover:text-white transition-all duration-200 font-medium border border-gray-300 hover:border-[#14213d]"
+            className="flex-1 bg-gradient-to-r from-[#14213d] to-[#0A1D3A] text-white py-3 px-4 rounded-lg hover:from-[#0A1D3A] hover:to-[#14213d] transition-all duration-200 font-medium shadow-lg hover:shadow-xl hover:shadow-[#fbbf24]/20"
           >
             Esci dal quiz
           </button>

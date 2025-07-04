@@ -8,14 +8,24 @@ import { ChevronRight, ArrowUpRight } from 'lucide-react';
 interface CareerExplorationCardProps {
   category: Macrocategory;
   onMicroareaClick: (microarea: Microarea) => void;
+  isExpanded?: boolean;
+  onToggle?: () => void;
 }
 
-export default function CareerExplorationCard({ category, onMicroareaClick }: CareerExplorationCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+export default function CareerExplorationCard({ 
+  category, 
+  onMicroareaClick, 
+  isExpanded = false, 
+  onToggle 
+}: CareerExplorationCardProps) {
+  const [internalExpanded, setInternalExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Usa isExpanded se fornito, altrimenti usa lo stato interno
+  const expanded = onToggle ? isExpanded : internalExpanded;
+
   useEffect(() => {
-    if (isExpanded && cardRef.current) {
+    if (expanded && cardRef.current) {
       const cardRect = cardRef.current.getBoundingClientRect();
       const offset = window.innerHeight * 0.1;
       
@@ -26,10 +36,14 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
         });
       }, 100);
     }
-  }, [isExpanded]);
+  }, [expanded]);
 
   const handleToggle = () => {
-    setIsExpanded(!isExpanded);
+    if (onToggle) {
+      onToggle();
+    } else {
+      setInternalExpanded(!internalExpanded);
+    }
   };
 
   return (
@@ -38,7 +52,7 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
       className={cn(
         "group cursor-pointer transition-all duration-500 ease-out bg-white/80 backdrop-blur-sm border border-gray-200/50 hover:border-[#fbbf24]/30 shadow-sm hover:shadow-2xl hover:shadow-[#fbbf24]/10",
         "transform hover:-translate-y-2 hover:scale-[1.02]",
-        isExpanded ? "ring-2 ring-[#fbbf24]/20 shadow-2xl" : ""
+        expanded ? "ring-2 ring-[#fbbf24]/20 shadow-2xl" : ""
       )}
       onClick={handleToggle}
     >
@@ -56,7 +70,7 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
           <div className={cn(
             "ml-3 md:ml-4 p-2 rounded-full bg-gray-100 transition-all duration-300 flex-shrink-0",
             "group-hover:bg-[#fbbf24] group-hover:text-white",
-            isExpanded ? "rotate-90 bg-[#fbbf24] text-white" : ""
+            expanded ? "rotate-90 bg-[#fbbf24] text-white" : ""
           )}>
             <ChevronRight size={18} className="md:w-5 md:h-5" />
           </div>
@@ -65,7 +79,7 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
         {/* Sezioni espandibili con animazione fluida */}
         <div className={cn(
           "overflow-hidden transition-all duration-700 ease-out",
-          isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+          expanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
         )}>
           <div className="pt-4 md:pt-6 border-t border-gray-100">
             <div className="mb-3 md:mb-4">
@@ -105,7 +119,7 @@ export default function CareerExplorationCard({ category, onMicroareaClick }: Ca
         </div>
 
         {/* Indicatore visivo dello stato */}
-        {!isExpanded && (
+        {!expanded && (
           <div className="mt-4 md:mt-6 flex justify-center">
             <div className="text-xs text-gray-400 font-medium tracking-wider uppercase">
               Tocca per esplorare

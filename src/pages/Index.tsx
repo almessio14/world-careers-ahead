@@ -18,21 +18,17 @@ export default function Index() {
   const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
   const [showFavorites, setShowFavorites] = useState(false);
   const [selectedMicroarea, setSelectedMicroarea] = useState<Microarea | null>(null);
+  const [expandedCategoryId, setExpandedCategoryId] = useState<string | null>(null);
 
   const handleExploreCareer = (categoryId?: string) => {
     setShowOrientationQuiz(false);
     setActiveTab('careers');
     
-    // Se abbiamo un categoryId specifico, apriamo direttamente quel pannello
+    // Se abbiamo un categoryId specifico, espandiamo solo quella categoria
     if (categoryId) {
-      // Trova la categoria corrispondente nei dati
-      const category = careerExplorationData.find(cat => cat.id === categoryId);
-      if (category && category.microareas.length > 0) {
-        // Apri il primo microarea della categoria (o potremmo aprire una modal di selezione)
-        setTimeout(() => {
-          setSelectedMicroarea(category.microareas[0]);
-        }, 100);
-      }
+      setTimeout(() => {
+        setExpandedCategoryId(categoryId);
+      }, 100);
     }
   };
 
@@ -112,6 +108,8 @@ export default function Index() {
                   <CareerExplorationCard 
                     category={category}
                     onMicroareaClick={setSelectedMicroarea}
+                    isExpanded={expandedCategoryId === category.id}
+                    onToggle={() => setExpandedCategoryId(expandedCategoryId === category.id ? null : category.id)}
                   />
                 </div>
               ))}
