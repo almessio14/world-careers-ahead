@@ -96,13 +96,13 @@ const QuizQuestion = ({
                   ? onLevel2Answer(index) 
                   : onLevel1Answer(index)
                 }
-                className="quiz-option w-full text-left"
+                className="w-full text-left p-4 rounded-lg border-2 border-gray-200 cursor-pointer transition-all duration-200 hover:border-accent hover:bg-gradient-to-r hover:from-accent/5 hover:to-accent/10 hover:shadow-lg hover:shadow-accent/20"
               >
                 <div className="flex items-start">
                   <span className="text-primary font-medium mr-3 mt-1">
                     {String.fromCharCode(65 + index)}.
                   </span>
-                  <span>{option}</span>
+                  <span className="transition-colors duration-200">{option}</span>
                 </div>
               </button>
             ))}
