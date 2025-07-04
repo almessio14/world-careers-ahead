@@ -1,4 +1,3 @@
-
 import { MacroCategory, SubcategoryResult } from '../data/newOrientationQuiz';
 import { careerExplorationData } from '../data/careerExploration';
 
@@ -40,19 +39,15 @@ const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose, onExplore
             </div>
             <p className="text-gray-200 mb-4">{topMacroCategory.description}</p>
             
-            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
-              <h4 className="font-semibold text-white mb-2">Specializzazione consigliata:</h4>
-              <h5 className="text-lg font-medium text-[#fbbf24] mb-2">{recommendedMicroarea.name}</h5>
-              
-              <div className="mt-3 p-3 bg-white/5 rounded-lg border border-[#fbbf24]/20">
-                <button
-                  onClick={onExploreCareer}
-                  className="text-sm text-white hover:text-[#fbbf24] underline transition-colors duration-200 font-medium"
-                >
-                  → Vai a vedere i dettagli nella schermata scopri le carriere
-                </button>
-              </div>
-            </div>
+            <h4 className="font-semibold text-white mb-2">Specializzazione consigliata:</h4>
+            <h5 className="text-lg font-medium text-[#fbbf24] mb-3">{recommendedMicroarea.name}</h5>
+            
+            <button
+              onClick={onExploreCareer}
+              className="text-sm text-white hover:text-[#fbbf24] underline transition-colors duration-200 font-medium"
+            >
+              → Vai a vedere i dettagli nella schermata scopri le carriere
+            </button>
           </div>
         </div>
 
