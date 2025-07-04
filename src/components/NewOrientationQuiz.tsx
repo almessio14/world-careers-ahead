@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import { 
   level1Questions, 
@@ -31,22 +29,33 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     if (currentQuestion < level1Questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // Calcola il punteggio per ogni macro categoria (Finance, Consulting, Policy, Business, Entrepreneurship, Academic)
-      const scores = [0, 0, 0, 0, 0, 0];
+      // Calcola il punteggio per ogni macro categoria in modo più accurato
+      const scores = [0, 0, 0, 0, 0, 0]; // [Finance, Consulting, Policy, Business, Entrepreneurship, Academic]
 
       level1Questions.forEach((question, qIndex) => {
         const answerIndex = newAnswers[qIndex];
         const weights = question.weights[answerIndex];
-        weights.forEach((weight, categoryIndex) => {
-          scores[categoryIndex] += weight;
-        });
+        
+        console.log(`Question ${qIndex + 1}, Answer ${answerIndex}, Weights:`, weights);
+        
+        if (weights && Array.isArray(weights)) {
+          weights.forEach((weight, categoryIndex) => {
+            if (categoryIndex < scores.length && typeof weight === 'number') {
+              scores[categoryIndex] += weight;
+            }
+          });
+        }
       });
 
-      console.log('Level 1 scores:', scores);
+      console.log('Final Level 1 scores:', scores);
+      console.log('Categories:', macroCategories.map(cat => cat.name));
 
       // Trova la categoria con il punteggio più alto
-      const maxScoreIndex = scores.indexOf(Math.max(...scores));
+      const maxScore = Math.max(...scores);
+      const maxScoreIndex = scores.indexOf(maxScore);
       const topCategory = macroCategories[maxScoreIndex];
+
+      console.log(`Top category: ${topCategory.name} with score: ${maxScore}`);
 
       setTopMacroCategory(topCategory);
       setPhase('level2');
@@ -61,7 +70,7 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
     if (currentQuestion < 2) { // 3 domande (0, 1, 2)
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // Calcola il punteggio per le sottocategorie
+      // Calcola il punteggio per le sottocategorie in modo più accurato
       if (!topMacroCategory) return;
 
       const questions = level2Questions[topMacroCategory.id];
@@ -71,17 +80,28 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
       questions.forEach((question, qIndex) => {
         const answerIndex = newAnswers[qIndex];
         const weights = question.weights[answerIndex];
-        weights.forEach((weight, subcatIndex) => {
-          scores[subcatIndex] += weight;
-        });
+        
+        console.log(`Level 2 Question ${qIndex + 1}, Answer ${answerIndex}, Weights:`, weights);
+        
+        if (weights && Array.isArray(weights)) {
+          weights.forEach((weight, subcatIndex) => {
+            if (subcatIndex < scores.length && typeof weight === 'number') {
+              scores[subcatIndex] += weight;
+            }
+          });
+        }
       });
 
-      console.log('Level 2 scores:', scores);
+      console.log('Final Level 2 scores:', scores);
+      console.log('Subcategories:', subcategoryNames);
 
       // Trova la sottocategoria con il punteggio più alto
-      const maxScoreIndex = scores.indexOf(Math.max(...scores));
+      const maxScore = Math.max(...scores);
+      const maxScoreIndex = scores.indexOf(maxScore);
       const topSubcategoryId = subcategoryNames[maxScoreIndex];
       const topSubcategory = subcategoryResults[topSubcategoryId];
+
+      console.log(`Top subcategory: ${topSubcategory.name} with score: ${maxScore}`);
 
       setFinalResult(topSubcategory);
       setPhase('result');
@@ -249,4 +269,3 @@ const NewOrientationQuiz = ({ onClose }: NewOrientationQuizProps) => {
 };
 
 export default NewOrientationQuiz;
-
