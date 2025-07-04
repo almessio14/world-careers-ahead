@@ -1,11 +1,7 @@
 
-import { careerExplorationData } from '../data/careerExploration';
-
 interface SimpleQuizResultProps {
   selectedCategory: string;
-  finalMicroCategory: string;
   mainScores: Record<string, number>;
-  specificScores: Record<string, number>;
   categoryMapping: Record<string, string>;
   onReset: () => void;
   onClose: () => void;
@@ -14,9 +10,7 @@ interface SimpleQuizResultProps {
 
 const SimpleQuizResult = ({ 
   selectedCategory, 
-  finalMicroCategory, 
   mainScores,
-  specificScores,
   categoryMapping,
   onReset, 
   onClose, 

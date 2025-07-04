@@ -12,7 +12,6 @@ const SimpleOrientationQuiz = ({ onClose, onExploreCareer }: SimpleOrientationQu
   const {
     state,
     selectMainAnswer,
-    selectSpecificAnswer,
     restartQuiz,
     getCurrentQuestion,
     getTotalQuestions,
@@ -25,9 +24,7 @@ const SimpleOrientationQuiz = ({ onClose, onExploreCareer }: SimpleOrientationQu
     return (
       <SimpleQuizResult
         selectedCategory={state.selectedCategory}
-        finalMicroCategory={state.finalMicroCategory}
         mainScores={state.mainScores}
-        specificScores={state.specificScores}
         categoryMapping={categoryMapping}
         onReset={restartQuiz}
         onClose={onClose}
@@ -45,7 +42,6 @@ const SimpleOrientationQuiz = ({ onClose, onExploreCareer }: SimpleOrientationQu
       progress={getProgress()}
       selectedCategory={state.selectedCategory}
       onMainAnswer={selectMainAnswer}
-      onSpecificAnswer={selectSpecificAnswer}
       onClose={onClose}
     />
   );

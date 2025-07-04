@@ -1,27 +1,21 @@
 
-import { QuizPhase } from '../hooks/useSimpleQuizLogic';
-
 interface SimpleQuizQuestionProps {
-  phase: QuizPhase;
+  phase: 'main' | 'result';
   currentQuestion: any;
   currentQuestionNumber: number;
   totalQuestions: number;
   progress: number;
   selectedCategory: string;
   onMainAnswer: (index: number) => void;
-  onSpecificAnswer: (index: number) => void;
   onClose: () => void;
 }
 
 const SimpleQuizQuestion = ({ 
-  phase, 
   currentQuestion,
   currentQuestionNumber,
   totalQuestions,
   progress,
-  selectedCategory,
   onMainAnswer, 
-  onSpecificAnswer, 
   onClose 
 }: SimpleQuizQuestionProps) => {
   
@@ -29,15 +23,13 @@ const SimpleQuizQuestion = ({
     return null;
   }
 
-  const isSpecific = phase === 'specific';
-
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl p-6 max-w-lg w-full">
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-900">
-              {isSpecific ? `Specializzazione: ${selectedCategory}` : 'Quiz di Orientamento'}
+              Quiz di Orientamento
             </h2>
             <button
               onClick={onClose}
@@ -49,12 +41,7 @@ const SimpleQuizQuestion = ({
           
           <div className="mb-4">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>
-                {isSpecific 
-                  ? `Livello 2: ${selectedCategory}`
-                  : 'Livello 1: Orientamento generale'
-                }
-              </span>
+              <span>Orientamento generale</span>
               <span>Domanda {currentQuestionNumber} di {totalQuestions}</span>
             </div>
             
@@ -79,10 +66,7 @@ const SimpleQuizQuestion = ({
             {currentQuestion.options.map((option: any, index: number) => (
               <button
                 key={index}
-                onClick={() => isSpecific 
-                  ? onSpecificAnswer(index) 
-                  : onMainAnswer(index)
-                }
+                onClick={() => onMainAnswer(index)}
                 className="w-full text-left p-4 rounded-lg border-2 border-gray-200 cursor-pointer transition-all duration-300 hover:border-[#fbbf24] hover:bg-gradient-to-r hover:from-[#fbbf24]/10 hover:to-[#fbbf24]/5 hover:shadow-lg hover:shadow-[#fbbf24]/30 hover:scale-[1.02] group"
               >
                 <div className="flex items-start">
