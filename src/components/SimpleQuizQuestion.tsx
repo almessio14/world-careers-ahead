@@ -23,8 +23,8 @@ const SimpleQuizQuestion = ({
     return null;
   }
 
-  // Calcola il progresso: 0% fino alla domanda 6, poi 100% alla domanda 7
-  const actualProgress = currentQuestionNumber < 7 ? 0 : 100;
+  // Calcola il progresso: graduale da 0% a 100% attraverso le 7 domande
+  const actualProgress = (currentQuestionNumber / totalQuestions) * 100;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -44,7 +44,7 @@ const SimpleQuizQuestion = ({
           
           <div className="mb-4">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Analisi in corso</span>
+              <span>Analisi in corso...</span>
               <span>Domanda {currentQuestionNumber} di {totalQuestions}</span>
             </div>
             
