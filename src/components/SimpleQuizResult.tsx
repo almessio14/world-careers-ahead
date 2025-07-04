@@ -60,22 +60,7 @@ const SimpleQuizResult = ({
     return categoryMap[categoryName] || categoryMap.Finance;
   };
 
-  const getRecommendedMicroarea = (categoryId: string, microCategoryId: string) => {
-    const category = careerExplorationData.find(cat => cat.id === categoryId);
-    if (!category || category.microareas.length === 0) {
-      return { name: finalMicroCategory, description: 'Scopri le opportunità disponibili' };
-    }
-    
-    // Try to find the specific microarea by matching the ID
-    const microarea = category.microareas.find(m => m.id === microCategoryId) || category.microareas[0];
-    return {
-      name: microarea.name,
-      description: microarea.description
-    };
-  };
-
   const topMacroCategory = getMacroCategory(selectedCategory);
-  const recommendedMicroarea = getRecommendedMicroarea(topMacroCategory.id, finalMicroCategory);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -89,9 +74,6 @@ const SimpleQuizResult = ({
               <h3 className="text-xl font-semibold text-[#fbbf24]">{topMacroCategory.name}</h3>
             </div>
             <p className="text-gray-200 mb-4">{topMacroCategory.description}</p>
-            
-            <h4 className="font-semibold text-white mb-2">Specializzazione consigliata:</h4>
-            <h5 className="text-lg font-medium text-[#fbbf24] mb-3">{recommendedMicroarea.name.toUpperCase()}</h5>
             
             <button
               onClick={onExploreCareer}
