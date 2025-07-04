@@ -1,5 +1,6 @@
 
 import { MacroCategory, SubcategoryResult } from '../data/newOrientationQuiz';
+import { careerExplorationData } from '../data/careerExploration';
 
 interface QuizResultProps {
   topMacroCategory: MacroCategory;
@@ -9,19 +10,21 @@ interface QuizResultProps {
 }
 
 const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose }: QuizResultProps) => {
-  const getMicroareaForCategory = (categoryId: string): string => {
-    const microareas: Record<string, string[]> = {
-      finance: ['Investment Banking', 'Private Equity', 'Venture Capital', 'Hedge Funds', 'Quantitative Finance', 'Asset Management'],
-      consulting: ['Strategy Consulting (MBB)', 'Management Consulting (Big 4)', 'Transformation Consulting'],
-      policy: ['Diplomatic Services', 'International Organizations', 'Policy Research & Think Tanks'],
-      business: ['Big Tech', 'Product Management', 'Corporate Strategy', 'Marketing & Brand Management', 'Human Resources'],
-      entrepreneurship: ['Startup Founder', 'Chief Financial Officer (CFO)', 'Business Development'],
-      academic: ['Economic Research', 'Financial Journalism', 'Data Analysis & Research']
-    };
+  const getRecommendedMicroarea = (categoryId: string) => {
+    const category = careerExplorationData.find(cat => cat.id === categoryId);
+    if (!category || category.microareas.length === 0) {
+      return { name: 'Area specialistica', description: 'Scopri le opportunità disponibili' };
+    }
     
-    const categoryMicroareas = microareas[categoryId] || [];
-    return categoryMicroareas[Math.floor(Math.random() * categoryMicroareas.length)] || 'Area specialistica';
+    // Prendi la prima microarea come raccomandazione principale
+    const recommendedMicroarea = category.microareas[0];
+    return {
+      name: recommendedMicroarea.name,
+      description: recommendedMicroarea.description
+    };
   };
+
+  const recommendedMicroarea = getRecommendedMicroarea(topMacroCategory.id);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -45,7 +48,7 @@ const QuizResult = ({ topMacroCategory, finalResult, onReset, onClose }: QuizRes
               
               <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-medium">Microarea consigliata:</span> {getMicroareaForCategory(topMacroCategory.id)}
+                  <span className="font-medium">Microarea consigliata:</span> {recommendedMicroarea.name}
                 </p>
                 <button
                   onClick={onClose}
